@@ -28,8 +28,6 @@ public class EventoEvent implements BaseEvent {
 
     private Long venueId;
 
-    private Long temporadaId;
-
     private List<String> organizadoresId;
 
 }

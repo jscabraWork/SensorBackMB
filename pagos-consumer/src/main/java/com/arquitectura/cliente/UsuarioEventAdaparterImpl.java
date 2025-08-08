@@ -1,0 +1,33 @@
+package com.arquitectura.cliente;
+
+import com.arquitectura.adapter.EventAdapterImpl;
+import com.arquitectura.cliente.entity.Cliente;
+import com.arquitectura.events.UsuarioEvent;
+import jakarta.persistence.Access;
+import org.springframework.stereotype.Component;
+
+/**
+ * Implementación del adaptador que convierte un evento {@link UsuarioEvent} en una entidad {@link Cliente}.
+ * Este adaptador es responsable de mapear los datos del evento a la entidad correspondiente.
+ */
+@Component
+public class UsuarioEventAdaparterImpl extends EventAdapterImpl<Cliente, UsuarioEvent> implements UsuarioEventAdapter {
+
+    /**
+     * Metdo para mapear los datos del evento {@link UsuarioEvent} a una entidad {@link Cliente}.
+     * Si el cliente no existe, se crea uno nuevo con los datos del evento.
+     *
+     * @param entity Entidad cliente que se va a actualizar o crear.
+     * @param event Evento que contiene los datos del cliente a mapear.
+     * @return La entidad {@link Cliente} actualizada con los datos del evento.
+     */
+    @Override
+    public Cliente creacion(Cliente entity, UsuarioEvent event) {
+        entity.setNumeroDocumento(event.getId());
+        entity.setNombre(event.getNombre());
+        entity.setCorreo(event.getCorreo());
+        entity.setCelular(event.getCelular());
+        entity.setTipoDocumento(event.getTipoDocumento());
+        return super.creacion(entity, event);
+    }
+}

@@ -1,0 +1,277 @@
+
+
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <style>
+        @page {
+            size: A4;
+            margin: 0px;
+            padding:0px;
+            }
+
+
+        *{
+            page-break-inside: always;
+            margin:0px;
+            padding:0px;
+            border: 0;
+            -webkit-box-sizing: border-box;
+            -moz-box-sizing: border-box;
+            box-sizing: border-box;
+            font-family:  Arial, sans-serif;
+        }
+        body{
+            width: 816px;
+            height:  1054px;
+        }
+        .contenedor{
+            width: 816px;
+            height:  1054px;
+            background-color: white;
+
+        }
+        .header,.cuerpo,.info,.seguridad,.backblack,.infotop,.infobot,.cuerpoCont,.infobot{
+            width: 816px;
+        }
+        .header{
+            height: 100px;
+            background-color: #D9D9D9;
+            position: relative;
+        }
+        .header img{
+               margin-top:35px;
+            width: 250px;
+            margin-left:20px;
+        }
+        .header p{
+            position: absolute;
+            right: 30px;
+            top: 68px;
+            color: #f55911;
+            font-weight: 800;
+            font-size: 15px;
+
+        }
+        .cuerpo{
+            height: 720px;
+            width: 816px;
+            position: relative;
+               background-repeat: no-repeat;
+            background-size: 100% 100%;
+        }
+        .cuerpoCont{
+            position: relative;
+        }
+
+        .cuerpo img{
+            width: 250px;
+            position: absolute;
+            top: 50%;
+            left: 40%;
+            transform: translate(-35%, -35%);
+        }
+        .infotop{
+            color: white;
+            text-align: center;
+            font-size: 22px;
+            position: absolute;
+            z-index: 2;
+            margin-top:15px;
+        }
+        .infomid{
+            padding: 0px 20px;
+            font-size: 18px;
+            height: auto;
+            position: absolute;
+            z-index: 2;
+            top: 85px;
+            margin-top:40px;
+        }
+        .infomidi{
+            width: 526px;
+            color: white;
+            margin: 0px;
+            float: left;
+        }
+        .infomidd{
+            width: 250px;
+            color: white;
+            margin: 0px;
+            float: left;
+        }
+        .infobot{
+
+
+            text-align: center;
+            color: white;
+            position: absolute;
+            z-index: 2;
+            top: 250px;
+        }
+        .backblack{
+            height: 720px;
+            width: 816px;
+            position: absolute;
+            background-image: url("https://allticketscol.com/assets/images/img/black.png");
+            background-size: cover;
+            top: 0;
+
+        }
+        .info{
+            height: 110px;
+            background-color: #D9D9D9;
+            text-align: center;
+            color: white;
+            position: relative;
+        }
+        .infoCont{
+            padding-top:20px;
+            text-align: center;
+            font-size:25px;
+          line-heigh:20px;
+        }
+        .seguridad{
+            height: 184px;
+            background-color: white;
+            margin: 0px;
+            float: left;
+            padding: 10px 10px;
+        }
+        .imgSeguridad{
+            width: 195px;
+            float: left;
+            top: 50%;
+            left: 50%;
+            transform: translate(10%, 0%);
+        }
+        .imgSeguridad img{
+            width: 165px;
+            float: left;
+        }
+        .infoSeguridad{
+            position: relative;
+            width: 400px;
+            text-align: center;
+            float: left;
+        }
+        .infoSeguridadCont{
+            margin-top: 50px;
+            width: 315px;
+            height: 50px;
+            position: absolute;
+            top: 50%;
+            margin-left: 45px;
+            border: 1px solid #001e36;
+        }
+        .infoSeguridadCont p{
+
+            font-size: 10px;
+            margin-top:5px;
+            color: #e64c2d;
+        }
+        .seginf{
+            top: 50%;
+            left: 30%;
+            transform: translate(0%, 40%);
+        }
+        .seginf strong{
+            font-size: 20px;
+            font-weight: 700;
+            color: #001e35;
+        }
+        .infoSeguridadCont strong{
+            font-weight: 700;
+            font-size: 11px;
+            color: #505050;
+        }
+        .imgLogo{
+            width: 200px !important;
+        }
+        hr{
+            width: 340px;
+            height: 2px;
+            background-color: #505050;
+            margin: auto;
+            margin-top: 3px;
+        }
+
+    </style>
+
+
+    <style th:inline="css">
+        .cuerpo{
+    background-image:url([[${imgFondo}]]);
+  }
+    </style>
+
+
+
+</head>
+<body>
+<div class="contenedor">
+    <div class="header">
+        <img src="https://allticketscol.com/assets/images/img/logo2.png" alt=""/>
+        <p>¡Vívelo al máximo!</p>
+    </div>
+    <div class="cuerpo">
+        <div class="cuerpoCont">
+            <div class="infotop">
+                <p th:text="${fecha}"></p>
+                <p><strong th:text="${evento?.nombre}"></strong></p>
+                <p th:text="${evento?.venue?.nombre}"></p>
+            </div>
+            <div class="infomid">
+                <div class="infomidi">
+                    <p>Horario Ingreso:
+                        <span th:each="info, iterStat : ${diasInfo}">
+                            <span th:text="${info}"></span>
+                            <span th:if="${!iterStat.last}">, </span>
+                        </span>
+                    </p>
+                    <p>Localidad: <span th:text="${localidad}"></span></p>
+                    <p>Número: <span th:text="${id}"></span></p>
+                    <p>Personas: <span th:text="${cantidadP}"></span></p>
+                    <p>PULEP: <span th:text="${evento?.pulep}"></span></p>
+                </div>
+                <div class="infomidd">
+                    <p>Ciudad: <span th:text="${evento?.venue?.ciudad?.nombre}"></span></p>
+                    <p>Artistas:  <span th:text="${evento?.artistas}"></span></p>
+                </div>
+            </div>
+            <div class="infobot"></div>
+            <div class="backblack"></div>
+        </div>
+        <img th:src="@{${imagen}}" alt="QR"/>
+    </div>
+    <div class="info">
+        <div class="infoCont">
+            <p><strong>Nombre:<span th:text="${cliente?.nombre}"></span></strong></p>
+            <p><strong>Cédula: <span th:text="${cliente?.numeroDocumento}"></span></strong></p>
+        </div>
+    </div>
+    <div class="seguridad">
+        <div class="imgSeguridad">
+
+            <img src="https://allticketscol.com/assets/images/img/png%201.png" alt="" class="imgLogo" />
+        </div>
+        <div class="infoSeguridad">
+            <div class="seginf">
+                <p><strong>Presenta este código en la entrada para ingresar al evento</strong></p>
+                <hr/>
+                <div class="infoSeguridadCont">
+                    <p ><strong>Aplican Términos y Condiciones</strong></p>
+                    <p ><strong>https://allticketscol.com/terminosYcondiciones</strong></p>
+                </div>
+            </div>
+        </div>
+        <div class="imgSeguridad">
+            <img src="https://allticketscol.com/assets/images/img/Sello%20seguridad.png" alt=""/>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>
