@@ -16,7 +16,6 @@
         <module name="commons-microservicios" />
         <module name="commons-microservicio-consumer-kafka" />
         <module name="promotores" />
-        <module name="promotores-consumer" />
         <module name="microservicio-oauth" />
         <module name="microservicio-gateway" />
         <module name="core-seguridad-no-reactivo" />
@@ -55,6 +54,7 @@
       <module name="core-eventos" target="17" />
       <module name="eventos" target="17" />
       <module name="pagos-consumer" target="17" />
+      <module name="promotores-consumer" target="17" />
       <module name="puntos-fisicos-consumer" target="17" />
     </bytecodeTargetLevel>
   </component>
