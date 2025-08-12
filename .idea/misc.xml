@@ -28,6 +28,7 @@
     <option name="ignoredFiles">
       <set>
         <option value="$PROJECT_DIR$/core-eventos/pom.xml" />
+        <option value="$PROJECT_DIR$/eventos/pom.xml" />
         <option value="$PROJECT_DIR$/pagos-consumer/pom.xml" />
       </set>
     </option>

@@ -10,7 +10,6 @@
         <module name="commons-microservicio-consumer-kafka" />
         <module name="core-usuarios" />
         <module name="microservicio-oauth" />
-        <module name="puntos-fisicos-consumer" />
         <module name="commons-auditable" />
         <module name="microservicio-eureka" />
         <module name="core-seguridad" />
@@ -35,7 +34,6 @@
         <processorPath useClasspath="false">
           <entry name="$MAVEN_REPOSITORY$/org/projectlombok/lombok/unknown/lombok-unknown.jar" />
         </processorPath>
-        <module name="eventos" />
         <module name="Pagos" />
       </profile>
       <profile name="Annotation profile for puntos fisicos" enabled="true">
@@ -52,7 +50,9 @@
     </annotationProcessing>
     <bytecodeTargetLevel>
       <module name="core-eventos" target="17" />
+      <module name="eventos" target="17" />
       <module name="pagos-consumer" target="17" />
+      <module name="puntos-fisicos-consumer" target="17" />
     </bytecodeTargetLevel>
   </component>
   <component name="JavacSettings">
