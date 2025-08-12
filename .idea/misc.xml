@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ExternalStorageConfigurationManager" enabled="true" />
+  <component name="MavenProjectsManager">
+    <option name="originalFiles">
+      <list>
+        <option value="$PROJECT_DIR$/core/pom.xml" />
+        <option value="$PROJECT_DIR$/pagos/pom.xml" />
+        <option value="$PROJECT_DIR$/eventos/pom.xml" />
+        <option value="$PROJECT_DIR$/usuarios/pom.xml" />
+        <option value="$PROJECT_DIR$/core-pagos/pom.xml" />
+        <option value="$PROJECT_DIR$/core-eventos/pom.xml" />
+        <option value="$PROJECT_DIR$/core-usuarios/pom.xml" />
+        <option value="$PROJECT_DIR$/core-seguridad/pom.xml" />
+        <option value="$PROJECT_DIR$/pagos-consumer/pom.xml" />
+        <option value="$PROJECT_DIR$/puntos-fisicos/pom.xml" />
+        <option value="$PROJECT_DIR$/commons-auditable/pom.xml" />
+        <option value="$PROJECT_DIR$/core-puntos-fisicos/pom.xml" />
+        <option value="$PROJECT_DIR$/microservicio-oauth/pom.xml" />
+        <option value="$PROJECT_DIR$/microservicio-eureka/pom.xml" />
+        <option value="$PROJECT_DIR$/microservicio-gateway/pom.xml" />
+        <option value="$PROJECT_DIR$/commons-microservicios/pom.xml" />
+        <option value="$PROJECT_DIR$/puntos-fisicos-consumer/pom.xml" />
+        <option value="$PROJECT_DIR$/core-seguridad-no-reactivo/pom.xml" />
+        <option value="$PROJECT_DIR$/commons-microservicio-consumer-kafka/pom.xml" />
+      </list>
+    </option>
+    <option name="ignoredFiles">
+      <set>
+        <option value="$PROJECT_DIR$/core-eventos/pom.xml" />
+        <option value="$PROJECT_DIR$/pagos-consumer/pom.xml" />
+      </set>
+    </option>
+  </component>
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_22" default="true" project-jdk-name="openjdk-22" project-jdk-type="JavaSDK">
+    <output url="file://$PROJECT_DIR$/out" />
+  </component>
+</project>

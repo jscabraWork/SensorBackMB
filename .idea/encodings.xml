@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="Encoding">
+    <file url="file://$PROJECT_DIR$/commons-auditable/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/commons-microservicio-consumer-kafka/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/commons-microservicios/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/core-eventos/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/core-pagos/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/core-puntos-fisicos/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/core-seguridad-no-reactivo/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/core-seguridad/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/core-usuarios/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/core/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/eventos/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/microservicio-eureka/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/microservicio-gateway/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/microservicio-oauth/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/pagos-consumer/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/pagos/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/puntos-fisicos-consumer/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/puntos-fisicos/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/usuarios/src/main/java" charset="UTF-8" />
+  </component>
+</project>

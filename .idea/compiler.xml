@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="CompilerConfiguration">
+    <annotationProcessing>
+      <profile default="true" name="Default" enabled="true" />
+      <profile name="Maven default annotation processors profile" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <module name="commons-microservicio-consumer-kafka" />
+        <module name="core-usuarios" />
+        <module name="microservicio-oauth" />
+        <module name="puntos-fisicos-consumer" />
+        <module name="commons-auditable" />
+        <module name="microservicio-eureka" />
+        <module name="core-seguridad" />
+        <module name="usuarios" />
+        <module name="microservicio-gateway" />
+        <module name="commons-microservicios" />
+        <module name="core-seguridad-no-reactivo" />
+      </profile>
+      <profile name="Annotation profile for core" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <processorPath useClasspath="false">
+          <entry name="$MAVEN_REPOSITORY$/org/projectlombok/lombok/1.18.30/lombok-1.18.30.jar" />
+        </processorPath>
+        <module name="core" />
+      </profile>
+      <profile name="Annotation profile for Pagos" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <processorPath useClasspath="false">
+          <entry name="$MAVEN_REPOSITORY$/org/projectlombok/lombok/unknown/lombok-unknown.jar" />
+        </processorPath>
+        <module name="eventos" />
+        <module name="Pagos" />
+      </profile>
+      <profile name="Annotation profile for puntos fisicos" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <processorPath useClasspath="false">
+          <entry name="$MAVEN_REPOSITORY$/org/projectlombok/lombok/1.18.36/lombok-1.18.36.jar" />
+        </processorPath>
+        <module name="core-pagos" />
+        <module name="puntos-fisicos" />
+        <module name="core-puntos-fisicos" />
+      </profile>
+    </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="core-eventos" target="17" />
+      <module name="pagos-consumer" target="17" />
+    </bytecodeTargetLevel>
+  </component>
+  <component name="JavacSettings">
+    <option name="ADDITIONAL_OPTIONS_OVERRIDE">
+      <module name="Pagos" options="-parameters" />
+      <module name="commons-auditable" options="-parameters" />
+      <module name="commons-microservicio-consumer-kafka" options="-parameters" />
+      <module name="commons-microservicios" options="-parameters" />
+      <module name="core" options="-parameters" />
+      <module name="core-eventos" options="-parameters" />
+      <module name="core-pagos" options="-parameters" />
+      <module name="core-puntos-fisicos" options="-parameters" />
+      <module name="core-seguridad" options="-parameters" />
+      <module name="core-seguridad-no-reactivo" options="-parameters" />
+      <module name="core-usuarios" options="-parameters" />
+      <module name="eventos" options="-parameters" />
+      <module name="microservicio-eureka" options="-parameters" />
+      <module name="microservicio-gateway" options="-parameters" />
+      <module name="microservicio-oauth" options="-parameters" />
+      <module name="pagos-consumer" options="-parameters" />
+      <module name="puntos-fisicos" options="-parameters" />
+      <module name="puntos-fisicos-consumer" options="-parameters" />
+      <module name="usuarios" options="-parameters" />
+    </option>
+  </component>
+</project>
