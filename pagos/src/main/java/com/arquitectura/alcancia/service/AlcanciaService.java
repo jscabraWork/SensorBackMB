@@ -31,4 +31,6 @@ public interface AlcanciaService extends CommonService<Alcancia> {
      */
     public void deleteById(Long pId);
 
+    public List<Alcancia> findActivasByCliente(String pClienteId);
+
 }
