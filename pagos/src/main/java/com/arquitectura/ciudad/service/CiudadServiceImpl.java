@@ -7,6 +7,7 @@ import com.arquitectura.events.EntityDeleteEventLong;
 import com.arquitectura.services.CommonServiceImpl;
 import jakarta.persistence.EntityNotFoundException;
 import org.apache.kafka.clients.producer.ProducerRecord;
+import org.apache.kafka.common.Uuid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;

@@ -27,8 +27,9 @@ public class CiudadConsumerServiceImpl implements CiudadConsumerService {
 
     @Autowired
     private CiudadEventAdapter adapter;
+
     @Override
-    @Transactional
+    @Transactional("transactionManager")
     @KafkaListener(topics = "#{'${ciudades.topic}'}")
     public void handleEvent(@Payload BaseEvent baseEvent,
                             @Header(value = "messageId", required = true) String messageId,
@@ -45,7 +46,7 @@ public class CiudadConsumerServiceImpl implements CiudadConsumerService {
 
     }
 
-    @Transactional
+    @Transactional("transactionManager")
     @Override
     public void handleCreateEvent(CiudadEvent event, String messageId, String messageKey) {
         if (service.existeMessage(messageId)) {
@@ -69,7 +70,7 @@ public class CiudadConsumerServiceImpl implements CiudadConsumerService {
 
     }
 
-    @Transactional
+    @Transactional("transactionManager")
     @Override
     public void handleDeleteEvent(EntityDeleteEventLong eventDelete, String messageId, String messageKey) {
         if(service.existeMessage(messageId)) {

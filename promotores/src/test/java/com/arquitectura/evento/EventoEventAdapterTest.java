@@ -3,7 +3,6 @@ package com.arquitectura.evento;
 import com.arquitectura.evento.consumer.EventoEventAdapterImpl;
 import com.arquitectura.evento.entity.Evento;
 import com.arquitectura.events.EventoEvent;
-import com.arquitectura.temporada.entity.TemporadaRepository;
 import com.arquitectura.venue.entity.VenueRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -26,8 +25,6 @@ public class EventoEventAdapterTest {
     @Mock
     private VenueRepository venueRepository;
 
-    @Mock
-    private TemporadaRepository temporadaRepository;
 
     @BeforeEach
     void setUp() {
@@ -35,7 +32,6 @@ public class EventoEventAdapterTest {
 
         // Configurar comportamiento de los mocks
         when(venueRepository.findById(anyLong())).thenReturn(Optional.empty());
-        when(temporadaRepository.findById(anyLong())).thenReturn(Optional.empty());
     }
 
     @Test
@@ -104,7 +100,6 @@ public class EventoEventAdapterTest {
         event.setNombre("Solo Nombre");
         event.setEstado(1);
         event.setOrganizadoresId(null);
-        event.setTemporadaId(null);
         event.setTipoId(null);
 
         Evento evento = new Evento();

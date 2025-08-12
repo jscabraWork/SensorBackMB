@@ -26,6 +26,9 @@
         <option value="$PROJECT_DIR$/core-promotores/pom.xml" />
         <option value="$PROJECT_DIR$/promotores/pom.xml" />
         <option value="$PROJECT_DIR$/promotores-consumer/pom.xml" />
+        <option value="$PROJECT_DIR$/reportes/pom.xml" />
+        <option value="$PROJECT_DIR$/core-reportes/pom.xml" />
+        <option value="$PROJECT_DIR$/reportes-consumer/pom.xml" />
       </list>
     </option>
     <option name="ignoredFiles">
@@ -34,6 +37,7 @@
         <option value="$PROJECT_DIR$/eventos/pom.xml" />
         <option value="$PROJECT_DIR$/pagos-consumer/pom.xml" />
         <option value="$PROJECT_DIR$/promotores-consumer/pom.xml" />
+        <option value="$PROJECT_DIR$/reportes-consumer/pom.xml" />
       </set>
     </option>
   </component>

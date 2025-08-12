@@ -8,9 +8,11 @@ import org.apache.kafka.clients.admin.AdminClientConfig;
 import org.apache.kafka.clients.admin.NewTopic;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.producer.ProducerConfig;
+import org.apache.kafka.common.TopicPartition;
 import org.apache.kafka.common.config.SaslConfigs;
 import org.apache.kafka.common.serialization.StringDeserializer;
-import org.apache.kafka.common.serialization.StringSerializer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -21,18 +23,20 @@ import org.springframework.kafka.config.TopicBuilder;
 import org.springframework.kafka.core.*;
 import org.springframework.kafka.listener.DeadLetterPublishingRecoverer;
 import org.springframework.kafka.listener.DefaultErrorHandler;
+import org.springframework.kafka.support.ExponentialBackOffWithMaxRetries;
 import org.springframework.kafka.support.serializer.ErrorHandlingDeserializer;
 import org.springframework.kafka.support.serializer.JsonDeserializer;
-import org.springframework.kafka.support.serializer.JsonSerializer;
 import org.springframework.kafka.transaction.KafkaTransactionManager;
 import org.springframework.orm.jpa.JpaTransactionManager;
-import org.springframework.util.backoff.FixedBackOff;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 @Configuration
 public class KafkaConfig {
+
+    private static final Logger logger = LoggerFactory.getLogger(KafkaConfig.class);
 
     @Value("${spring.kafka.bootstrap-servers}")
     private String bootstrapServers;
@@ -87,7 +91,11 @@ public class KafkaConfig {
         config.put(ProducerConfig.REQUEST_TIMEOUT_MS_CONFIG, requestTimeout);
         config.put(ProducerConfig.ENABLE_IDEMPOTENCE_CONFIG, idempotence);
         config.put(ProducerConfig.MAX_IN_FLIGHT_REQUESTS_PER_CONNECTION, inflightRequests);
-        config.put(ProducerConfig.TRANSACTIONAL_ID_CONFIG, transactionalIdPrefix);
+
+        //ID transaccional único para evitar conflictos
+        String uniqueTransactionalId = transactionalIdPrefix + "-" + UUID.randomUUID().toString().substring(0, 8);
+        config.put(ProducerConfig.TRANSACTIONAL_ID_CONFIG, uniqueTransactionalId);
+        logger.info("Producer configured with transactional ID: {}", uniqueTransactionalId);
 
         // AWS MSK Configuration
         config.put(CommonClientConfigs.SECURITY_PROTOCOL_CONFIG, "SASL_SSL");
@@ -125,12 +133,20 @@ public class KafkaConfig {
         config.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, environment.getProperty("spring.kafka.consumer.auto-offset-reset"));
         config.put(ConsumerConfig.ISOLATION_LEVEL_CONFIG, environment.getProperty("spring.kafka.consumer.isolation-level", "read_committed").toLowerCase());
 
+        // MEJORAS: Configuración adicional para robustez
+        config.put(ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG, false);
+        config.put(ConsumerConfig.MAX_POLL_RECORDS_CONFIG, 1); // Procesar de a uno
+        config.put(ConsumerConfig.SESSION_TIMEOUT_MS_CONFIG, 45000); // Tiempo para transacciones
+        config.put(ConsumerConfig.HEARTBEAT_INTERVAL_MS_CONFIG, 15000);
+        config.put(ConsumerConfig.FETCH_MAX_WAIT_MS_CONFIG, 1000); // Polling frecuente
+
         // AWS MSK Configuration
         config.put(CommonClientConfigs.SECURITY_PROTOCOL_CONFIG, "SASL_SSL");
         config.put(SaslConfigs.SASL_MECHANISM, "AWS_MSK_IAM");
         config.put(SaslConfigs.SASL_JAAS_CONFIG, "software.amazon.msk.auth.iam.IAMLoginModule required ;");
         config.put(SaslConfigs.SASL_CLIENT_CALLBACK_HANDLER_CLASS, "software.amazon.msk.auth.iam.IAMClientCallbackHandler");
 
+        logger.info("Consumer configured with isolation level: {}", config.get(ConsumerConfig.ISOLATION_LEVEL_CONFIG));
         return new DefaultKafkaConsumerFactory<>(config);
     }
 
@@ -138,17 +154,52 @@ public class KafkaConfig {
     public ConcurrentKafkaListenerContainerFactory<String, Object> kafkaListenerContainerFactory(
             ConsumerFactory<String, Object> consumerFactory, KafkaTemplate<String, Object> kafkaTemplate) {
 
-        DefaultErrorHandler errorHandler = new DefaultErrorHandler(
-                new DeadLetterPublishingRecoverer(kafkaTemplate),
-                new FixedBackOff(5000, 3));
+        //MEJOR ERROR HANDLER: Con backoff exponencial y logging detallado
+        DeadLetterPublishingRecoverer recoverer = new DeadLetterPublishingRecoverer(
+                kafkaTemplate,
+                (consumerRecord, exception) -> {
+                    String originalTopic = consumerRecord.topic();
+                    String dltTopic = originalTopic + "-dlt";
+                    logger.error("Sending message to DLT: {} -> {} | Offset: {} | Reason: {}",
+                            originalTopic, dltTopic, consumerRecord.offset(), exception.getMessage());
+                    return new TopicPartition(dltTopic, consumerRecord.partition());
+                }
+        );
 
-        errorHandler.addNotRetryableExceptions(NotRetryableException.class);
-        errorHandler.addRetryableExceptions(RetryableException.class);
+        // Backoff exponencial: 1s, 2s, 4s (3 intentos)
+        ExponentialBackOffWithMaxRetries backOff = new ExponentialBackOffWithMaxRetries(3);
+        backOff.setInitialInterval(1000L);
+        backOff.setMultiplier(2.0);
+        backOff.setMaxInterval(8000L);
+
+        DefaultErrorHandler errorHandler = new DefaultErrorHandler(recoverer, backOff);
+
+        // Configuración de excepciones
+        errorHandler.addNotRetryableExceptions(
+                NotRetryableException.class,
+                IllegalArgumentException.class);
+
+        errorHandler.addRetryableExceptions(
+                RetryableException.class,
+                org.springframework.dao.DataAccessException.class
+        );
+
+        // LOGGING DETALLADO de retries
+        errorHandler.setRetryListeners((record, ex, deliveryAttempt) -> {
+            logger.warn("RETRY {}/3 - Topic: {} | Offset: {} | Partition: {} | Error: {}",
+                    deliveryAttempt, record.topic(), record.offset(), record.partition(), ex.getMessage());
+        });
 
         ConcurrentKafkaListenerContainerFactory<String, Object> factory = new ConcurrentKafkaListenerContainerFactory<>();
         factory.setConsumerFactory(consumerFactory);
         factory.setCommonErrorHandler(errorHandler);
 
+        //CONFIGURACIÓN DE CONTAINER para robustez
+        factory.setConcurrency(1); // Una thread por consumer
+        factory.getContainerProperties().setAckMode(org.springframework.kafka.listener.ContainerProperties.AckMode.RECORD);
+        factory.getContainerProperties().setSyncCommits(true);
+
+        logger.info("Kafka listener container factory configured with error handler and retry policy");
         return factory;
     }
 
@@ -177,12 +228,16 @@ public class KafkaConfig {
 
     @Bean("kafkaTransactionManager")
     public KafkaTransactionManager<String, Object> kafkaTransactionManager(ProducerFactory<String, Object> producerFactory) {
-        return new KafkaTransactionManager<>(producerFactory);
+        KafkaTransactionManager<String, Object> tm = new KafkaTransactionManager<>(producerFactory);
+        logger.info("Kafka transaction manager configured");
+        return tm;
     }
 
     @Bean("transactionManager")
     public JpaTransactionManager jpaTransactionManager(EntityManagerFactory entityManagerFactory) {
-        return new JpaTransactionManager(entityManagerFactory);
+        JpaTransactionManager tm = new JpaTransactionManager(entityManagerFactory);
+        logger.info("JPA transaction manager configured as primary");
+        return tm;
     }
 
     // =========================
@@ -191,10 +246,13 @@ public class KafkaConfig {
 
     @Bean
     public NewTopic eventosTopic() {
-        return TopicBuilder.name(eventosPuntoFisicoTopic)
+        NewTopic topic = TopicBuilder.name(eventosPuntoFisicoTopic)
                 .partitions(3)
                 .replicas(3)
                 .configs(Map.of("min.insync.replicas", "2"))
                 .build();
+        logger.info("Configured topic: {}", eventosPuntoFisicoTopic);
+        return topic;
     }
+
 }

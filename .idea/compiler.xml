@@ -11,6 +11,7 @@
         <module name="core-promotores" />
         <module name="commons-auditable" />
         <module name="microservicio-eureka" />
+        <module name="reportes" />
         <module name="core-seguridad" />
         <module name="usuarios" />
         <module name="commons-microservicios" />
@@ -20,15 +21,6 @@
         <module name="microservicio-gateway" />
         <module name="core-seguridad-no-reactivo" />
       </profile>
-      <profile name="Annotation profile for core" enabled="true">
-        <sourceOutputDir name="target/generated-sources/annotations" />
-        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
-        <outputRelativeToContentRoot value="true" />
-        <processorPath useClasspath="false">
-          <entry name="$MAVEN_REPOSITORY$/org/projectlombok/lombok/1.18.30/lombok-1.18.30.jar" />
-        </processorPath>
-        <module name="core" />
-      </profile>
       <profile name="Annotation profile for Pagos" enabled="true">
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
@@ -37,6 +29,16 @@
           <entry name="$MAVEN_REPOSITORY$/org/projectlombok/lombok/unknown/lombok-unknown.jar" />
         </processorPath>
         <module name="Pagos" />
+      </profile>
+      <profile name="Annotation profile for core-reportes" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <processorPath useClasspath="false">
+          <entry name="$MAVEN_REPOSITORY$/org/projectlombok/lombok/1.18.30/lombok-1.18.30.jar" />
+        </processorPath>
+        <module name="core" />
+        <module name="core-reportes" />
       </profile>
       <profile name="Annotation profile for puntos fisicos" enabled="true">
         <sourceOutputDir name="target/generated-sources/annotations" />
@@ -56,6 +58,7 @@
       <module name="pagos-consumer" target="17" />
       <module name="promotores-consumer" target="17" />
       <module name="puntos-fisicos-consumer" target="17" />
+      <module name="reportes-consumer" target="17" />
     </bytecodeTargetLevel>
   </component>
   <component name="JavacSettings">
@@ -69,6 +72,7 @@
       <module name="core-pagos" options="-parameters" />
       <module name="core-promotores" options="-parameters" />
       <module name="core-puntos-fisicos" options="-parameters" />
+      <module name="core-reportes" options="-parameters" />
       <module name="core-seguridad" options="-parameters" />
       <module name="core-seguridad-no-reactivo" options="-parameters" />
       <module name="core-usuarios" options="-parameters" />
@@ -81,6 +85,8 @@
       <module name="promotores-consumer" options="-parameters" />
       <module name="puntos-fisicos" options="-parameters" />
       <module name="puntos-fisicos-consumer" options="-parameters" />
+      <module name="reportes" options="-parameters" />
+      <module name="reportes-consumer" options="-parameters" />
       <module name="usuarios" options="-parameters" />
     </option>
   </component>

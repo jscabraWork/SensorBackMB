@@ -1,0 +1,16 @@
+package com.arquitectura.evento.entity;
+
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
+
+import java.util.List;
+import java.util.Optional;
+
+public interface EventoRepository extends JpaRepository<Evento,Long> {
+
+    List<Evento> findAllByEstadoAndTemporadaId(int estado, Long temporadaId);
+
+    public Evento findByIdAndEstadoIn(Long pId, List<Integer> pEstado);
+
+}

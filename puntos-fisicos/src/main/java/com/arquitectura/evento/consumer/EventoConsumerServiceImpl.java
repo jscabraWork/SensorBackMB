@@ -28,7 +28,7 @@ public class EventoConsumerServiceImpl implements EventoConsumerService {
     private EventoEventAdapter adapter;
 
     @Override
-    @Transactional
+    @Transactional("transactionManager")
     @KafkaListener(topics = "#{'${eventos.topic}'}")
     public void handleEvent(@Payload BaseEvent baseEvent,
                            @Header(value = "messageId", required = true) String messageId,

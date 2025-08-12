@@ -17,8 +17,8 @@ public interface TarifaRepository extends JpaRepository<Tarifa,Long> {
 
     @Query(value = "SELECT DISTINCT t.* FROM tarifas t " +
             "JOIN localidades l ON t.localidad_id = l.id " +       // Relación directa de tarifa a localidad
-            "JOIN dias_localidades dl ON l.id = dl.localidades_id " + // Tabla de unión entre días y localidades
-            "JOIN dias d ON dl.dias_id = d.id " +                  // Tabla de días
+            "JOIN dias_localidades dl ON l.id = dl.localidad_id " + // Tabla de unión entre días y localidades
+            "JOIN dias d ON dl.dia_id = d.id " +                  // Tabla de días
             "JOIN eventos e ON d.evento_id = e.id " +              // Relación con eventos
             "WHERE e.id = :eventoId", nativeQuery = true)
     List<Tarifa> findAllByEventoId(@Param("eventoId") Long eventoId);

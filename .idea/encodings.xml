@@ -8,6 +8,7 @@
     <file url="file://$PROJECT_DIR$/core-pagos/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/core-promotores/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/core-puntos-fisicos/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/core-reportes/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/core-seguridad-no-reactivo/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/core-seguridad/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/core-usuarios/src/main/java" charset="UTF-8" />
@@ -22,6 +23,8 @@
     <file url="file://$PROJECT_DIR$/promotores/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/puntos-fisicos-consumer/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/puntos-fisicos/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/reportes-consumer/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/reportes/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/usuarios/src/main/java" charset="UTF-8" />
   </component>
 </project>
