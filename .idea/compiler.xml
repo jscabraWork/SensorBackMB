@@ -7,15 +7,18 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
-        <module name="commons-microservicio-consumer-kafka" />
         <module name="core-usuarios" />
-        <module name="microservicio-oauth" />
+        <module name="core-promotores" />
         <module name="commons-auditable" />
         <module name="microservicio-eureka" />
         <module name="core-seguridad" />
         <module name="usuarios" />
-        <module name="microservicio-gateway" />
         <module name="commons-microservicios" />
+        <module name="commons-microservicio-consumer-kafka" />
+        <module name="promotores" />
+        <module name="promotores-consumer" />
+        <module name="microservicio-oauth" />
+        <module name="microservicio-gateway" />
         <module name="core-seguridad-no-reactivo" />
       </profile>
       <profile name="Annotation profile for core" enabled="true">
@@ -64,6 +67,7 @@
       <module name="core" options="-parameters" />
       <module name="core-eventos" options="-parameters" />
       <module name="core-pagos" options="-parameters" />
+      <module name="core-promotores" options="-parameters" />
       <module name="core-puntos-fisicos" options="-parameters" />
       <module name="core-seguridad" options="-parameters" />
       <module name="core-seguridad-no-reactivo" options="-parameters" />
@@ -73,6 +77,8 @@
       <module name="microservicio-gateway" options="-parameters" />
       <module name="microservicio-oauth" options="-parameters" />
       <module name="pagos-consumer" options="-parameters" />
+      <module name="promotores" options="-parameters" />
+      <module name="promotores-consumer" options="-parameters" />
       <module name="puntos-fisicos" options="-parameters" />
       <module name="puntos-fisicos-consumer" options="-parameters" />
       <module name="usuarios" options="-parameters" />
