@@ -66,7 +66,7 @@ public class Orden extends Auditable {
     @ManyToOne(fetch = FetchType.LAZY)
     @JsonManagedReference(value = "tarifa_ordenes")
     @JoinColumn(name = "tarifa_id")
-    private Tarifa tarifa;
+    protected Tarifa tarifa;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="evento_id")

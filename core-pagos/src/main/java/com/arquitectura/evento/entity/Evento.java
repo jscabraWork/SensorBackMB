@@ -66,4 +66,10 @@ public class Evento extends Auditable {
     @JsonManagedReference(value="eventoImagen_mov")
     private List<Imagen> imagenes;
 
+    @PrePersist
+    public void prePersist() {
+        estado=0; // Por defecto, el estado es CREADO (0)
+        super.prePersist();
+    }
+
 }

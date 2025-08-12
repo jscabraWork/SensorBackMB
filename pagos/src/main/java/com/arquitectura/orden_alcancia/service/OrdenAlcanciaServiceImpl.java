@@ -2,6 +2,8 @@ package com.arquitectura.orden_alcancia.service;
 
 import com.arquitectura.alcancia.entity.Alcancia;
 import com.arquitectura.alcancia.service.AlcanciaService;
+import com.arquitectura.events.AlcanciaEvent;
+import com.arquitectura.localidad.entity.Localidad;
 import com.arquitectura.orden.entity.Orden;
 import com.arquitectura.orden_alcancia.entity.OrdenAlcancia;
 import com.arquitectura.orden_alcancia.entity.OrdenAlcanciaRepository;
@@ -16,6 +18,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
 
 import java.util.List;
 
@@ -30,6 +34,9 @@ public class OrdenAlcanciaServiceImpl extends CommonServiceImpl<OrdenAlcancia, O
 
     @Autowired
     private OrdenPromotorService ordenPromotorService;
+
+    @PersistenceContext
+    private EntityManager entityManager;
 
     @Value("${ordenes.alcancias.topic}")
     private String ordenesAlcanciasTopic;
@@ -46,7 +53,8 @@ public class OrdenAlcanciaServiceImpl extends CommonServiceImpl<OrdenAlcancia, O
         // Validar el estado de los tickets de la orden
         //Solo agregar a la alcancía los tickets que no estén en estado 1 (vendido) o 2 (reservado)
         List<Ticket> tickets = orden.getTickets().stream()
-                .filter(t -> t.getEstado() != 1 && t.getEstado() != 2).toList();
+                .filter(t -> t.getEstado() != 1 && t.getEstado() != 2)
+                .collect(java.util.stream.Collectors.toList());
 
         //Abrir nueva alcancía con los tickets filtrados
         //el método crear maneja el aporte inicial de la alcancía, reserva los tickets, la persiste y publica los eventos en Kafka
@@ -55,15 +63,25 @@ public class OrdenAlcanciaServiceImpl extends CommonServiceImpl<OrdenAlcancia, O
         //Aportar a la alcancía el aporte inicial
         alcanciaService.aportar(alcancia, pAporte);
 
-        // Crear OrdenAlcancia a partir de la orden y la alcancía
-        OrdenAlcancia ordenAlcancia = new OrdenAlcancia(orden.getId(), alcancia);
-
-        //Confirmar la orden alcancía
+        // Insertar registro en ordenes_alcancia usando el ID de la orden existente
+        repository.insertOrdenAlcancia(orden.getId(), alcancia.getId());
+        
+        // Ahora recuperar la OrdenAlcancia creada y publicar evento
+        OrdenAlcancia ordenAlcancia = repository.findById(orden.getId())
+                .orElseThrow(() -> new RuntimeException("Error al crear la orden alcancía con ID: " + orden.getId()));
+        
+        //Confirmar la orden alcancía (actualizar estado en tabla ordenes)
         ordenAlcancia.confirmar();
-
-        //Guardar la orden
+        
+        //Guardar cambios y publicar evento
         OrdenAlcancia ordenBD = saveKafka(ordenAlcancia);
 
+        // Flush para asegurar visibilidad antes de buscar OrdenPromotor
+        //NO BORRAR
+        //Atte: Isaac
+        entityManager.flush();
+        entityManager.clear();
+        
         //Publicar venta de promotor si corresponde
         ordenPromotorService.publicarVentaPromotor(ordenBD);
 
@@ -77,8 +95,9 @@ public class OrdenAlcanciaServiceImpl extends CommonServiceImpl<OrdenAlcancia, O
                 .orElseThrow(() -> new RuntimeException("No se encontró ninguna orden alcancía con el id proporcionado"));
 
         Alcancia alcancia = ordenAlcancia.getAlcancia();
-        alcanciaService.aportar(alcancia, pAporte);
+        Alcancia alcanciaAporte = alcanciaService.aportar(alcancia, pAporte);
         ordenAlcancia.confirmar();
+        alcanciaService.saveKafka(alcanciaAporte);
         saveKafka(ordenAlcancia);
     }
 
@@ -108,6 +127,25 @@ public class OrdenAlcanciaServiceImpl extends CommonServiceImpl<OrdenAlcancia, O
                 ordenAlcancia.getAlcancia() != null ? ordenAlcancia.getAlcancia().getId() : null
         );
 
+        //Si y solo si la orden es creacion de alcancaia, se debe agregar el evento de alcancía
+        //para evitar problemas de asincronia al consumirla, ya que la alcancia y la orden se crean en el mismo momento
+        if(ordenAlcancia.getTipo()==3){
+            //Obtener la alcancía asociada a la orden alcancía
+            Alcancia alcancia = ordenAlcancia.getAlcancia();
+
+            AlcanciaEvent alcanciaEvent = new AlcanciaEvent(
+                    alcancia.getCreationDate(),
+                    alcancia.getLastModifiedDate(),
+                    alcancia.getId(),
+                    alcancia.getPrecioParcialPagado(),
+                    alcancia.getPrecioTotal(),
+                    alcancia.isActiva(),
+                    alcancia.getCliente() != null ? alcancia.getCliente().getNumeroDocumento() : null,
+                    alcancia.getTickets() != null ? alcancia.getTickets().stream().map(t -> t.getId()).toList() : List.of()
+            );
+            ordenAlcanciaEvent.setAlcanciaEvent(alcanciaEvent);
+        }
+
         try {
             ProducerRecord<String, Object> record = new ProducerRecord<>(ordenesAlcanciasTopic, "OrdenAlcancia-" + ordenAlcanciaEvent.getId(), ordenAlcanciaEvent);
             record.headers().add("messageId", org.apache.kafka.common.Uuid.randomUuid().toString().getBytes());
@@ -115,7 +153,6 @@ public class OrdenAlcanciaServiceImpl extends CommonServiceImpl<OrdenAlcancia, O
         } catch (InterruptedException | java.util.concurrent.ExecutionException e) {
             e.printStackTrace();
         }
-
         return ordenAlcancia;
     }
 
@@ -141,6 +178,28 @@ public class OrdenAlcanciaServiceImpl extends CommonServiceImpl<OrdenAlcancia, O
         }
 
         repository.deleteById(pId);
+    }
+
+    @Override
+    public OrdenAlcancia crearOrdenAporte(Long pAlcanciaId, Double pAporte) throws Exception {
+
+        Alcancia alcancia = alcanciaService.findById(pAlcanciaId);
+
+        if(alcancia ==null || !alcancia.isActiva()){
+            throw new IllegalArgumentException("La alcancía no existe o no está activa");
+        }
+
+        Localidad localidad = alcancia.getTickets().get(0).getLocalidad();
+
+        //Validar aporte minimo
+        if(pAporte< localidad.getAporteMinimo()){
+            throw new IllegalArgumentException("El aporte debe ser mayor o igual al aporte mínimo de la localidad: " + localidad.getAporteMinimo());
+        }
+
+        OrdenAlcancia ordenAlcancia = new OrdenAlcancia(alcancia,pAporte,localidad);
+
+        return saveKafka(ordenAlcancia);
+
     }
 
 }

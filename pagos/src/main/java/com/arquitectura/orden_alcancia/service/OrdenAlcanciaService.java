@@ -24,4 +24,6 @@ public interface OrdenAlcanciaService extends CommonService<OrdenAlcancia> {
 
     public void confirmarAporte(Orden orden, Double pAporte) throws Exception;
 
+    public OrdenAlcancia crearOrdenAporte(Long pAlcanciaId, Double pAporte) throws Exception;
+
 }

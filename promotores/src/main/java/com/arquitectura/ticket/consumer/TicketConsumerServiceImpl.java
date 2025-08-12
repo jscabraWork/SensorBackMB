@@ -21,7 +21,6 @@ public class TicketConsumerServiceImpl implements TicketConsumerService {
     @Autowired
     private TicketRepository repository;
 
-
     @Autowired
     private MessageService service;
 
@@ -58,13 +57,12 @@ public class TicketConsumerServiceImpl implements TicketConsumerService {
         try {
             Ticket ticket = repository.findById(event.getId()).orElse(null);
             if(ticket==null) {
-
+                ticket = new Ticket();
             }
-            else {
-                ticket = adapter.creacion(ticket, event);
-                repository.save(ticket);
 
-            }
+            ticket = adapter.creacion(ticket, event);
+            repository.save(ticket);
+
             service.crearMensaje(messageId, event.getId().toString());
         } catch (Exception ex) {
             throw new NotRetryableException(ex);

@@ -1,12 +1,12 @@
-package com.arquitectura.temporada.consumer;
+package com.arquitectura.ticket.consumer;
 
 import com.arquitectura.error.NotRetryableException;
 import com.arquitectura.events.BaseEvent;
 import com.arquitectura.events.EntityDeleteEventLong;
-import com.arquitectura.events.TemporadaEvent;
+import com.arquitectura.events.TicketPuntoFisicoEvent;
 import com.arquitectura.message.service.MessageService;
-import com.arquitectura.temporada.entity.Temporada;
-import com.arquitectura.temporada.entity.TemporadaRepository;
+import com.arquitectura.ticket.entity.Ticket;
+import com.arquitectura.ticket.entity.TicketRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.support.KafkaHeaders;
@@ -16,26 +16,28 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 @Component
-public class TemporadaConsumerServiceImpl implements TemporadaConsumerService {
+public class TicketConsumerServiceImpl implements TicketConsumerService {
 
     @Autowired
-    private TemporadaRepository repository;
+    private TicketRepository repository;
+
 
     @Autowired
     private MessageService service;
 
     @Autowired
-    private TemporadaEventAdapter adapter;
+    private TicketEventAdapter adapter;
+
 
     @Override
     @Transactional
-    @KafkaListener(topics = "#{'${temporadas.topic}'}")
+    @KafkaListener(topics = "#{'${ticket-puntofisico.topic}'}")
     public void handleEvent(@Payload BaseEvent baseEvent,
                             @Header(value = "messageId", required = true) String messageId,
                             @Header(KafkaHeaders.RECEIVED_KEY) String messageKey) {
 
-        if (baseEvent instanceof TemporadaEvent) {
-            handleCreateEvent((TemporadaEvent) baseEvent, messageId, messageKey);
+        if (baseEvent instanceof TicketPuntoFisicoEvent) {
+            handleCreateEvent((TicketPuntoFisicoEvent) baseEvent, messageId, messageKey);
         } else if (baseEvent instanceof EntityDeleteEventLong) {
             handleDeleteEvent((EntityDeleteEventLong) baseEvent, messageId, messageKey);
         } else {
@@ -46,26 +48,28 @@ public class TemporadaConsumerServiceImpl implements TemporadaConsumerService {
 
     @Transactional
     @Override
-    public void handleCreateEvent(TemporadaEvent event, String messageId, String messageKey) {
+    public void handleCreateEvent(TicketPuntoFisicoEvent event, String messageId, String messageKey) {
+
 
         if (service.existeMessage(messageId)) {
             return;
         }
-        Temporada temporada = repository.findById(event.getId()).orElse(null);
+
         try {
-            if (temporada == null) {
-                temporada = new Temporada();
+            Ticket ticket = repository.findById(event.getId()).orElse(null);
+            if(ticket==null) {
+                ticket = new Ticket();
             }
-            temporada = adapter.creacion(temporada, event);
-            repository.save(temporada);
+
+            ticket = adapter.creacion(ticket, event);
+            repository.save(ticket);
+
+
+            service.crearMensaje(messageId, event.getId().toString());
         } catch (Exception ex) {
             throw new NotRetryableException(ex);
         }
-        try {
-            service.crearMensaje(messageId, temporada.getId().toString());
-        } catch (Exception ex) {
-            throw new NotRetryableException(ex);
-        }
+
 
     }
 
@@ -75,9 +79,9 @@ public class TemporadaConsumerServiceImpl implements TemporadaConsumerService {
         if(service.existeMessage(messageId)) {
             return;
         }
-        Temporada temporada = repository.findById(eventDelete.getId()).orElse(null);
+        Ticket ticket = repository.findById(eventDelete.getId()).orElse(null);
         try {
-            if (temporada == null) {
+            if (ticket == null) {
                 return;
             }
             repository.deleteById(eventDelete.getId());
@@ -85,10 +89,11 @@ public class TemporadaConsumerServiceImpl implements TemporadaConsumerService {
             throw new NotRetryableException(ex);
         }
         try {
-            service.crearMensaje(messageId, temporada.getId().toString());
+            service.crearMensaje(messageId, ticket.getId().toString());
         } catch (Exception ex) {
             throw new NotRetryableException(ex);
         }
 
     }
+
 }

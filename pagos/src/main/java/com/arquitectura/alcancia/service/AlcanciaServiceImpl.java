@@ -3,16 +3,13 @@ package com.arquitectura.alcancia.service;
 import com.arquitectura.alcancia.entity.Alcancia;
 import com.arquitectura.alcancia.entity.AlcanciaRepository;
 import com.arquitectura.cliente.entity.Cliente;
-import com.arquitectura.orden.entity.Orden;
-import com.arquitectura.orden_alcancia.entity.OrdenAlcancia;
-import com.arquitectura.orden_alcancia.service.OrdenAlcanciaService;
+import com.arquitectura.events.AlcanciaEvent;
+import com.arquitectura.events.EntityDeleteEventLong;
+import com.arquitectura.localidad.entity.Localidad;
 import com.arquitectura.services.CommonServiceImpl;
 import com.arquitectura.tarifa.entity.Tarifa;
 import com.arquitectura.ticket.entity.Ticket;
 import com.arquitectura.ticket.service.TicketService;
-import com.arquitectura.transaccion.entity.Transaccion;
-import com.arquitectura.events.AlcanciaEvent;
-import com.arquitectura.events.EntityDeleteEventLong;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -20,7 +17,6 @@ import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -48,7 +44,7 @@ public class AlcanciaServiceImpl extends CommonServiceImpl<Alcancia, AlcanciaRep
                 tarifa
         );
         ticketService.saveAllKafka(tickets);
-        return saveKafka(alcancia);
+        return save(alcancia);
     }
 
 
@@ -56,12 +52,21 @@ public class AlcanciaServiceImpl extends CommonServiceImpl<Alcancia, AlcanciaRep
     @Transactional("transactionManager")
     public Alcancia aportar(Alcancia alcancia, Double aporte) throws Exception {
 
+        // Localidad de la alcancia para validar aporte minimo
+        Localidad localidad = alcancia.getTickets().get(0).getLocalidad();
+
         // Validar que el aporte sea válido y la alcancía esté activa
         if (aporte <= 0) {
             throw new IllegalArgumentException("El aporte debe ser mayor a 0");
         }
+
         if (!alcancia.isActiva()) {
             throw new IllegalStateException("No se puede aportar a una alcancía inactiva");
+        }
+
+        //Validar aporte minimo
+        if(aporte< localidad.getAporteMinimo()){
+            throw new IllegalArgumentException("El aporte debe ser mayor o igual al aporte mínimo de la localidad: " + localidad.getAporteMinimo());
         }
 
         double dineroActual = alcancia.getPrecioParcialPagado() + aporte;
@@ -95,7 +100,12 @@ public class AlcanciaServiceImpl extends CommonServiceImpl<Alcancia, AlcanciaRep
         }
         alcancia.aportar(aporte);
         
-        return saveKafka(alcancia);
+        return save(alcancia);
+    }
+
+    @Override
+    public List<Alcancia> findActivasByCliente(String pClienteId) {
+        return repository.findByClienteNumeroDocumentoAndActiva(pClienteId, true);
     }
 
     //----------------Métodos para Kafka-------------------

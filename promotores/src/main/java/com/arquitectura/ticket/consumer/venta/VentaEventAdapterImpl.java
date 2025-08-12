@@ -3,6 +3,7 @@ package com.arquitectura.ticket.consumer.venta;
 
 import com.arquitectura.adapter.EventAdapterImpl;
 import com.arquitectura.events.TicketEvent;
+import com.arquitectura.localidad.entity.LocalidadRepository;
 import com.arquitectura.tarifa.entity.TarifaRepository;
 import com.arquitectura.ticket.entity.Ticket;
 import com.arquitectura.ticket.entity.TicketRepository;
@@ -18,6 +19,9 @@ public class VentaEventAdapterImpl extends EventAdapterImpl<Ticket, TicketEvent>
 	@Autowired
 	private TarifaRepository tarifaRepository;
 
+	@Autowired
+	private LocalidadRepository localidadRepository;
+
 	
 	@Override
 	public Ticket creacion(Ticket entity, TicketEvent event) {
@@ -28,17 +32,19 @@ public class VentaEventAdapterImpl extends EventAdapterImpl<Ticket, TicketEvent>
 		entity.setTipo(event.getTipo());
 
 	    // Asignar campos adicionales de TicketEvent a Ticket si es necesario
-	    if(event.getPalcoId()!=null) {
-	    	Ticket padre =ticketRepository.findById(event.getPalcoId()).orElse(null);
-	    	entity.setPalco(padre);
-	    	if(padre != null) {
-	    		entity.setLocalidad(padre.getLocalidad());
-	    	}
-	    }
-	    // Asignar tarifa si no es null
-	    if(event.getTarifaId() != null) {
-	    	entity.setTarifa(tarifaRepository.findById(event.getTarifaId()).orElse(null));
-	    }
+		if(event.getPalcoId()!=null) {
+			Ticket padre =ticketRepository.findById(event.getPalcoId()).orElse(null);
+			if(padre != null) {
+				entity.setPalco(padre);
+			}
+		}
+
+		if (event.getLocalidadId() != null) {
+			entity.setLocalidad(localidadRepository.findById(event.getLocalidadId()).orElse(null));
+		}
+		if (event.getTarifaId() != null) {
+			entity.setTarifa(tarifaRepository.findById(event.getTarifaId()).orElse(null));
+		}
 
 	    return super.creacion(entity, event);
 	}

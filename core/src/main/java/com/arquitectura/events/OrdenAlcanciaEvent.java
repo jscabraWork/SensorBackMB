@@ -23,4 +23,6 @@ public class OrdenAlcanciaEvent extends OrdenEvent implements BaseEvent{
         this.alcanciaId = alcanciaId;
     }
 
+    private AlcanciaEvent alcanciaEvent;
+
 }

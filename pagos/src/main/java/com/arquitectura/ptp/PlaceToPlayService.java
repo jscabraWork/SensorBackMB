@@ -143,7 +143,16 @@ public class PlaceToPlayService {
         } else if (orden.getTipo() == 4 || orden.getTipo() == 3) {
             // Orden de alcancía
             var localidadOrden = orden.getTarifa().getLocalidad();
-            if (aporteAlcancia < localidadOrden.getAporteMinimo()) {
+
+            Double aporteMinimo = localidadOrden.getAporteMinimo();
+
+            //Si la ordenn es de creación de alcancía multiplicar el aporte mínimo por la cantidad de tickets
+            if(orden.getTipo()==3)
+            {
+                aporteMinimo = aporteMinimo * orden.getTickets().size();
+            }
+
+            if (aporteAlcancia < aporteMinimo) {
                 throw new IllegalArgumentException("El valor no puede ser menor al valor mínimo para abrir una alcancía");
             }
             orden.setValorSeguro(0.0); //Para ordenes alcancia siempre valor cero

@@ -1,6 +1,7 @@
 package com.arquitectura.orden_alcancia.entity;
 
 import com.arquitectura.alcancia.entity.Alcancia;
+import com.arquitectura.localidad.entity.Localidad;
 import com.arquitectura.orden.entity.Orden;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
@@ -24,9 +25,15 @@ public class OrdenAlcancia extends Orden {
 
     //Adapter para convertir una orden en una orden de alcancia
     //Se guarda con el mismo id de la orden original y JPA crea la herencia
-    public OrdenAlcancia(Long id, Alcancia alcancia) {
-        this.id = id;
+    public OrdenAlcancia(Alcancia alcancia, Double pAporte, Localidad localidad) {
         this.alcancia = alcancia;
+        cliente = alcancia.getCliente();
+        estado = 3;
+        tickets = alcancia.getTickets();
+        valorOrden = pAporte;
+        tarifa = alcancia.getTickets().get(0).getTarifa();
+        evento = localidad.getDias().get(0).getEvento();
+        tipo =4; // tipo 4 para orden de alcancia
     }
 
     @Override
