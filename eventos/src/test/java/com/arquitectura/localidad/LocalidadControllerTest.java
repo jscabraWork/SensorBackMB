@@ -6,7 +6,7 @@ import com.arquitectura.TestSecurityConfig;
 import com.arquitectura.dia.entity.Dia;
 import com.arquitectura.localidad.controller.LocalidadController;
 import com.arquitectura.localidad.entity.Localidad;
-import com.arquitectura.localidad.services.LocalidadService;
+import com.arquitectura.localidad.service.LocalidadService;
 import com.arquitectura.tarifa.entity.Tarifa;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -29,12 +29,9 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 import static org.hamcrest.Matchers.*;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
-import java.util.List;
 
 @WebMvcTest(LocalidadController.class)
 @AutoConfigureMockMvc(addFilters = false)

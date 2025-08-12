@@ -1,15 +1,10 @@
 package com.arquitectura.orden.service;
 
-import com.amazonaws.services.dynamodbv2.xspec.S;
-import com.arquitectura.cliente.entity.Cliente;
 import com.arquitectura.cliente.service.ClienteService;
-import com.arquitectura.configSeguro.entity.ConfigSeguro;
 import com.arquitectura.configSeguro.service.ConfigSeguroService;
 import com.arquitectura.cupon.entity.Cupon;
 import com.arquitectura.cupon.service.CuponService;
-import com.arquitectura.evento.entity.Evento;
 import com.arquitectura.evento.service.EventoService;
-import com.arquitectura.localidad.entity.Localidad;
 import com.arquitectura.localidad.service.LocalidadService;
 import com.arquitectura.orden.entity.Orden;
 import com.arquitectura.orden.entity.OrdenRepository;
@@ -28,11 +23,8 @@ import org.apache.kafka.clients.producer.ProducerRecord;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.kafka.core.KafkaTemplate;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.server.ResponseStatusException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

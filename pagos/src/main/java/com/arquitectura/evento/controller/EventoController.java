@@ -6,7 +6,7 @@ import com.arquitectura.dia.service.DiaService;
 import com.arquitectura.evento.entity.Evento;
 import com.arquitectura.evento.service.EventoService;
 import com.arquitectura.localidad.entity.Localidad;
-import com.arquitectura.localidad.services.LocalidadService;
+import com.arquitectura.localidad.service.LocalidadService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

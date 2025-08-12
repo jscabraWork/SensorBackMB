@@ -119,9 +119,6 @@ public class KafkaConfig {
 	@Value("${tipos-eventos.topic}")
 	private String tiposTopic;
 
-	@Autowired
-	Environment environment;
-
 	Map<String, Object> producerConfigs() {
 		Map<String, Object> config = new HashMap<>();
 		config.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);

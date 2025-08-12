@@ -24,7 +24,7 @@ public class OrganizadorServiceConsumerImpl implements OrganizadorServiceConsume
 	private MessageService service;
 	
 	@Autowired
-	private UsuarioEventAdaparter adapter;
+	private OrganizadorEventAdaparter adapter;
 	
 	@Override
     @Transactional("transactionManager")

@@ -2,7 +2,7 @@ package com.arquitectura.localidad.controller;
 
 import com.arquitectura.controller.CommonController;
 import com.arquitectura.localidad.entity.Localidad;
-import com.arquitectura.localidad.services.LocalidadService;
+import com.arquitectura.localidad.service.LocalidadService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;

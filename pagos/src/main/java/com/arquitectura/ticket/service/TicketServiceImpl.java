@@ -1,5 +1,6 @@
 package com.arquitectura.ticket.service;
 
+import com.arquitectura.aws.AWSS3Service;
 import com.arquitectura.cliente.entity.Cliente;
 import com.arquitectura.cliente.service.ClienteService;
 import com.arquitectura.clients.ReporteFeignClient;
@@ -578,7 +579,7 @@ public class TicketServiceImpl extends CommonServiceImpl<Ticket, TicketRepositor
 
     public void mandarQR(Ticket pTicket) throws Exception {
 
-        Localidad localidad = localidadService.getLocalidadAndEventoByLocalidadId(pTicket.getLocalidad().getId());
+        Localidad localidad = localidadService.findById(pTicket.getLocalidad().getId());
         Evento evento = localidad.getDias().get(0).getEvento();
 
         String filepath = QR_CODE_IMAGE_PATH + "Ticket" + pTicket.getId() + ","

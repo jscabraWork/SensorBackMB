@@ -2,7 +2,7 @@ package com.arquitectura.imagen.service;
 
 import com.arquitectura.aws.AWSS3Service;
 import com.arquitectura.evento.entity.Evento;
-import com.arquitectura.evento.services.EventoService;
+import com.arquitectura.evento.service.EventoService;
 import com.arquitectura.events.EntityDeleteEventLong;
 import com.arquitectura.events.ImagenEvent;
 import com.arquitectura.imagen.entity.Imagen;

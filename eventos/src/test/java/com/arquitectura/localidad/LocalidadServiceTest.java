@@ -5,7 +5,7 @@ import com.arquitectura.dia.entity.Dia;
 import com.arquitectura.dia.entity.DiaRepository;
 import com.arquitectura.localidad.entity.Localidad;
 import com.arquitectura.localidad.entity.LocalidadRepository;
-import com.arquitectura.localidad.services.LocalidadService;
+import com.arquitectura.localidad.service.LocalidadService;
 import com.arquitectura.tarifa.entity.Tarifa;
 import com.arquitectura.tarifa.entity.TarifaRepository;
 import jakarta.persistence.EntityNotFoundException;
@@ -21,7 +21,6 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.*;
 

@@ -25,11 +25,6 @@
 		</dependency>
 		<dependency>
 			<groupId>com.arquitectura</groupId>
-			<artifactId>core-eventos</artifactId>
-			<version>0.0.1-SNAPSHOT</version>
-		</dependency>
-		<dependency>
-			<groupId>com.arquitectura</groupId>
 			<artifactId>commons-auditable</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
 		</dependency>
@@ -196,8 +191,14 @@
 			<version>0.0.1-SNAPSHOT</version>
 			<scope>compile</scope>
 		</dependency>
+        <dependency>
+            <groupId>com.arquitectura</groupId>
+            <artifactId>commons-microservicio-consumer-kafka</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+            <scope>compile</scope>
+        </dependency>
 
-	</dependencies>
+    </dependencies>
 
 	<dependencyManagement>
 		<dependencies>

@@ -1,5 +1,6 @@
 package com.arquitectura.pdf;
 
+import com.arquitectura.aws.AWSS3Service;
 import com.arquitectura.dia.entity.Dia;
 import com.arquitectura.evento.entity.Evento;
 import com.arquitectura.localidad.entity.Localidad;

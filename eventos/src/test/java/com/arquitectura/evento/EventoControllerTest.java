@@ -7,7 +7,7 @@ import com.arquitectura.evento.controller.EventoController;
 import com.arquitectura.evento.entity.Evento;
 import com.arquitectura.evento.services.EventoService;
 import com.arquitectura.localidad.entity.Localidad;
-import com.arquitectura.localidad.services.LocalidadService;
+import com.arquitectura.localidad.service.LocalidadService;
 import com.arquitectura.tarifa.services.TarifaService;
 import com.arquitectura.temporada.entity.Temporada;
 import com.arquitectura.tipo.entity.Tipo;
