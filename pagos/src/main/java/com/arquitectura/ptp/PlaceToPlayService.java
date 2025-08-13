@@ -229,45 +229,39 @@ public class PlaceToPlayService {
     public ResponseEntity<?> procesarNotificacionPTP(SessionNotification data) throws Exception {
         
         Status status = data.getStatus();
+
         String shaCompose = data.getRequestId() + status.getStatus() + status.getDate();
         
         if (!validarSignature(shaCompose, data.getSignature())) {
             return new ResponseEntity<>(HttpStatus.FORBIDDEN);
         }
 
-        RequestResponse response = consultarEstadoTransaccion(data.getRequestId());
-
+        //Encontrar la Orden asociada a la transacción
         Long reference = Long.parseLong(data.getReference());
-
         Orden orden = ordenService.findById(reference);
-        
-        Transaccion transaccion = adapter.crearTransaccion(response);
-        transaccion.setOrden(orden);
 
-        if (transaccionService.getTransaccionRepetida(transaccion.getStatus(), orden.getId()) != null) {
+        Transaccion transaccion = generarTransaccionPTP(data.getRequestId(), orden.getId());
+
+        if (transaccion ==null) {
             return new ResponseEntity<>(HttpStatus.CONFLICT);
         }
 
+        //Asignar la transacción a la orden
+        transaccion.setOrden(orden);
+
+        //Guardar la transacción en la base de datos
         Transaccion transaccionBD = transaccionService.saveKafka(transaccion);
-        
-        if (transaccionBD.getStatus() == 34) {
+
+        //Confirmar la orden si la transacción es exitosa
+        if (transaccionBD.isAprobada()) {
             procesarTransaccionExitosa(orden, transaccion);
         }
+        //Si no es exitosa, no hacer nada
         
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    private RequestResponse consultarEstadoTransaccion(Long requestId) throws Exception {
-
-        Map<String, Object> info = new HashMap<>();
-
-        info.put("auth", generarAuth());
-        
-        String urlPeticion = urlPTP + "/api/session/" + requestId;
-        return (RequestResponse) makePostRequest(urlPeticion, info, new RequestResponse());
-    }
-
-    private void procesarTransaccionExitosa(Orden orden, Transaccion transaccion) throws Exception {
+    public void procesarTransaccionExitosa(Orden orden, Transaccion transaccion) throws Exception {
 
         switch (orden.getTipo()) {
 
@@ -289,34 +283,50 @@ public class PlaceToPlayService {
 
     /**
      * Maneja la verificación y procesamiento de transacciones con PTP
-     * @param ordenId ID de la orden a verificar
      */
-    public void manejarTransaccionConPtp(Long ordenId) {
-        
-        Orden orden = ordenService.findById(ordenId);
-        
-        if (orden == null) {
-            return;
-        }
+    public void manejarTransaccionConPtp(Orden orden) {
 
         try {
-            RequestResponse response = consultarEstadoTransaccion(orden.getIdTRXPasarela());
-            
-            Transaccion transaccion = adapter.crearTransaccion(response);
-            transaccion.setOrden(orden);
+            Transaccion transaccion = generarTransaccionPTP(orden.getIdTRXPasarela(),orden.getId());
 
-            Transaccion transaccionRepetida = transaccionService.getTransaccionRepetida(
-                transaccion.getStatus(), orden.getId());
+            //La transacción devuelve null si ya fue procesada
+            if (transaccion != null) {
 
-            if (transaccionRepetida == null) {
+                //Asignar la orden a la transacción y guardar la transacción
+                transaccion.setOrden(orden);
                 Transaccion transaccionBD = transaccionService.saveKafka(transaccion);
 
-                if (transaccionBD.getStatus() == 34) {
+                //Solo procesar la transacción si es aprobada
+                if (transaccionBD.isAprobada()) {
                     procesarTransaccionExitosa(orden, transaccionBD);
                 }
+
+                //En caso de no ser aprobada no hacer nada
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    public Transaccion generarTransaccionPTP(Long idTRXPasarela, Long pOrdenId) throws Exception {
+
+        Map<String, Object> info = new HashMap<>();
+
+        info.put("auth", generarAuth());
+
+        String urlPeticion = urlPTP + "/api/session/" + idTRXPasarela;
+
+        RequestResponse response = (RequestResponse) makePostRequest(urlPeticion, info, new RequestResponse());
+
+        Transaccion transaccion = adapter.crearTransaccion(response);
+
+        Transaccion transaccionRepetida = transaccionService.getTransaccionRepetida(transaccion.getStatus(), pOrdenId);
+
+        //Si la transacción ya fue procesada, no devolverla
+        if(transaccionRepetida != null) {
+            return null;
+        }
+
+        return transaccion;
     }
 }

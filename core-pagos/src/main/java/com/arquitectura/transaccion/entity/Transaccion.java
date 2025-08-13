@@ -83,7 +83,16 @@ public class Transaccion extends Auditable{
         }
     }
 
-    public void rechazar() {
-        this.status = 36; // RECHAZADA
+    public boolean isAprobada() {
+        return this.status == 34;
+    }
+
+    public boolean isPendiente() {
+        return this.status == 35;
+    }
+
+    //Si el estado es difente que 34 o 35 entonces es rechazada
+    public boolean isRechazada() {
+        return !this.isAprobada() && !this.isPendiente();
     }
 }

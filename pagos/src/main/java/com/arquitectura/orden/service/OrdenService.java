@@ -65,4 +65,9 @@ public interface OrdenService extends CommonService<Orden> {
     public String aplicarCupon(String pCuponId, Long pOrdenId);
 
     public void rechazar(Orden orden);
+
+    public List<Orden> findByEstado(Integer estado);
+
+    public List<Orden> findAllOrdenesSinConfirmacion();
+
 }

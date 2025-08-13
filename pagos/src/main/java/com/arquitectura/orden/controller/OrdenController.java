@@ -126,7 +126,11 @@ public class OrdenController extends CommonController<Orden, OrdenService> {
     @GetMapping("/manejo-orden/{pIdOrden}")
     @Transactional("transactionManager")
     public void manejoDeTransaccionConPtp(@PathVariable Long pIdOrden) {
-        placeToPlayService.manejarTransaccionConPtp(pIdOrden);
+        Orden orden = service.findById(pIdOrden);
+        if(orden == null) {
+            return;
+        }
+        placeToPlayService.manejarTransaccionConPtp(orden);
     }
 
     /**

@@ -318,5 +318,15 @@ public class OrdenServiceImpl extends CommonServiceImpl<Orden, OrdenRepository> 
         ticketService.saveAllKafka(orden.getTickets());
     }
 
+    @Override
+    public List<Orden> findByEstado(Integer estado) {
+        return repository.findByEstado(estado);
+    }
+
+    @Override
+    public List<Orden> findAllOrdenesSinConfirmacion() {
+        return repository.findAllOrdenesSinConfirmacion();
+    }
+
 
 }
