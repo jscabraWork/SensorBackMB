@@ -6,6 +6,7 @@ import com.arquitectura.cliente.service.ClienteService;
 import com.arquitectura.clients.ReporteFeignClient;
 import com.arquitectura.configSeguro.service.ConfigSeguroService;
 import com.arquitectura.evento.entity.Evento;
+import com.arquitectura.evento.service.EventoService;
 import com.arquitectura.ingreso.entity.Ingreso;
 import com.arquitectura.ingreso.entity.IngresoRepository;
 import com.arquitectura.localidad.entity.Localidad;
@@ -86,6 +87,9 @@ public class TicketServiceImpl extends CommonServiceImpl<Ticket, TicketRepositor
 
     @Autowired
     private KafkaTemplate<String, Object> kafkaTemplate;
+
+    @Autowired
+    private EventoService eventoService;
 
     @Autowired
     private ReporteFeignClient reporteFeignClient;
@@ -580,7 +584,7 @@ public class TicketServiceImpl extends CommonServiceImpl<Ticket, TicketRepositor
     public void mandarQR(Ticket pTicket) throws Exception {
 
         Localidad localidad = localidadService.findById(pTicket.getLocalidad().getId());
-        Evento evento = localidad.getDias().get(0).getEvento();
+        Evento evento = eventoService.findByLocalidadId(localidad.getId());
 
         String filepath = QR_CODE_IMAGE_PATH + "Ticket" + pTicket.getId() + ","
                 + pTicket.getCliente().getNumeroDocumento() + ".png";

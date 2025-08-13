@@ -206,6 +206,7 @@ public class OrdenServiceImpl extends CommonServiceImpl<Orden, OrdenRepository> 
 
         orden.confirmar();
 
+        //Enviar publica los tickets en kafka
         ticketService.enviar(orden.getTickets());
 
         Orden ordenBD = saveKafka(orden);

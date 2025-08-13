@@ -14,4 +14,6 @@ public interface EventoRepository extends JpaRepository<Evento,Long> {
 
     public Evento findByIdAndEstadoIn(Long pId, List<Integer> pEstado);
 
+    public Evento findByDiasLocalidadesId(Long localidadId);
+
 }

@@ -42,7 +42,6 @@ public class Localidad extends Auditable {
     private String descripcion;
 
     @OneToMany(mappedBy = "localidad", fetch = FetchType.LAZY)
-    @JsonManagedReference(value = "localidad_tarifa")
     @JsonIgnore
     private List<Tarifa> tarifas;
 

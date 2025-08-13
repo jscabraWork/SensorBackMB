@@ -177,6 +177,8 @@ public class PlaceToPlayService {
         return response;
     }
 
+
+
     private Map<String, Object> construirRequestPTP(Orden orden, String returnUrl) throws NoSuchAlgorithmException {
 
         Map<String, Object> requestData = new HashMap<>();
@@ -282,6 +284,39 @@ public class PlaceToPlayService {
                 ordenAlcanciaService.confirmarAporte(orden, transaccion.getAmount()); //Aporte a alcancía
                 break;
             // TIPO 5 (TRASPASO), 6 (ASIGNACIÓN) No se manejan con PTP
+        }
+    }
+
+    /**
+     * Maneja la verificación y procesamiento de transacciones con PTP
+     * @param ordenId ID de la orden a verificar
+     */
+    public void manejarTransaccionConPtp(Long ordenId) {
+        
+        Orden orden = ordenService.findById(ordenId);
+        
+        if (orden == null) {
+            return;
+        }
+
+        try {
+            RequestResponse response = consultarEstadoTransaccion(orden.getIdTRXPasarela());
+            
+            Transaccion transaccion = adapter.crearTransaccion(response);
+            transaccion.setOrden(orden);
+
+            Transaccion transaccionRepetida = transaccionService.getTransaccionRepetida(
+                transaccion.getStatus(), orden.getId());
+
+            if (transaccionRepetida == null) {
+                Transaccion transaccionBD = transaccionService.saveKafka(transaccion);
+
+                if (transaccionBD.getStatus() == 34) {
+                    procesarTransaccionExitosa(orden, transaccionBD);
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 }

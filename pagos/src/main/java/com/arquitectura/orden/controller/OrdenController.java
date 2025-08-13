@@ -9,15 +9,10 @@ import com.arquitectura.evento.entity.Evento;
 import com.arquitectura.orden.entity.Orden;
 import com.arquitectura.orden.service.OrdenService;
 import com.arquitectura.orden_alcancia.entity.OrdenAlcancia;
-import com.arquitectura.ptp.AuthEntity;
 import com.arquitectura.ptp.PlaceToPlayService;
-import com.arquitectura.ptp.PtpAdapter;
-import com.arquitectura.ptp.RequestResponse;
 import com.arquitectura.ticket.entity.Ticket;
-import com.arquitectura.transaccion.entity.Transaccion;
 import com.arquitectura.transaccion.service.TransaccionService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
@@ -33,19 +28,13 @@ import java.util.Map;
 public class OrdenController extends CommonController<Orden, OrdenService> {
 
     @Autowired
-    private PlaceToPlayService servicePtp;
-
-    @Autowired
     private TransaccionService transaccionService;
 
     @Autowired
     private ConfigSeguroService configSeguroService;
 
     @Autowired
-    private PtpAdapter adapter;
-
-    @Value("${ptp.url}")
-    private String urlPTP;
+    private PlaceToPlayService placeToPlayService;
 
     /** CREACIÓN DE ORDENES **/
 
@@ -133,53 +122,12 @@ public class OrdenController extends CommonController<Orden, OrdenService> {
      * Verifica la orden con la pasarela de pagos.
      *
      * @param pIdOrden ID de la orden
-     * @return ResponseEntity con la info de la orden
      */
     @GetMapping("/manejo-orden/{pIdOrden}")
     @Transactional("transactionManager")
     public void manejoDeTransaccionConPtp(@PathVariable Long pIdOrden) {
-
-        Orden orden = service.findById(pIdOrden);
-
-        if (orden == null) {
-            return;
-        }
-
-        Map<String, Object> info = new HashMap<>();
-        String urlPeticion = urlPTP + "/api/session/" + orden.getIdTRXPasarela();
-
-        try {
-            AuthEntity auth = servicePtp.generarAuth();
-            info.put("auth", auth);
-
-            RequestResponse response = (RequestResponse) servicePtp.makePostRequest(urlPeticion, info, new RequestResponse());
-
-            Transaccion transaccion = adapter.crearTransaccion(response);
-            transaccion.setOrden(orden);
-
-            Transaccion transaccionRepetida = transaccionService.getTransaccionRepetida(transaccion.getStatus(), orden.getId());
-
-            if (transaccionRepetida == null) {
-                Transaccion transaccionBD = transaccionService.save(transaccion);
-
-                if (transaccionBD.getStatus() == 34) {
-                    orden.setEstado(1);
-                    orden.getTickets().forEach(t -> {
-                        t.setCliente(orden.getCliente());
-                        t.setEstado(1);
-                    });
-                    Orden ordenGuardada = service.save(orden);
-                } else if (transaccionBD.getStatus() == 36 || transaccionBD.getStatus() == 37 ||
-                        transaccionBD.getStatus() == 35 || transaccionBD.getStatus() == 38) {
-                }
-            } else {
-                System.out.println("Transacción repetida - No se realizan cambios");
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        placeToPlayService.manejarTransaccionConPtp(pIdOrden);
     }
-
 
     /**
      * Trae todos las ordenes por el cliente id
