@@ -20,6 +20,7 @@ import java.util.List;
 @Builder
 @EqualsAndHashCode(callSuper = false)
 @Table(name="tarifas")
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class Tarifa extends Auditable {
 
     @Id
