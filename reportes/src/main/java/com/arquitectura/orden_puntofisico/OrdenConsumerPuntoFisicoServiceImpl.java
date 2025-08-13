@@ -7,7 +7,7 @@ import com.arquitectura.events.OrdenPuntoFisicoEvent;
 import com.arquitectura.message.service.MessageService;
 import com.arquitectura.orden_puntofisico.entity.OrdenPuntoFisico;
 import com.arquitectura.orden_puntofisico.entity.OrdenPuntoFisicoRepository;
-import jakarta.transaction.Transactional;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.support.KafkaHeaders;
@@ -29,7 +29,7 @@ public class OrdenConsumerPuntoFisicoServiceImpl implements OrdenConsumerPuntoFi
 
 
     @Override
-    @Transactional
+    @Transactional("transactionManager")
     @KafkaListener(topics = "#{'${ordenes.puntosF.topic}'}")
     public void handleEvent(@Payload BaseEvent baseEvent,
                             @Header(value = "messageId", required = true) String messageId,
@@ -45,7 +45,7 @@ public class OrdenConsumerPuntoFisicoServiceImpl implements OrdenConsumerPuntoFi
 
     }
 
-    @Transactional
+    @Transactional("transactionManager")
     @Override
     public void handleCreateEvent(OrdenPuntoFisicoEvent event, String messageId, String messageKey) {
 
@@ -69,7 +69,7 @@ public class OrdenConsumerPuntoFisicoServiceImpl implements OrdenConsumerPuntoFi
         }
     }
 
-    @Transactional
+    @Transactional("transactionManager")
     @Override
     public void handleDeleteEvent(EntityDeleteEventLong eventDelete, String messageId, String messageKey) {
 

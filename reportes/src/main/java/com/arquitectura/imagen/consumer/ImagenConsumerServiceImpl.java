@@ -29,7 +29,7 @@ public class ImagenConsumerServiceImpl implements ImagenConsumerService {
 	
 	
 	@Override
-	@Transactional
+	@Transactional("transactionManager")
 	@KafkaListener(topics = "#{'${imagenes.topic}'}")
 	public void handleEvent(@Payload BaseEvent baseEvent,
 			@Header(value = "messageId", required = true) String messageId,
@@ -44,7 +44,7 @@ public class ImagenConsumerServiceImpl implements ImagenConsumerService {
 		
 	}
 
-	@Transactional
+	@Transactional("transactionManager")
 	@Override
 	public void handleCreateEvent(ImagenEvent event, String messageId, String messageKey) {
 
@@ -70,7 +70,7 @@ public class ImagenConsumerServiceImpl implements ImagenConsumerService {
 		
 	}
 
-	@Transactional
+	@Transactional("transactionManager")
 	@Override
 	public void handleDeleteEvent(EntityDeleteEventLong eventDelete, String messageId, String messageKey) {
 		if(service.existeMessage(messageId)) {

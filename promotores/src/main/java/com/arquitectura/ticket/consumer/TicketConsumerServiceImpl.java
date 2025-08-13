@@ -29,7 +29,7 @@ public class TicketConsumerServiceImpl implements TicketConsumerService {
 
 
     @Override
-    @Transactional
+    @Transactional("transactionManager")
     @KafkaListener(topics = "#{'${ticket-promotor.topic}'}")
     public void handleEvent(@Payload BaseEvent baseEvent,
                             @Header(value = "messageId", required = true) String messageId,
@@ -45,7 +45,7 @@ public class TicketConsumerServiceImpl implements TicketConsumerService {
 
     }
 
-    @Transactional
+    @Transactional("transactionManager")
     @Override
     public void handleCreateEvent(TicketPromotorEvent event, String messageId, String messageKey) {
 
@@ -71,7 +71,7 @@ public class TicketConsumerServiceImpl implements TicketConsumerService {
 
     }
 
-    @Transactional
+    @Transactional("transactionManager")
     @Override
     public void handleDeleteEvent(EntityDeleteEventLong eventDelete, String messageId, String messageKey) {
         if(service.existeMessage(messageId)) {
