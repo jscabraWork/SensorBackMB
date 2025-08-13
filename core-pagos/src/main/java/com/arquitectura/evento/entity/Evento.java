@@ -49,7 +49,8 @@ public class Evento extends Auditable {
     @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
     private Venue venue;
 
-    @ManyToMany(fetch = FetchType.LAZY)
+    @ManyToMany(fetch = FetchType.LAZY, mappedBy = "eventos")
+    @JsonManagedReference(value = "evento_organizador")
     @JsonIgnore
     private List<Organizador> organizadores;
 

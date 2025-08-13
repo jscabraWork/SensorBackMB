@@ -2,6 +2,7 @@ package com.arquitectura.organizador.entity;
 
 import com.arquitectura.entity.Auditable;
 import com.arquitectura.evento.entity.Evento;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
@@ -32,6 +33,7 @@ public class Organizador {
     private String tipoDocumento;
 
     @ManyToMany(mappedBy = "organizadores")
+    @JsonBackReference(value = "evento_organizador")
     @JsonIgnore
     private List<Evento> eventos;
 }
