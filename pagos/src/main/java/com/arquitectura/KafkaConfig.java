@@ -132,9 +132,6 @@ public class KafkaConfig {
     @Value("${tarifas.topic}")
     private String tarifasTopic;
 
-    @Value("${temporadas.topic}")
-    private String temporadasTopic;
-
     @Value("${localidades.topic}")
     private String localidadesTopic;
 
@@ -376,15 +373,6 @@ public class KafkaConfig {
     @Bean
     NewTopic tarifasTopic() {
         return TopicBuilder.name(tarifasTopic)
-                .partitions(3)
-                .replicas(3)
-                .configs(Map.of("min.insync.replicas", "2"))
-                .build();
-    }
-
-    @Bean
-    NewTopic temporadasTopic() {
-        return TopicBuilder.name(temporadasTopic)
                 .partitions(3)
                 .replicas(3)
                 .configs(Map.of("min.insync.replicas", "2"))

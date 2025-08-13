@@ -46,7 +46,7 @@ public class EventoController extends CommonController<Evento, EventoService> {
      * @return ResponseEntity con la lista de eventos que coinciden con el estado proporcionado
      */
     @GetMapping("/listar/estado")
-    public ResponseEntity<?> getAllEventosByEstadoAndTemporadaId(@RequestParam int pEstado) {
+    public ResponseEntity<?> getAllEventosByEstado(@RequestParam int pEstado) {
         return new ResponseEntity<>(service.findAllByEstado(pEstado), HttpStatus.OK);
     }
 
@@ -148,7 +148,6 @@ public class EventoController extends CommonController<Evento, EventoService> {
 
     @GetMapping("/perfil/{pEventoId}")
     public ResponseEntity<?> getEventoPerfil(@PathVariable Long pEventoId) {
-
         Map<String, Object> response = new HashMap<>();
         Evento evento = service.findById(pEventoId);
         List<Localidad> localidades = localidadService.findByEventoIdAndDiaEstado(pEventoId,1);
