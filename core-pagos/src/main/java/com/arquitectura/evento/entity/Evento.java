@@ -20,6 +20,8 @@ import java.util.List;
 @NoArgsConstructor
 @EqualsAndHashCode(callSuper = true)
 @AllArgsConstructor
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
+@ToString(exclude = {"dias","venue"})
 @Table(name="eventos")
 public class Evento extends Auditable {
 

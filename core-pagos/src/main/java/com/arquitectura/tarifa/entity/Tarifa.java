@@ -51,7 +51,7 @@ public class Tarifa extends Auditable {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "localidad_id")
-    @JsonBackReference
+    @JsonBackReference(value = "localidad_tarifa")
     private Localidad localidad;
 
     @PrePersist
