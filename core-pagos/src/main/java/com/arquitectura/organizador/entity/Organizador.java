@@ -32,7 +32,7 @@ public class Organizador {
 
     private String tipoDocumento;
 
-    @ManyToMany(mappedBy = "organizadores")
+    @ManyToMany
     @JsonBackReference(value = "evento_organizador")
     @JsonIgnore
     private List<Evento> eventos;
