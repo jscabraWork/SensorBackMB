@@ -28,7 +28,7 @@ public class AlcanciaConsumerServiceImpl implements AlcanciaConsumerService {
 	private AlcanciaEventAdapter adapter;
 	
 	@Override
-    @Transactional
+    @Transactional("transactionManager")
     @KafkaListener(topics = "#{'${alcancias.topic}'}")
 	  public void handleEvent(@Payload BaseEvent baseEvent,
               @Header(value = "messageId", required = true) String messageId,
@@ -45,7 +45,7 @@ public class AlcanciaConsumerServiceImpl implements AlcanciaConsumerService {
 		
 	}
 
-	@Transactional
+	@Transactional("transactionManager")
 	@Override
 	public void handleCreateEvent(AlcanciaEvent event, String messageId, String messageKey) {
 
@@ -72,7 +72,7 @@ public class AlcanciaConsumerServiceImpl implements AlcanciaConsumerService {
 		
 	}
 
-	@Transactional
+	@Transactional("transactionManager")
 	@Override
 	public void handleDeleteEvent(EntityDeleteEventLong eventDelete, String messageId, String messageKey) {
 		if(service.existeMessage(messageId)) {

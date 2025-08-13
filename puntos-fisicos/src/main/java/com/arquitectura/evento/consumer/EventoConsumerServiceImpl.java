@@ -43,7 +43,7 @@ public class EventoConsumerServiceImpl implements EventoConsumerService {
         }
     }
 
-    @Transactional
+    @Transactional("transactionManager")
     @Override
     public void handleCreateEvent(EventoEvent event, String messageId, String messageKey) {
         if (service.existeMessage(messageId)) {
@@ -66,7 +66,7 @@ public class EventoConsumerServiceImpl implements EventoConsumerService {
         }
     }
 
-    @Transactional
+    @Transactional("transactionManager")
     @Override
     public void handleDeleteEvent(EntityDeleteEventLong eventDelete, String messageId, String messageKey) {
         if(service.existeMessage(messageId)) {

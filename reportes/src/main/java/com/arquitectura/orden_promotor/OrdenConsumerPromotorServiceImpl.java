@@ -7,13 +7,13 @@ import com.arquitectura.events.OrdenPromotorEvent;
 import com.arquitectura.message.service.MessageService;
 import com.arquitectura.orden_promotor.entity.OrdenPromotor;
 import com.arquitectura.orden_promotor.entity.OrdenPromotorRepository;
-import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.support.KafkaHeaders;
 import org.springframework.messaging.handler.annotation.Header;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 @Component
 public class OrdenConsumerPromotorServiceImpl implements OrdenConsumerPromotorService {
@@ -29,7 +29,7 @@ public class OrdenConsumerPromotorServiceImpl implements OrdenConsumerPromotorSe
 
 
     @Override
-    @Transactional
+    @Transactional("transactionManager")
     @KafkaListener(topics = "#{'${ordenes.promotores.topic}'}")
     public void handleEvent(@Payload BaseEvent baseEvent,
                             @Header(value = "messageId", required = true) String messageId,
@@ -45,7 +45,7 @@ public class OrdenConsumerPromotorServiceImpl implements OrdenConsumerPromotorSe
 
     }
 
-    @Transactional
+    @Transactional("transactionManager")
     @Override
     public void handleCreateEvent(OrdenPromotorEvent event, String messageId, String messageKey) {
 
@@ -69,7 +69,7 @@ public class OrdenConsumerPromotorServiceImpl implements OrdenConsumerPromotorSe
         }
     }
 
-    @Transactional
+    @Transactional("transactionManager")
     @Override
     public void handleDeleteEvent(EntityDeleteEventLong eventDelete, String messageId, String messageKey) {
 

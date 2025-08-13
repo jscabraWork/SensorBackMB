@@ -28,7 +28,7 @@ public class SeguroConsumerServiceImpl implements SeguroConsumerService {
     private SeguroEventAdapter adapter;
 
     @Override
-    @Transactional
+    @Transactional("transactionManager")
     @KafkaListener(topics = "#{'${seguros.topic}'}")
     public void handleEvent(@Payload BaseEvent baseEvent,
                            @Header(value = "messageId", required = true) String messageId,
@@ -43,7 +43,7 @@ public class SeguroConsumerServiceImpl implements SeguroConsumerService {
         }
     }
 
-    @Transactional
+    @Transactional("transactionManager")
     @Override
     public void handleCreateEvent(SeguroEvent event, String messageId, String messageKey) {
         if (service.existeMessage(messageId)) {
@@ -66,7 +66,7 @@ public class SeguroConsumerServiceImpl implements SeguroConsumerService {
         }
     }
 
-    @Transactional
+    @Transactional("transactionManager")
     @Override
     public void handleDeleteEvent(EntityDeleteEventLong eventDelete, String messageId, String messageKey) {
         if(service.existeMessage(messageId)) {

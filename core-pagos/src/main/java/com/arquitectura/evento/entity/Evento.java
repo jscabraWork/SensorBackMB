@@ -57,7 +57,6 @@ public class Evento extends Auditable {
     @JsonManagedReference(value = "evento_dia")
     private List<Dia> dias;
 
-
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "tipo_id")
     private Tipo tipo;

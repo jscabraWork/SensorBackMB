@@ -7,7 +7,7 @@ import com.arquitectura.events.OrdenEvent;
 import com.arquitectura.message.service.MessageService;
 import com.arquitectura.orden.entity.Orden;
 import com.arquitectura.orden.entity.OrdenRepository;
-import jakarta.transaction.Transactional;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.support.KafkaHeaders;
@@ -29,7 +29,7 @@ public class OrdenConsumerServiceImpl implements OrdenConsumerService {
 
 
     @Override
-    @Transactional
+    @Transactional("transactionManager")
     @KafkaListener(topics = "#{'${ordenes.topic}'}")
     public void handleEvent(@Payload BaseEvent baseEvent,
                             @Header(value = "messageId", required = true) String messageId,
@@ -45,7 +45,7 @@ public class OrdenConsumerServiceImpl implements OrdenConsumerService {
 
     }
 
-    @Transactional
+    @Transactional("transactionManager")
     @Override
     public void handleCreateEvent(OrdenEvent event, String messageId, String messageKey) {
 
@@ -69,7 +69,7 @@ public class OrdenConsumerServiceImpl implements OrdenConsumerService {
         }
     }
 
-    @Transactional
+    @Transactional("transactionManager")
     @Override
     public void handleDeleteEvent(EntityDeleteEventLong eventDelete, String messageId, String messageKey) {
 

@@ -28,7 +28,7 @@ public class IngresoConsumerServiceImpl implements IngresoConsumerService {
     private IngresoEventAdapter adapter;
 
     @Override
-    @Transactional
+    @Transactional("transactionManager")
     @KafkaListener(topics = "#{'${ingresos.topic}'}")
     public void handleEvent(@Payload BaseEvent baseEvent,
                            @Header(value = "messageId", required = true) String messageId,
@@ -43,7 +43,7 @@ public class IngresoConsumerServiceImpl implements IngresoConsumerService {
         }
     }
 
-    @Transactional
+    @Transactional("transactionManager")
     @Override
     public void handleCreateEvent(IngresoEvent event, String messageId, String messageKey) {
         if (service.existeMessage(messageId)) {
@@ -66,7 +66,7 @@ public class IngresoConsumerServiceImpl implements IngresoConsumerService {
         }
     }
 
-    @Transactional
+    @Transactional("transactionManager")
     @Override
     public void handleDeleteEvent(EntityDeleteEventLong eventDelete, String messageId, String messageKey) {
         if (service.existeMessage(messageId)) {
