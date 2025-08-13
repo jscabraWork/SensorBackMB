@@ -10,295 +10,307 @@ import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 import java.util.Properties;
 
-
-
-
 @Service
 public class SendEmailAmazonService {
 
-	
-	
-    // Replace sender@example.com with your "From" address.
-    // This address must be verified.
-    static final String FROM = "noreply_tickets@allticketscol.com";
-    static final String FROMNAME = "AllTickets_NO_RESPONDER";
-	
-    
-    // Replace smtp_username with your Amazon SES SMTP user name.
+    static final String FROM = "no-replay@ticketsensor.com";
+    static final String FROMNAME = "SENSOR_NO_RESPONDER";
     static final String SMTP_USERNAME = "AKIAZ4YTFVLRGWUACVUD";
-    
-    // Replace smtp_password with your Amazon SES SMTP password.
     static final String SMTP_PASSWORD = "BPNnz1m2Tu7EMWoC7t0iDH7ap8cefA3OiFhtODMhbKtV ";
-    
-    // The name of the Configuration Set to use for this message.
-    // If you comment out or remove this variable, you will also need to
-    // comment out or remove the header below.
-    //static final String CONFIGSET = "ConfigSet";
-    
-    // Amazon SES SMTP host name. This example uses the EE.UU. Oeste (Oregón) region.
-    // See https://docs.aws.amazon.com/ses/latest/DeveloperGuide/regions.html#region-endpoints
-    // for more information.
     static final String HOST = "email-smtp.us-east-1.amazonaws.com";
-    
-    // The port you will connect to on the Amazon SES SMTP endpoint. 
     static final int PORT = 587;
-    
-  
-    
-    
-    
+
     public void mandarCorreoContrasenia(String to, String idEncriptado) throws Exception {
+        String SUBJECT = "Contraseña recuperada";
 
-        
-    	String SUBJECT = "Contraseña recuperada";
-        
-    	 String BODY = String.join(
-    	    	    System.getProperty("line.separator"),
-    			"<!DOCTYPE html>\r\n"
-    			+ "<html lang=\"es\">\r\n"
-    			+ "<head>\r\n"
-    			+ "<meta charset=\"UTF-8\">\r\n"
-    			+ "<title>Bienvenido a All Tickets</title>\r\n"
-    			+ "<style>\r\n"
-    			+ "    body {\r\n"
-    			+ "        font-family: Arial, sans-serif;\r\n"
-    			+ "        margin: 0;\r\n"
-    			+ "        padding: 0;\r\n"
-    			+ "        background: #f4f4f4;\r\n"
-    			+ "        text-align: center;\r\n"
-    			+ "        color: #333;\r\n"
-    			+ "    }\r\n"
-    			+ "    .container {\r\n"
-    			+ "        width: 100%;\r\n"
-    			+ "        max-width: 400px;\r\n"
-    			+ "        margin: 50px auto;\r\n"
-    			+ "        background: white;\r\n"
-    			+ "        padding: 20px;\r\n"
-    			+ "        box-shadow: 0 0 10px rgba(0,0,0,0.1);\r\n"
-    			+ "    }\r\n"
-    			+ "    h1 {\r\n"
-    			+ "        font-size: 24px;\r\n"
-    			+ "        color: #ed701c;\r\n"
-    			+ "    }\r\n"
-    			+ "    p {\r\n"
-    			+ "        font-size: 14px;\r\n"
-    			+ "        color: #666;\r\n"
-    			+ "        line-height: 1.4;\r\n"
-    			+ "    }\r\n"
-    			+ "    .boton {\r\n"
-    			+ "        display: inline-block;\r\n"
-    			+ "        margin-top: 20px;\r\n"
-    			+ "        padding: 10px 20px;\r\n"
-    			+ "        background-color: #ed701c;\r\n"
-    			+ "        color: white;\r\n"
-    			+ "        text-decoration: none;\r\n"
-    			+ "        border-radius: 4px;\r\n"
-    			+ "    }\r\n"
-    			+ "    .boton:hover {\r\n"
-    			+ "        background-color: #ed701c;\r\n"
-    			+ "    }\r\n"
-    			+ "    .footer a{\r\n"
-    			+ "       color: #ed701c;\r\n"
-    			+ "    }\r\n"
-    			+ "    .footer {\r\n"
-    			+ "        margin-top: 30px;\r\n"
-    			+ "        font-size: 12px;\r\n"
-    			+ "        color: #aaa;\r\n"
-    			+ "    }\r\n"
-    			+ "</style>\r\n"
-    			+ "</head>\r\n"
-    			+ "<body>\r\n"
-    			+ "<div class=\"container\">\r\n"
-    			+ "    <img src=\"https://allticketscol.com/assets/images/img/logo2.webp\" alt=\"All TICKETS Logo\" style=\"width: 200px; height: auto; margin: 20px 0;\">\r\n"
-    			+ "    <h1>Recuperación de contraseña</h1>\r\n"
-    			+ "    <p>Haz solciitado un cambio de contraseña, en caso de que no lo hayas hecho te recomendamos cambiar tu correo de tu usuario</p>\r\n"
-    			+ "    <a class=\"boton\"target=\"_blank\"  href=\"https://allticketscol.com/cambio-contrasena/"+idEncriptado+"\">RECUPERAR</a>\r\n"
-    			+ "    <p class=\"footer\">Cualquier duda que tengas por favor comunicaté con nuestro número de whatsapp<a target=\"_blank\"  href=\"https://api.whatsapp.com/send?phone=573209644716&text=Hola%20All%20Tickets,%20me%20comunico%20con%20ustedes%C2%A0porque:\">+57 320 9644716</a>.</p>\r\n"
-    			+ "    \r\n"
-    			+ "</div>\r\n"
-    			+ "</body>\r\n"
-    			+ "</html>\r\n"
-    			+ ""
-    	    	);
+        String BODY = String.join(
+                System.getProperty("line.separator"),
+                "<!DOCTYPE html>\r\n"
+                        + "<html lang=\"es\">\r\n"
+                        + "<head>\r\n"
+                        + "<meta charset=\"UTF-8\">\r\n"
+                        + "<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\r\n"
+                        + "<title>Sensor Events - Recuperación de Contraseña</title>\r\n"
+                        + "<style>\r\n"
+                        + "    body {\r\n"
+                        + "        font-family: Arial, sans-serif;\r\n"
+                        + "        margin: 0;\r\n"
+                        + "        padding: 0;\r\n"
+                        + "        background: #1a1a1a;\r\n"
+                        + "        text-align: center;\r\n"
+                        + "        color: #ffffff;\r\n"
+                        + "    }\r\n"
+                        + "    .container {\r\n"
+                        + "        width: 100%;\r\n"
+                        + "        max-width: 900px;\r\n"
+                        + "        margin: 50px auto;\r\n"
+                        + "        background: #222222;\r\n"
+                        + "        padding: 30px;\r\n"
+                        + "        box-shadow: 0 0 20px rgba(0,0,0,0.5);\r\n"
+                        + "        border-left: 4px solid #FFD900;\r\n"
+                        + "    }\r\n"
+                        + "    h1 {\r\n"
+                        + "        font-size: 24px;\r\n"
+                        + "        color: #FFD900;\r\n"
+                        + "        margin-top: 20px;\r\n"
+                        + "    }\r\n"
+                        + "    p {\r\n"
+                        + "        font-size: 16px;\r\n"
+                        + "        color: #cccccc;\r\n"
+                        + "        line-height: 1.5;\r\n"
+                        + "        margin-bottom: 20px;\r\n"
+                        + "    }\r\n"
+                        + "    .boton {\r\n"
+                        + "        display: inline-block;\r\n"
+                        + "        margin-top: 20px;\r\n"
+                        + "        padding: 12px 25px;\r\n"
+                        + "        background-color: #FFD900;\r\n"
+                        + "        color: #1a1a1a;\r\n"
+                        + "        text-decoration: none;\r\n"
+                        + "        border-radius: 4px;\r\n"
+                        + "        font-weight: bold;\r\n"
+                        + "        font-size: 16px;\r\n"
+                        + "    }\r\n"
+                        + "    .boton:hover {\r\n"
+                        + "        background-color: #e5c300;\r\n"
+                        + "    }\r\n"
+                        + "    .footer {\r\n"
+                        + "        margin-top: 40px;\r\n"
+                        + "        font-size: 14px;\r\n"
+                        + "        color: #777777;\r\n"
+                        + "        border-top: 1px solid #333333;\r\n"
+                        + "        padding-top: 20px;\r\n"
+                        + "    }\r\n"
+                        + "    .footer a{\r\n"
+                        + "       color: #FFD900;\r\n"
+                        + "       text-decoration: none;\r\n"
+                        + "    }\r\n"
+                        + "    .content-box {\r\n"
+                        + "        background-color: #333333;\r\n"
+                        + "        padding: 20px;\r\n"
+                        + "        margin: 20px 0;\r\n"
+                        + "        border-left: 3px solid #FFD900;\r\n"
+                        + "    }\r\n"
+                        + "    .header-content {\r\n"
+                        + "        margin-bottom: 20px;\r\n"
+                        + "    }\r\n"
+                        + "    .logo {\r\n"
+                        + "        width: 100px;\r\n"
+                        + "        height: auto;\r\n"
+                        + "        margin: 20px 0;\r\n"
+                        + "        display: block;\r\n"
+                        + "        margin-left: auto;\r\n"
+                        + "        margin-right: auto;\r\n"
+                        + "    }\r\n"
+                        + "</style>\r\n"
+                        + "</head>\r\n"
+                        + "<body>\r\n"
+                        + "<div class=\"container\">\r\n"
+                        + "    <div class=\"header-content\">\r\n"
+                        + "        <img class=\"logo\" src=\"https://codigos.allticketscol.com/sensorImg.png\" alt=\"Sensor Events Logo\">\r\n"
+                        + "    </div>\r\n"
+                        + "    <h1>Recuperación de contraseña</h1>\r\n"
+                        + "    <div class=\"content-box\">\r\n"
+                        + "        <p>Has solicitado un cambio de contraseña. Si no realizaste esta solicitud, te recomendamos cambiar tu correo electrónico asociado a tu cuenta.</p>\r\n"
+                        + "    </div>\r\n"
+                        + "    <a class=\"boton\" target=\"_blank\" href=\"https://ticketsensor.com/cambio-contrasena/" + idEncriptado + "\">RECUPERAR CONTRASEÑA</a>\r\n"
+                        + "    <p class=\"footer\">Cualquier duda que tengas, por favor comunícate con nosotros<br><a target=\"_blank\" href=\"https://api.whatsapp.com/send?phone=573202067543&text=Hola%20Sensor%20Events,%20me%20comunico%20porque:\">+57 320 206 7543</a>.</p>\r\n"
+                        + "</div>\r\n"
+                        + "</body>\r\n"
+                        + "</html>\r\n"
+        );
 
-    	
-    	
-    	
-    	
         // Create a Properties object to contain connection configuration information.
-    	Properties props = System.getProperties();
-    	props.put("mail.transport.protocol", "smtp");
-    	props.put("mail.smtp.port", PORT); 
-    	props.put("mail.smtp.starttls.enable", "true");
-    	props.put("mail.smtp.auth", "true");
+        Properties props = System.getProperties();
+        props.put("mail.transport.protocol", "smtp");
+        props.put("mail.smtp.port", PORT);
+        props.put("mail.smtp.starttls.enable", "true");
+        props.put("mail.smtp.auth", "true");
 
-        // Create a Session object to represent a mail session with the specified properties. 
-    	Session session = Session.getDefaultInstance(props);
+        // Create a Session object to represent a mail session with the specified properties.
+        Session session = Session.getDefaultInstance(props);
 
-        // Create a message with the specified information. 
+        // Create a message with the specified information.
         MimeMessage msg = new MimeMessage(session);
-        msg.setFrom(new InternetAddress(FROM,FROMNAME));
+        msg.setFrom(new InternetAddress(FROM, FROMNAME));
         msg.setRecipient(Message.RecipientType.TO, new InternetAddress(to));
         msg.setSubject(SUBJECT);
-        msg.setContent(BODY,"text/html; charset=utf-8");
-        
-        // Add a configuration set header. Comment or delete the 
-        // next line if you are not using a configuration set
-        //msg.setHeader("X-SES-CONFIGURATION-SET", CONFIGSET);
-            
+        msg.setContent(BODY, "text/html; charset=utf-8");
+
         // Create a transport.
         Transport transport = session.getTransport();
-                    
+
         // Send the message.
-        try
-        {
+        try {
             System.out.println("Sending...");
-            
-            // Connect to Amazon SES using the SMTP username and password you specified above.
             transport.connect(HOST, SMTP_USERNAME, SMTP_PASSWORD);
-        	
-            // Send the email.
             transport.sendMessage(msg, msg.getAllRecipients());
             System.out.println("Email sent!");
-        }
-        catch (Exception ex) {
+        } catch (Exception ex) {
             System.out.println("The email was not sent.");
             System.out.println("Error message: " + ex.getMessage());
-        }
-        finally
-        {
-            // Close and terminate the connection.
+        } finally {
             transport.close();
         }
     }
-    
 
     public void mandarCorreoUsuario(String usuario, String idEncriptado, String to) throws Exception {
-    	String SUBJECT ="Gracias por unirte a alltickets";
-    	
-    	 String BODY = String.join(
-    	    	    System.getProperty("line.separator"),
-    	    	    "<!DOCTYPE html>\r\n"
-    	    	    + "<html lang=\"es\">\r\n"
-    	    	    + "<head>\r\n"
-    	    	    + "<meta charset=\"UTF-8\">\r\n"
-    	    	    + "<title>Bienvenido a All Tickets</title>\r\n"
-    	    	    + "<style>\r\n"
-    	    	    + "    body {\r\n"
-    	    	    + "        font-family: Arial, sans-serif;\r\n"
-    	    	    + "        margin: 0;\r\n"
-    	    	    + "        padding: 0;\r\n"
-    	    	    + "        background: #f4f4f4;\r\n"
-    	    	    + "        text-align: center;\r\n"
-    	    	    + "        color: #333;\r\n"
-    	    	    + "    }\r\n"
-    	    	    + "    .container {\r\n"
-    	    	    + "        width: 100%;\r\n"
-    	    	    + "        max-width: 400px;\r\n"
-    	    	    + "        margin: 50px auto;\r\n"
-    	    	    + "        background: white;\r\n"
-    	    	    + "        padding: 20px;\r\n"
-    	    	    + "        box-shadow: 0 0 10px rgba(0,0,0,0.1);\r\n"
-    	    	    + "    }\r\n"
-    	    	    + "    h1 {\r\n"
-    	    	    + "        font-size: 24px;\r\n"
-    	    	    + "        color: #ed701c;\r\n"
-    	    	    + "    }\r\n"
-    	    	    + "    p {\r\n"
-    	    	    + "        font-size: 14px;\r\n"
-    	    	    + "        color: #666;\r\n"
-    	    	    + "        line-height: 1.4;\r\n"
-    	    	    + "    }\r\n"
-    	    	    + "    .boton {\r\n"
-    	    	    + "        display: inline-block;\r\n"
-    	    	    + "        margin-top: 20px;\r\n"
-    	    	    + "        padding: 10px 20px;\r\n"
-    	    	    + "        background-color: #ed701c;\r\n"
-    	    	    + "        color: white;\r\n"
-    	    	    + "        text-decoration: none;\r\n"
-    	    	    + "        border-radius: 4px;\r\n"
-    	    	    + "    }\r\n"
-    	    	    + "    .boton:hover {\r\n"
-    	    	    + "        background-color: #ed701c;\r\n"
-    	    	    + "    }\r\n"
-    	    	    + "    .footer a{\r\n"
-    	    	    + "       color: #ed701c;\r\n"
-    	    	    + "    }\r\n"
-    	    	    + "    .footer {\r\n"
-    	    	    + "        margin-top: 30px;\r\n"
-    	    	    + "        font-size: 12px;\r\n"
-    	    	    + "        color: #aaa;\r\n"
-    	    	    + "    }\r\n"
-    	    	    + "</style>\r\n"
-    	    	    + "</head>\r\n"
-    	    	    + "<body>\r\n"
-    	    	    + "<div class=\"container\">\r\n"
-    	    	    + "    <img src=\"https://allticketscol.com/assets/images/img/logo2.webp\" alt=\"All TICKETS Logo\" style=\"width: 200px; height: auto; margin: 20px 0;\">\r\n"
-    	    	    + "    <h1>¡Bienvenido a ALL TICKETS!</h1>\r\n"
-    	    	    + "    <p>Nos alegra que disfrutes tus eventos con nosotros. All Tickets tiene eventos exclusivos para ti, por favor confirma tu reserva en el siguiente enlace</p>\r\n"
-    	    	    + "    <a class=\"boton\"target=\"_blank\"  href=\"https://allticketscol.com/confirmar-registro/"+idEncriptado+"\">CONFIRMAR</a>\r\n"
-    	    	    + "    <p class=\"footer\">Cualquier duda que tengas por favor comunicaté con nuestro número de whatsapp<a target=\"_blank\"  href=\"https://api.whatsapp.com/send?phone=573209644716&text=Hola%20All%20Tickets,%20me%20comunico%20con%20ustedes%C2%A0porque:\">+57 320 9644716</a>.</p>\r\n"
-    	    	    + "    \r\n"
-    	    	    + "</div>\r\n"
-    	    	    + "</body>\r\n"
-    	    	    + "</html>\r\n"
-    	    	    + ""
-    	    	);
+        String SUBJECT = "Bienvenido a SENSOR - Confirma tu registro";
 
-    	
-    	
-    	
-    	
+        String BODY = String.join(
+                System.getProperty("line.separator"),
+                "<!DOCTYPE html>\r\n"
+                        + "<html lang=\"es\">\r\n"
+                        + "<head>\r\n"
+                        + "<meta charset=\"UTF-8\">\r\n"
+                        + "<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\r\n"
+                        + "<title>Bienvenido a Sensor Events</title>\r\n"
+                        + "<style>\r\n"
+                        + "    body {\r\n"
+                        + "        font-family: Arial, sans-serif;\r\n"
+                        + "        margin: 0;\r\n"
+                        + "        padding: 0;\r\n"
+                        + "        background: #1a1a1a;\r\n"
+                        + "        text-align: center;\r\n"
+                        + "        color: #ffffff;\r\n"
+                        + "    }\r\n"
+                        + "    .container {\r\n"
+                        + "        width: 100%;\r\n"
+                        + "        max-width: 900px;\r\n"
+                        + "        margin: 50px auto;\r\n"
+                        + "        background: #222222;\r\n"
+                        + "        padding: 30px;\r\n"
+                        + "        box-shadow: 0 0 20px rgba(0,0,0,0.5);\r\n"
+                        + "        border-left: 4px solid #FFD900;\r\n"
+                        + "    }\r\n"
+                        + "    h1 {\r\n"
+                        + "        font-size: 24px;\r\n"
+                        + "        color: #FFD900;\r\n"
+                        + "        margin-top: 20px;\r\n"
+                        + "    }\r\n"
+                        + "    p {\r\n"
+                        + "        font-size: 16px;\r\n"
+                        + "        color: #cccccc;\r\n"
+                        + "        line-height: 1.5;\r\n"
+                        + "        margin-bottom: 20px;\r\n"
+                        + "    }\r\n"
+                        + "    .boton {\r\n"
+                        + "        display: inline-block;\r\n"
+                        + "        margin-top: 20px;\r\n"
+                        + "        padding: 12px 25px;\r\n"
+                        + "        background-color: #FFD900;\r\n"
+                        + "        color: #1a1a1a;\r\n"
+                        + "        text-decoration: none;\r\n"
+                        + "        border-radius: 4px;\r\n"
+                        + "        font-weight: bold;\r\n"
+                        + "        font-size: 16px;\r\n"
+                        + "    }\r\n"
+                        + "    .boton:hover {\r\n"
+                        + "        background-color: #e5c300;\r\n"
+                        + "    }\r\n"
+                        + "    .footer {\r\n"
+                        + "        margin-top: 40px;\r\n"
+                        + "        font-size: 14px;\r\n"
+                        + "        color: #777777;\r\n"
+                        + "        border-top: 1px solid #333333;\r\n"
+                        + "        padding-top: 20px;\r\n"
+                        + "    }\r\n"
+                        + "    .footer a{\r\n"
+                        + "       color: #FFD900;\r\n"
+                        + "       text-decoration: none;\r\n"
+                        + "    }\r\n"
+                        + "    .content-box {\r\n"
+                        + "        background-color: #333333;\r\n"
+                        + "        padding: 20px;\r\n"
+                        + "        margin: 20px 0;\r\n"
+                        + "        border-left: 3px solid #FFD900;\r\n"
+                        + "    }\r\n"
+                        + "    .social-links {\r\n"
+                        + "        margin-top: 25px;\r\n"
+                        + "        text-align: center;\r\n"
+                        + "    }\r\n"
+                        + "    .social-links a {\r\n"
+                        + "        display: inline-block;\r\n"
+                        + "        margin: 0 10px;\r\n"
+                        + "    }\r\n"
+                        + "    .social-links img {\r\n"
+                        + "        width: 30px;\r\n"
+                        + "        height: 30px;\r\n"
+                        + "        display: inline-block;\r\n"
+                        + "        vertical-align: middle;\r\n"
+                        + "    }\r\n"
+                        + "    .header-content {\r\n"
+                        + "        margin-bottom: 20px;\r\n"
+                        + "    }\r\n"
+                        + "    .logo {\r\n"
+                        + "        width: 100px;\r\n"
+                        + "        height: auto;\r\n"
+                        + "        margin: 20px 0;\r\n"
+                        + "        display: block;\r\n"
+                        + "        margin-left: auto;\r\n"
+                        + "        margin-right: auto;\r\n"
+                        + "    }\r\n"
+                        + "</style>\r\n"
+                        + "</head>\r\n"
+                        + "<body>\r\n"
+                        + "<div class=\"container\">\r\n"
+                        + "    <div class=\"header-content\">\r\n"
+                        + "        <img class=\"logo\" src=\"https://codigos.allticketscol.com/sensorImg.png\" alt=\"Sensor Events Logo\">\r\n"
+                        + "    </div>\r\n"
+                        + "    <h1>¡Bienvenido a SENSOR EVENTS!</h1>\r\n"
+                        + "    <div class=\"content-box\">\r\n"
+                        + "        <p>Nos alegra que hayas decidido unirte a nuestra comunidad. En Sensor Events podrás vivir experiencias únicas que estimularán todos tus sentidos.</p>\r\n"
+                        + "        <p>Por favor confirma tu registro en el siguiente enlace:</p>\r\n"
+                        + "    </div>\r\n"
+                        + "    <a class=\"boton\" target=\"_blank\" href=\"https://ticketsensor.com/confirmar-registro/" + idEncriptado + "\">CONFIRMAR REGISTRO</a>\r\n"
+                        + "    <div class=\"social-links\">\r\n"
+                        + "        <a href=\"https://api.whatsapp.com/send?phone=573202067543\" target=\"_blank\">\r\n"
+                        + "            <img src=\"https://cdn-icons-png.flaticon.com/512/3670/3670051.png\" alt=\"WhatsApp\">\r\n"
+                        + "        </a>\r\n"
+                        + "        <a href=\"https://www.instagram.com/sensor_events/?hl=es-la\" target=\"_blank\">\r\n"
+                        + "            <img src=\"https://cdn-icons-png.flaticon.com/512/4138/4138124.png\" alt=\"Instagram\">\r\n"
+                        + "        </a>\r\n"
+                        + "        <a href=\"https://web.facebook.com/sensorevents?_rdc=1&_rdr\" target=\"_blank\">\r\n"
+                        + "            <img src=\"https://cdn-icons-png.flaticon.com/512/5968/5968764.png\" alt=\"Facebook\">\r\n"
+                        + "        </a>\r\n"
+                        + "    </div>\r\n"
+                        + "    <p class=\"footer\">Cualquier duda que tengas, por favor comunícate con nosotros<br><a target=\"_blank\" href=\"https://api.whatsapp.com/send?phone=573202067543&text=Hola%20Sensor%20Events,%20me%20comunico%20porque:\">+57 320 206 7543</a>.</p>\r\n"
+                        + "</div>\r\n"
+                        + "</body>\r\n"
+                        + "</html>\r\n"
+        );
+
         // Create a Properties object to contain connection configuration information.
-    	Properties props = System.getProperties();
-    	props.put("mail.transport.protocol", "smtp");
-    	props.put("mail.smtp.port", PORT); 
-    	props.put("mail.smtp.starttls.enable", "true");
-    	props.put("mail.smtp.auth", "true");
+        Properties props = System.getProperties();
+        props.put("mail.transport.protocol", "smtp");
+        props.put("mail.smtp.port", PORT);
+        props.put("mail.smtp.starttls.enable", "true");
+        props.put("mail.smtp.auth", "true");
 
-        // Create a Session object to represent a mail session with the specified properties. 
-    	Session session = Session.getDefaultInstance(props);
+        // Create a Session object to represent a mail session with the specified properties.
+        Session session = Session.getDefaultInstance(props);
 
-        // Create a message with the specified information. 
+        // Create a message with the specified information.
         MimeMessage msg = new MimeMessage(session);
-        msg.setFrom(new InternetAddress(FROM,FROMNAME));
+        msg.setFrom(new InternetAddress(FROM, FROMNAME));
         msg.setRecipient(Message.RecipientType.TO, new InternetAddress(to));
         msg.setSubject(SUBJECT);
-        msg.setContent(BODY,"text/html; charset=utf-8");
-        
-        // Add a configuration set header. Comment or delete the 
-        // next line if you are not using a configuration set
-        //msg.setHeader("X-SES-CONFIGURATION-SET", CONFIGSET);
-            
+        msg.setContent(BODY, "text/html; charset=utf-8");
+
         // Create a transport.
         Transport transport = session.getTransport();
-                    
+
         // Send the message.
-        try
-        {
+        try {
             System.out.println("Sending...");
-            
-            // Connect to Amazon SES using the SMTP username and password you specified above.
             transport.connect(HOST, SMTP_USERNAME, SMTP_PASSWORD);
-        	
-            // Send the email.
             transport.sendMessage(msg, msg.getAllRecipients());
             System.out.println("Email sent!");
-        }
-        catch (Exception ex) {
+        } catch (Exception ex) {
             System.out.println("The email was not sent.");
             System.out.println("Error message: " + ex.getMessage());
-        }
-        finally
-        {
-            // Close and terminate the connection.
+        } finally {
             transport.close();
         }
     }
-    
-
-    
-    
-    
-    
 }
