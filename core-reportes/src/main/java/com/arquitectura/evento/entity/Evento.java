@@ -41,14 +41,13 @@ public class Evento  {
     @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
     private Venue venue;
 
-    @ManyToMany(fetch = FetchType.LAZY)
+    @ManyToMany(fetch = FetchType.LAZY, mappedBy = "eventos")
     @JsonIgnore
     private List<Organizador> organizadores;
 
     @OneToMany(mappedBy = "evento", fetch = FetchType.LAZY, orphanRemoval = true)
     @JsonManagedReference(value = "evento_dia")
     private List<Dia> dias;
-
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "tipo_id")
@@ -66,5 +65,4 @@ public class Evento  {
     @ManyToMany(mappedBy = "eventos", fetch = FetchType.LAZY)
     @JsonBackReference(value = "promotores_evento")
     private List<Promotor> promotores;
-
 }

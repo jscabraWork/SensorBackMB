@@ -30,7 +30,7 @@ public class Organizador {
 
     private String tipoDocumento;
 
-    @ManyToMany(mappedBy = "organizadores")
+    @ManyToMany
     @JsonIgnore
     private List<Evento> eventos;
 }
