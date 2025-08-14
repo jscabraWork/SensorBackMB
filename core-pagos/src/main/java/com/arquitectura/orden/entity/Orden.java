@@ -47,7 +47,6 @@ public class Orden extends Auditable {
     @JsonBackReference(value="transaccionOrden_mov")
     protected List<Transaccion> transacciones;
 
-    //Cascade persist para que al crear una orden, SOLO AL CREARLA, no al actualizarla,
     // se actualice a estado en proceso los tickets asociados a la orden
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
