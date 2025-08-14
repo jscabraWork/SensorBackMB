@@ -1,6 +1,7 @@
 package com.arquitectura.ticket.service;
 
 import com.arquitectura.cliente.entity.Cliente;
+import com.arquitectura.dto.MisTicketsDto;
 import com.arquitectura.services.CommonService;
 import com.arquitectura.ticket.entity.Ticket;
 import com.arquitectura.transaccion.entity.Transaccion;
@@ -146,6 +147,13 @@ public interface TicketService extends CommonService<Ticket> {
      * @param pId El ID del ticket a eliminar
      */
     public void deleteById(Long pId);
+
+    /**
+     * Obtiene los tickets de un cliente organizados por evento
+     * @param numeroDocumento Número de documento del cliente
+     * @return Lista de MisTicketsDto organizados por evento
+     */
+    public List<MisTicketsDto> getMisTicketsByCliente(String numeroDocumento);
 
     public void crearTicketsReporte(List<Ticket> tickets, Long localidadId);
 

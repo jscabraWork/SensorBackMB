@@ -74,4 +74,18 @@ public class Evento extends Auditable {
         super.prePersist();
     }
 
+    /**
+     * Obtiene la imagen del evento por tipo específico
+     * @param tipo Tipo de imagen (1: Perfil, 2: Banner, 3: QR, 4: Publicidad banner)
+     * @return Imagen del tipo especificado o null si no existe
+     */
+    public Imagen getImagenByTipo(int tipo) {
+        return imagenes != null ? 
+                imagenes.stream()
+                        .filter(imagen -> imagen.getTipo() == tipo)
+                        .findFirst()
+                        .orElse(null)
+                : null;
+    }
+
 }

@@ -5,6 +5,7 @@ import com.arquitectura.cliente.entity.Cliente;
 import com.arquitectura.cliente.service.ClienteService;
 import com.arquitectura.clients.ReporteFeignClient;
 import com.arquitectura.configSeguro.service.ConfigSeguroService;
+import com.arquitectura.dto.MisTicketsDto;
 import com.arquitectura.evento.entity.Evento;
 import com.arquitectura.evento.service.EventoService;
 import com.arquitectura.ingreso.entity.Ingreso;
@@ -727,6 +728,12 @@ public class TicketServiceImpl extends CommonServiceImpl<Ticket, TicketRepositor
     public Integer validarVentasCupon(Long pTarifaId){
         //Contar cuantos tickets hay vendidos con la tarifa indicada
         return repository.countByTarifaIdAndEstado(pTarifaId,1);
+    }
+
+    @Override
+    public List<MisTicketsDto> getMisTicketsByCliente(String numeroDocumento) {
+        List<Ticket> tickets = repository.findByClienteNumeroDocumentoAndEstadoNot3(numeroDocumento);
+        return MisTicketsDto.TicketsToDto(tickets);
     }
 
 

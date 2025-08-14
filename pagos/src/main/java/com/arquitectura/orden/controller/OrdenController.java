@@ -2,9 +2,11 @@ package com.arquitectura.orden.controller;
 
 import com.arquitectura.alcancia.entity.Alcancia;
 import com.arquitectura.cliente.entity.Cliente;
+import com.arquitectura.cliente.service.ClienteService;
 import com.arquitectura.configSeguro.entity.ConfigSeguro;
 import com.arquitectura.configSeguro.service.ConfigSeguroService;
 import com.arquitectura.controller.CommonController;
+import com.arquitectura.dto.ComprasPendientesDto;
 import com.arquitectura.evento.entity.Evento;
 import com.arquitectura.orden.entity.Orden;
 import com.arquitectura.orden.service.OrdenService;
@@ -15,6 +17,7 @@ import com.arquitectura.transaccion.service.TransaccionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
@@ -35,6 +38,9 @@ public class OrdenController extends CommonController<Orden, OrdenService> {
 
     @Autowired
     private PlaceToPlayService placeToPlayService;
+
+    @Autowired
+    private ClienteService clienteService;
 
     /** CREACIÓN DE ORDENES **/
 
@@ -188,6 +194,38 @@ public class OrdenController extends CommonController<Orden, OrdenService> {
         Map<String, Object> response = new HashMap<>();
         response.put("mensaje",service.aplicarCupon(pCuponId, pOrdenId) );
         return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    /**
+     * Obtiene todas las compras pendientes (estado 3) de un cliente
+     * Valida que el usuario del token sea el mismo que solicita las compras o sea administrador
+     * @param numeroDocumento Número de documento del cliente
+     * @param token Token de autorización
+     * @return ResponseEntity con la lista de ComprasPendientesDto
+     */
+    @PreAuthorize("hasAnyRole('ADMIN', 'CLIENTE')")
+    @GetMapping("/compras-pendientes/{numeroDocumento}")
+    public ResponseEntity<?> getComprasPendientesByCliente(@PathVariable String numeroDocumento,
+                                                          @RequestHeader("Authorization") String token) {
+        try {
+            // Validar que el usuario del token sea el mismo o sea admin
+            if (!numeroDocumento.equals(clienteService.obtenerUsuarioDeToken(token)) &&
+                !clienteService.obtenerRolDeToken(token).equals("ROLE_ADMIN")) {
+                return new ResponseEntity<>("No tienes permisos para acceder a estas compras", HttpStatus.UNAUTHORIZED);
+            }
+
+            List<ComprasPendientesDto> comprasPendientes = service.getComprasPendientesByCliente(numeroDocumento);
+
+            if (comprasPendientes.isEmpty()) {
+                return ResponseEntity.noContent().build();
+            }
+
+            return ResponseEntity.ok(comprasPendientes);
+        } catch (Exception e) {
+            Map<String, String> errorResponse = new HashMap<>();
+            errorResponse.put("error", "Error al obtener las compras pendientes del cliente");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorResponse);
+        }
     }
 
 
