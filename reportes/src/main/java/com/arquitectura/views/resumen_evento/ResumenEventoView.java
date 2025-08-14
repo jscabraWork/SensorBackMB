@@ -20,14 +20,13 @@ import java.math.BigDecimal;
 public class ResumenEventoView {
 
     @Id
-    private Long eventoId;  // @Column opcional si nombres coinciden
+    @Column(name = "evento_id")
+    private Long eventoId;
 
     private String nombre;  // @Column opcional
 
-    @Column(name = "asistentes")
     private Long asistentes;
 
-    @Column(name = "ingresos")
     private Long ingresos;
 
     @Column(name = "total_recaudado")
@@ -75,13 +74,10 @@ public class ResumenEventoView {
     @Column(name = "total_recaudado_hoy")
     private BigDecimal totalRecaudadoHoy;
 
-    @Column(name = "retefuente")
     private BigDecimal retefuente;
 
-    @Column(name = "reteica")
     private BigDecimal reteica;
 
-    @Column(name = "parafiscal")
     private BigDecimal parafiscal;
 
     @Column(name = "comision_alltickets")
@@ -92,5 +88,29 @@ public class ResumenEventoView {
 
     @Column(name = "comision_3ds")
     private BigDecimal comision3ds;
+
+
+    public BigDecimal getTotalComisiones() {
+        BigDecimal total = BigDecimal.ZERO;
+        if (comisionAlltickets != null) total = total.add(comisionAlltickets);
+        if (comisionPasarela != null) total = total.add(comisionPasarela);
+        if (comision3ds != null) total = total.add(comision3ds);
+        return total;
+    }
+
+    public BigDecimal getTotalRetenciones() {
+        BigDecimal total = BigDecimal.ZERO;
+        if (retefuente != null) total = total.add(retefuente);
+        if (reteica != null) total = total.add(reteica);
+        if (parafiscal != null) total = total.add(parafiscal);
+        return total;
+    }
+
+    public Double getPorcentajeOcupacion() {
+        if (asistentes == null || asistentes == 0) return 0.0;
+        if (ingresos == null) return 0.0;
+        return (ingresos.doubleValue() / asistentes.doubleValue()) * 100;
+    }
+
 
 }

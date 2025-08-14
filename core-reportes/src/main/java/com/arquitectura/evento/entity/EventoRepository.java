@@ -11,9 +11,9 @@ import java.util.Optional;
 @Repository
 public interface EventoRepository extends JpaRepository<Evento,Long> {
 
-    List<Evento> findByOrganizadoresNumeroDocumentoAndEstadoNot(String numeroDocumento, Integer pEstado);
+    List<Evento> findByOrganizadoresNumeroDocumentoAndEstadoNotOrderByFechaAsc(String numeroDocumento, Integer pEstado);
 
-    List<Evento> findByOrganizadoresNumeroDocumentoAndEstado(String numeroDocumento, Integer pEstado);
+    List<Evento> findByOrganizadoresNumeroDocumentoAndEstadoOrderByFechaDesc(String numeroDocumento, Integer pEstado);
 
 
 }

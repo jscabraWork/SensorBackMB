@@ -35,6 +35,4 @@ public class EventoServiceImpl extends CommonServiceImpl<Evento, EventoRepositor
         return vistaResumenEvento.findByEventoId(id).orElse(null);
     }
 
-
-
 }
