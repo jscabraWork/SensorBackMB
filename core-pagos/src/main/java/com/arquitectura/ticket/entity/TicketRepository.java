@@ -101,7 +101,7 @@ public interface TicketRepository extends JpaRepository<Ticket, Long> {
      * @param numeroDocumento Número de documento del cliente
      * @return Lista de tickets del cliente no en proceso
      */
-    @Query("SELECT DISTINCT t FROM Ticket t JOIN FETCH t.localidad l JOIN FETCH l.dias d JOIN FETCH d.evento e WHERE t.cliente.numeroDocumento = :numeroDocumento AND t.estado != 3 ORDER BY e.id, t.id")
-    List<Ticket> findByClienteNumeroDocumentoAndEstadoNot3(@Param("numeroDocumento") String numeroDocumento);
+    @Query("SELECT DISTINCT t FROM Ticket t JOIN FETCH t.localidad l JOIN FETCH l.dias d JOIN FETCH d.evento e WHERE t.cliente.numeroDocumento = :numeroDocumento AND t.estado != :pEstado ORDER BY e.id, t.id")
+    List<Ticket> findByClienteNumeroDocumentoAndEventoEstadoNot(@Param("numeroDocumento") String numeroDocumento, @Param("pEstado") Integer pEstado);
 
 }

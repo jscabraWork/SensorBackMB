@@ -50,6 +50,8 @@ public class QRController {
                 return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
             }
 
+            //-- DESDE AQUI PASAR LÓGICA A UN SERVICE ---
+
             // Validar que el ticket esté vendido
             if (!ticketPrincipal.isVendido()) {
                 response.put("error", "El ticket no ha sido vendido");
@@ -57,6 +59,7 @@ public class QRController {
             }
 
             List<Ticket> ticketsAEnviar = new ArrayList<>();
+
             ticketsAEnviar.add(ticketPrincipal);
 
             // Si es un palco, agregar todos los tickets hijos
