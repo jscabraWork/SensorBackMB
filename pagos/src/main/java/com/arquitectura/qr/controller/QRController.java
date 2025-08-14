@@ -30,6 +30,10 @@ public class QRController {
     @PutMapping("/enviar/{numeroDocumento}/{pTicketId}")
     public ResponseEntity<?> enviarQR(@PathVariable Long pTicketId, @PathVariable String numeroDocumento,
                                       @RequestHeader("Authorization") String token) {
+
+        // PASAR TODA LA LOGICA A UN SERVICE
+        // Se piuede simplificar el codigo
+        //No necesitas una lista de tickets a enviar, puedes enviar directamente el ticket principal y sus hijos si es un palco.
         Map<String, Object> response = new HashMap<>();
 
         try {
@@ -57,13 +61,18 @@ public class QRController {
 
             // Si es un palco, agregar todos los tickets hijos
             if (ticketPrincipal.getTipo() == 1) {
-                List<Ticket> hijos = ticketService.obtenerHijosDelPalco(pTicketId);
+
+                //ESTO NO ES NECESARIO, YA QUE EL TICKET YA TIENE LOS HIJOS CARGADOS
+                //List<Ticket> hijos = ticketService.obtenerHijosDelPalco(pTicketId);
+
+                List<Ticket> hijos = ticketPrincipal.getAsientos();
+
                 for (Ticket hijo : hijos) {
-                    if (!hijo.isVendido()) {
-                        response.put("error", "El ticket hijo con ID " + hijo.getId() + " no ha sido vendido");
-                        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+
+                    if (hijo.isVendido()) {
+                        ticketsAEnviar.add(hijo); //Revision Isaac: Elimine la excepcion que tenias aqui, nos podia causar problemas si un hijo no estaba vendido
                     }
-                    ticketsAEnviar.add(hijo);
+
                 }
             }
 
