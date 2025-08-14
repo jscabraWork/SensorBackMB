@@ -17,6 +17,7 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 @Builder
 public class ComprasPendientesDto {
+
     private Orden orden;
     private Long eventoId;
     private String eventoNombre;
@@ -47,13 +48,15 @@ public class ComprasPendientesDto {
      * @return Un ComprasPendientesDto completo con toda la información de la orden pendiente
      */
     private static ComprasPendientesDto crearDto(Orden orden) {
-        // Obtener el evento a través del primer ticket
-        Evento evento = null;
+
+        Evento evento = orden.getEvento();
+
         String localidadNombre = null;
         
         if (orden.getTickets() != null && !orden.getTickets().isEmpty()) {
             Ticket primerTicket = orden.getTickets().get(0);
-            evento = primerTicket.getLocalidad().getDias().get(0).getEvento();
+            //Esto esta mal, puedes obtener el evento directamente de la orden
+            //evento = primerTicket.getLocalidad().getDias().get(0).getEvento();
             localidadNombre = primerTicket.getLocalidad().getNombre();
         }
         

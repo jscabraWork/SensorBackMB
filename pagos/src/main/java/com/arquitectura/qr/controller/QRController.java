@@ -32,7 +32,7 @@ public class QRController {
                                       @RequestHeader("Authorization") String token) {
 
         // PASAR TODA LA LOGICA A UN SERVICE
-        // Se piuede simplificar el codigo
+        // Se puede simplificar el codigo
         //No necesitas una lista de tickets a enviar, puedes enviar directamente el ticket principal y sus hijos si es un palco.
         Map<String, Object> response = new HashMap<>();
 
@@ -62,7 +62,7 @@ public class QRController {
             // Si es un palco, agregar todos los tickets hijos
             if (ticketPrincipal.getTipo() == 1) {
 
-                //ESTO NO ES NECESARIO, YA QUE EL TICKET YA TIENE LOS HIJOS CARGADOS
+                //ESTO NO ES NECESARIO, YA QUE EL TICKET YA TIENE LOS HIJOS
                 //List<Ticket> hijos = ticketService.obtenerHijosDelPalco(pTicketId);
 
                 List<Ticket> hijos = ticketPrincipal.getAsientos();
