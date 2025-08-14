@@ -4,6 +4,7 @@ import com.arquitectura.dia.entity.Dia;
 import com.arquitectura.tarifa.entity.Tarifa;
 import com.arquitectura.ticket.entity.Ticket;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -33,6 +34,7 @@ public class Localidad {
     private String descripcion;
 
     @OneToMany(mappedBy = "localidad", fetch = FetchType.LAZY)
+    @JsonManagedReference(value = "localidad_tarifa")
     @JsonIgnore
     private List<Tarifa> tarifas;
 
