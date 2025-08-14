@@ -282,7 +282,6 @@ public class OrdenServiceImpl extends CommonServiceImpl<Orden, OrdenRepository> 
 
         Orden orden = findById(pOrdenId);
 
-
         if (orden == null) {
             response = "No se encontró ninguna orden para aplicar el cupón";
             return response;

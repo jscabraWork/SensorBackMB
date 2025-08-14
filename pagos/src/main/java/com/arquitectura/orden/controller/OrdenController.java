@@ -145,71 +145,6 @@ public class OrdenController extends CommonController<Orden, OrdenService> {
         return new ResponseEntity<>(response,HttpStatus.OK);
     }
 
-
-    @GetMapping("/ver/{pId}")
-    public ResponseEntity<?> verPorId(@PathVariable Long pId) {
-        Map<String, Object> response = new HashMap<>();
-        Orden orden = service.findById(pId);
-
-        if (orden == null) {
-            return ResponseEntity.notFound().build();
-        }
-
-        List<Cliente> clientes = new ArrayList<>();
-        List<Long> idsLocalidades= new ArrayList<>();
-        Alcancia alcancia = null;
-        if(orden==null) {
-            return ResponseEntity.notFound().build();
-        }
-
-        List<Ticket> tickets = orden.getTickets();
-
-        if(orden.getTipo()==5) {
-            OrdenAlcancia oe = (OrdenAlcancia) orden;
-            alcancia = oe.getAlcancia();
-            tickets = alcancia.getTickets();
-        }
-
-        if(!tickets.isEmpty())
-        {
-            tickets.forEach(t->{
-                if(t.getCliente()!=null) {
-                    clientes.add(t.getCliente());
-                }
-                else {
-                    clientes.add(null);
-                }
-                idsLocalidades.add(t.getLocalidad().getId());
-            });
-        }
-
-        ConfigSeguro configSeguro = configSeguroService.findAll().stream().findFirst().orElse(null);
-
-        if (configSeguro == null) {
-            response.put("mensaje", "el seguro no fue configurado");
-            return ResponseEntity.ok(response);
-        }
-
-        response.put("cliente", orden.getCliente());
-        response.put("orden", orden);
-        response.put("alcancia", alcancia);
-
-        if(alcancia!=null) {
-            response.put("boletasAlcancia",alcancia.getTickets());
-        }
-
-        response.put("clientes", clientes);
-        response.put("tickets", tickets);
-        response.put("transacciones", orden.getTransacciones());
-
-        //Hice esto provisionalmente para que no falle, elimine el feign a eventos
-        //ATTE Isaac
-        response.put("infoEvento", null);
-
-        response.put("configSeguro", configSeguro);
-        return ResponseEntity.ok(response);
-    }
-
     @GetMapping("/carrito/{pId}")
     public ResponseEntity<?> getOrdenParaCarrito(@PathVariable Long pId) {
 
@@ -246,11 +181,9 @@ public class OrdenController extends CommonController<Orden, OrdenService> {
         return ResponseEntity.ok(response);
     }
 
-
     @PostMapping("/aplicar-cupon")
     @Transactional("transactionManager")
-    public ResponseEntity<?> aplicarCupon(@RequestParam String pCuponId,
-                                                   @RequestParam Long pOrdenId) throws Exception {
+    public ResponseEntity<?> aplicarCupon(@RequestParam String pCuponId, @RequestParam Long pOrdenId) throws Exception {
 
         Map<String, Object> response = new HashMap<>();
         response.put("mensaje",service.aplicarCupon(pCuponId, pOrdenId) );
