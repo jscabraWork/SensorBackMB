@@ -18,9 +18,10 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 @Builder
 public class MisAlcanciasDto {
+
     private Alcancia alcancia;
-    private Double precioParcialPagado;
-    private Double precioTotal;
+    private Double precioParcialPagado; //Eliminar: La alcancia ya tiene su precio parcial pagado
+    private Double precioTotal; //Eliminar: La alcancia ya tiene su precio total calculado
     private List<Ticket> tickets;
     private Long eventoId;
     private String eventoNombre;
@@ -65,7 +66,7 @@ public class MisAlcanciasDto {
             imagenUrl = imagenPrincipal != null ? imagenPrincipal.getUrl() : null;
         }
         
-        // Obtener el nombre de la localidad del primer ticket
+        // Esto lo estas haciendo dos veces, arriba ya obtuviste la localidad del primer ticket y aca lo vuelves a hacer
         Localidad localidad = null;
         if (alcancia.getTickets() != null && !alcancia.getTickets().isEmpty()) {
             localidad = alcancia.getTickets().get(0).getLocalidad();
@@ -73,8 +74,8 @@ public class MisAlcanciasDto {
         
         return MisAlcanciasDto.builder()
                 .alcancia(alcancia)
-                .precioParcialPagado(alcancia.getPrecioParcialPagado())
-                .precioTotal(alcancia.getPrecioTotal())
+                .precioParcialPagado(alcancia.getPrecioParcialPagado()) // Eliminar: La alcancia ya tiene su precio parcial pagado
+                .precioTotal(alcancia.getPrecioTotal()) // Eliminar: La alcancia ya tiene su precio total calculado
                 .tickets(alcancia.getTickets())
                 .eventoId(evento != null ? evento.getId() : null)
                 .eventoNombre(evento != null ? evento.getNombre() : null)
