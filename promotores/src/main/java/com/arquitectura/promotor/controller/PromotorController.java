@@ -5,6 +5,8 @@ import com.arquitectura.evento.entity.Evento;
 import com.arquitectura.evento.service.EventoService;
 import com.arquitectura.promotor.entity.Promotor;
 import com.arquitectura.promotor.service.PromotorService;
+import com.arquitectura.ticket.entity.Ticket;
+import com.arquitectura.ticket.service.TicketService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,6 +22,9 @@ public class PromotorController extends CommonControllerString<Promotor, Promoto
 
     @Autowired
     private EventoService eventoService;
+
+    @Autowired
+    private TicketService ticketService;
 
     //Trae el promotor para editar sus eventos relacionados
     @GetMapping("/promotor/{pNumeroDocumento}")
@@ -56,6 +61,20 @@ public class PromotorController extends CommonControllerString<Promotor, Promoto
         Map<String, Object> response = new HashMap<>();
         List<Promotor> promotores = service.findByFiltro(nombre, numeroDocumento, correo);
         response.put("promotores", promotores);
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+
+    @GetMapping("/ventas/{pPromotorId}/eventos/{pEventoId}")
+    public ResponseEntity<?> getVentasByPromotorAndEvento(@PathVariable String pPromotorId, @PathVariable Long pEventoId) {
+
+        Map<String, Object> response = new HashMap<>();
+
+        List<Ticket> tickets = ticketService.findVentasByPromotorAndEvento(
+                pEventoId, pPromotorId); // Estado 1 para tickets vendidos
+
+        response.put("ventas", tickets);
+
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 

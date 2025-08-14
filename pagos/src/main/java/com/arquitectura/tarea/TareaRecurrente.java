@@ -41,8 +41,6 @@ public class TareaRecurrente {
 
         List<Orden> ordenes= ordenService.findByEstado(3);
 
-        LocalDateTime fecha = LocalDateTime.now();
-
         ordenes.forEach(orden -> {
 
             LocalDateTime fechaCreacionOrden = orden.getCreationDate();
@@ -52,8 +50,9 @@ public class TareaRecurrente {
 
             Boolean fechaVencida = fechaCreacionOrden.isAfter(fechaCancelacionOrden);
 
+            //Si la fecha esta vencida y no tiene requestId simplemente se rechaza la orden
             if(fechaVencida && orden.getIdTRXPasarela()==null) {
-                //Si la orden es de traspaso rechazar orden y liberar los tikcets
+                //Estas ordenes nunca pasaron al checkout o son de traspaso
                 orden.rechazar();
                 ordenService.saveKafka(orden);
                 ticketService.saveAllKafka(orden.getTickets());
@@ -80,7 +79,7 @@ public class TareaRecurrente {
                         //Si la transaccion es pendiente actualizar la orden
                         else if( transaccionBD.isPendiente()){
                             //Actualizar lastModifiedDate de la orden a la fecha actual
-                            orden.setLastModifiedDate(fecha);
+                            orden.setLastModifiedDate(LocalDateTime.now());
                             ordenService.save(orden);
                         }
                         else{ //Si la orden no es aprobada ni pendiente, rechazar la orden

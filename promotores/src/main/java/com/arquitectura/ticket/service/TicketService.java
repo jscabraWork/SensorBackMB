@@ -12,4 +12,10 @@ public interface TicketService extends CommonService<Ticket> {
             String promotorNumeroDocumento, 
             Integer estado
     );
+
+
+    List<Ticket> findVentasByPromotorAndEvento(
+            Long eventoId,
+            String promotorNumeroDocumento
+    );
 }

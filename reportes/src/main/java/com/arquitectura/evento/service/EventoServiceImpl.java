@@ -21,17 +21,17 @@ public class EventoServiceImpl extends CommonServiceImpl<Evento, EventoRepositor
     //Se utiliza para encontrar los eventos no terminados por organizador
     @Override
     public List<Evento> findByOrganizadoresNumeroDocumentoAndEstadoNot(String numeroDocumento, Integer pEstado) {
-        return repository.findByOrganizadoresNumeroDocumentoAndEstadoNotOrderByFechaAsc(numeroDocumento, pEstado);
+        return repository.findByOrganizadoresNumeroDocumentoAndEstadoNotOrderByFechaAperturaAsc(numeroDocumento, pEstado);
     }
 
     //Se utiliza para el historial de eventos por organizador
     @Override
     public List<Evento> findByOrganizadoresNumeroDocumentoAndEstado(String numeroDocumento, Integer pEstado) {
-        return repository.findByOrganizadoresNumeroDocumentoAndEstadoOrderByFechaDesc(numeroDocumento, pEstado);
+        return repository.findByOrganizadoresNumeroDocumentoAndEstadoOrderByFechaAperturaDesc(numeroDocumento, pEstado);
     }
 
     @Override
-    public ResumenEventoView findResumenByEventoId(Long id) {
+    public ResumenEventoView getResumenByEventoId(Long id) {
         return vistaResumenEvento.findByEventoId(id).orElse(null);
     }
 
