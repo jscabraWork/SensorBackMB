@@ -7,4 +7,6 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class OrganizadorServiceImpl extends CommonServiceImplString<Organizador, OrganizadorRepository> implements OrganizadorService {
+
+
 }
