@@ -50,13 +50,10 @@ public class ComprasPendientesDto {
     private static ComprasPendientesDto crearDto(Orden orden) {
 
         Evento evento = orden.getEvento();
-
         String localidadNombre = null;
         
         if (orden.getTickets() != null && !orden.getTickets().isEmpty()) {
             Ticket primerTicket = orden.getTickets().get(0);
-            //Esto esta mal, puedes obtener el evento directamente de la orden
-            //evento = primerTicket.getLocalidad().getDias().get(0).getEvento();
             localidadNombre = primerTicket.getLocalidad().getNombre();
         }
         
