@@ -732,7 +732,8 @@ public class TicketServiceImpl extends CommonServiceImpl<Ticket, TicketRepositor
 
     @Override
     public List<MisTicketsDto> getMisTicketsByCliente(String numeroDocumento) {
-        List<Ticket> tickets = repository.findByClienteNumeroDocumentoAndEstadoNot3(numeroDocumento);
+        //nombrar al método findByClienteNumeroDocumentoAnd - Evento- EstadoNoT falta especificar que te refieres al estado del evento
+        List<Ticket> tickets = repository.findByClienteNumeroDocumentoAndEventoEstadoNot(numeroDocumento,3);
         return MisTicketsDto.TicketsToDto(tickets);
     }
 

@@ -21,7 +21,7 @@ public class ComprasPendientesDto {
     private Orden orden;
     private Long eventoId;
     private String eventoNombre;
-    private Double precio;
+    private Double precio; //Eliminar: La orden tiene un valorOrden
     private List<Ticket> tickets;
     private String imagen;
     private String localidad;

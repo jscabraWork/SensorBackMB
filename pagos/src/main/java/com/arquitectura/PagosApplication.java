@@ -1,8 +1,10 @@
 package com.arquitectura;
 
 import com.arquitectura.imagen.service.ImagenService;
+import com.arquitectura.tarea.TareaRecurrente;
 import jakarta.annotation.PostConstruct;
 import jakarta.annotation.Resource;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -10,6 +12,7 @@ import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.cloud.openfeign.EnableFeignClients;
 import org.springframework.context.annotation.Bean;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
+import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.web.client.RestTemplate;
 
@@ -20,11 +23,15 @@ import java.util.TimeZone;
 @EnableJpaRepositories
 @EnableTransactionManagement
 @SpringBootApplication
+@EnableScheduling
 @EnableFeignClients
 public class PagosApplication implements CommandLineRunner {
 
 	@Resource
 	ImagenService fileService;
+
+	@Autowired
+	private TareaRecurrente tareaRecurrente;
 
 	public static void main(String[] args) {
 		SpringApplication.run(PagosApplication.class, args);
@@ -39,6 +46,9 @@ public class PagosApplication implements CommandLineRunner {
 	public void run(String... args) throws Exception {
 		fileService.deleteAll();
 		fileService.init();
+
+		// Ejecutar revisión de órdenes en proceso al iniciar la aplicación
+		tareaRecurrente.revisarOrdenesEnProceso();
 	}
 
 	@Bean
