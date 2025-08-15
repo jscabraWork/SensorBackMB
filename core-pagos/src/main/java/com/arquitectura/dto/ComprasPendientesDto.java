@@ -21,7 +21,6 @@ public class ComprasPendientesDto {
     private Orden orden;
     private Long eventoId;
     private String eventoNombre;
-    private Double precio; //Eliminar: La orden tiene un valorOrden
     private List<Ticket> tickets;
     private String imagen;
     private String localidad;
@@ -68,7 +67,6 @@ public class ComprasPendientesDto {
                 .orden(orden)
                 .eventoId(evento != null ? evento.getId() : null)
                 .eventoNombre(evento != null ? evento.getNombre() : null)
-                .precio(orden.getValorOrden())
                 .tickets(orden.getTickets())
                 .imagen(imagenUrl)
                 .localidad(localidadNombre)
