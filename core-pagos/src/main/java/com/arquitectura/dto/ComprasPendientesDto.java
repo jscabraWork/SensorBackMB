@@ -21,7 +21,6 @@ public class ComprasPendientesDto {
     private Orden orden;
     private Long eventoId;
     private String eventoNombre;
-    private Double precio; //Eliminar: La orden tiene un valorOrden
     private List<Ticket> tickets;
     private String imagen;
     private String localidad;
@@ -49,15 +48,11 @@ public class ComprasPendientesDto {
      */
     private static ComprasPendientesDto crearDto(Orden orden) {
 
-        //Obtener el evento directamente de la orden
         Evento evento = orden.getEvento();
-
         String localidadNombre = null;
         
         if (orden.getTickets() != null && !orden.getTickets().isEmpty()) {
-            Ticket primerTicket = orden.getTickets().get(0); // innecesario instanciar este ticket que solo se
-            //puedes obtener el evento directamente de la orden
-            //evento = primerTicket.getLocalidad().getDias().get(0).getEvento();
+            Ticket primerTicket = orden.getTickets().get(0);
             localidadNombre = primerTicket.getLocalidad().getNombre();
         }
         
@@ -72,7 +67,6 @@ public class ComprasPendientesDto {
                 .orden(orden)
                 .eventoId(evento != null ? evento.getId() : null)
                 .eventoNombre(evento != null ? evento.getNombre() : null)
-                .precio(orden.getValorOrden())
                 .tickets(orden.getTickets())
                 .imagen(imagenUrl)
                 .localidad(localidadNombre)

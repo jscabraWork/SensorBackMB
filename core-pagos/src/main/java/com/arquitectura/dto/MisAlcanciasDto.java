@@ -20,8 +20,6 @@ import java.util.stream.Collectors;
 public class MisAlcanciasDto {
 
     private Alcancia alcancia;
-    private Double precioParcialPagado; //Eliminar: La alcancia ya tiene su precio parcial pagado
-    private Double precioTotal; //Eliminar: La alcancia ya tiene su precio total calculado
     private List<Ticket> tickets;
     private Long eventoId;
     private String eventoNombre;
@@ -54,9 +52,11 @@ public class MisAlcanciasDto {
     private static MisAlcanciasDto crearDto(Alcancia alcancia) {
         // Obtener el evento a través del primer ticket
         Evento evento = null;
+        Localidad localidad = null;
         if (alcancia.getTickets() != null && !alcancia.getTickets().isEmpty()) {
             Ticket primerTicket = alcancia.getTickets().get(0);
             evento = primerTicket.getLocalidad().getDias().get(0).getEvento();
+            localidad = primerTicket.getLocalidad();
         }
         
         // Obtener la imagen de tipo 1 del evento
@@ -66,16 +66,8 @@ public class MisAlcanciasDto {
             imagenUrl = imagenPrincipal != null ? imagenPrincipal.getUrl() : null;
         }
         
-        // Esto lo estas haciendo dos veces, arriba ya obtuviste la localidad del primer ticket y aca lo vuelves a hacer
-        Localidad localidad = null;
-        if (alcancia.getTickets() != null && !alcancia.getTickets().isEmpty()) {
-            localidad = alcancia.getTickets().get(0).getLocalidad();
-        }
-        
         return MisAlcanciasDto.builder()
                 .alcancia(alcancia)
-                .precioParcialPagado(alcancia.getPrecioParcialPagado()) // Eliminar: La alcancia ya tiene su precio parcial pagado
-                .precioTotal(alcancia.getPrecioTotal()) // Eliminar: La alcancia ya tiene su precio total calculado
                 .tickets(alcancia.getTickets())
                 .eventoId(evento != null ? evento.getId() : null)
                 .eventoNombre(evento != null ? evento.getNombre() : null)
