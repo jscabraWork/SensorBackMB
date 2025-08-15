@@ -131,7 +131,13 @@ public class Orden extends Auditable {
 
     public void rechazar(){
         estado = 2; // Rechazada
-        liberarTickets();
+
+        //SOLO LIBEARAR TICKETS DE LA ORDEN SI ES DE TIPO 1 (COMPRA ESTANDAR) O 3 (CREAR ALCANCIA)
+        //No se pueden liberar tickets de ordenes de tipo 4 (aportaciones a alcancía), 5 (traspaso) o 6 (asignación)
+        if(tipo == 1 || tipo == 3) {
+            liberarTickets();
+        }
+
         if(transacciones!= null && !transacciones.isEmpty()) {
             transacciones.forEach(transaccion -> rechazar());
         }
