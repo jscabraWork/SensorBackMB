@@ -5,6 +5,7 @@ import com.arquitectura.configSeguro.entity.ConfigSeguro;
 import com.arquitectura.configSeguro.service.ConfigSeguroService;
 import com.arquitectura.cupon.entity.Cupon;
 import com.arquitectura.cupon.service.CuponService;
+import com.arquitectura.dto.ComprasPendientesDto;
 import com.arquitectura.evento.service.EventoService;
 import com.arquitectura.localidad.service.LocalidadService;
 import com.arquitectura.orden.entity.Orden;
@@ -289,7 +290,6 @@ public class OrdenServiceImpl extends CommonServiceImpl<Orden, OrdenRepository> 
 
         Orden orden = findById(pOrdenId);
 
-
         if (orden == null) {
             response = "No se encontró ninguna orden para aplicar el cupón";
             return response;
@@ -333,6 +333,12 @@ public class OrdenServiceImpl extends CommonServiceImpl<Orden, OrdenRepository> 
     @Override
     public List<Orden> findAllOrdenesSinConfirmacion() {
         return repository.findAllOrdenesSinConfirmacion();
+    }
+
+    @Override
+    public List<ComprasPendientesDto> getComprasPendientesByCliente(String numeroDocumento) {
+        List<Orden> ordenes = repository.findByClienteNumeroDocumentoAndEstado(numeroDocumento, 3);
+        return ComprasPendientesDto.OrdenesToDto(ordenes);
     }
 
 

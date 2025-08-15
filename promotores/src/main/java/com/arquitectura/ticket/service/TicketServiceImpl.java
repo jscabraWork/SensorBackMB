@@ -21,4 +21,12 @@ public class TicketServiceImpl extends CommonServiceImpl<Ticket, TicketRepositor
                 estado
         );
     }
+
+    @Override
+    public List<Ticket> findVentasByPromotorAndEvento(Long eventoId, String promotorNumeroDocumento) {
+        return repository.findByLocalidad_Dias_Evento_IdAndPromotor_NumeroDocumentoAndEstadoIn(eventoId,
+                promotorNumeroDocumento,
+                List.of(1, 2)
+        );
+    }
 }

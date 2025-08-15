@@ -2,6 +2,7 @@ package com.arquitectura.ticket.controller;
 
 import com.arquitectura.cliente.entity.Cliente;
 import com.arquitectura.controller.CommonController;
+import com.arquitectura.dto.MisTicketsDto;
 import com.arquitectura.ticket.entity.Ticket;
 import com.arquitectura.ticket.service.TicketService;
 import com.google.zxing.WriterException;
@@ -273,6 +274,5 @@ public class TicketController extends CommonController<Ticket, TicketService> {
         });
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
-
 
 }

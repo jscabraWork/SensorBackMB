@@ -16,6 +16,13 @@ public interface OrdenRepository extends JpaRepository<Orden, Long> {
 
     public List<Orden> findByEstado(Integer estado);
 
+    /**
+     * Trae todas las órdenes en estado 3 (EN PROCESO) por cliente
+     * @param numeroDocumento Número de documento del cliente
+     * @return Lista de órdenes pendientes del cliente
+     */
+    public List<Orden> findByClienteNumeroDocumentoAndEstado(String numeroDocumento, Integer estado);
+
     @Query("SELECT o FROM Orden o " +
             "WHERE o.idTRXPasarela IS NOT NULL " +
             "AND NOT EXISTS ( " +

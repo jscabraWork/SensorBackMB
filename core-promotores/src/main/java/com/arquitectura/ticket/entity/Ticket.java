@@ -5,6 +5,8 @@ import com.arquitectura.promotor.entity.Promotor;
 import com.arquitectura.tarifa.entity.Tarifa;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -52,5 +54,11 @@ public class Ticket {
     @JoinColumn(name = "promotor_id")
     @JsonBackReference(value = "promotor_ticket")
     private Promotor promotor;
+
+    // Getter para obtener el nombre de la localidad y facilitar el reporte de ventas
+    @JsonProperty("localidad")
+    public String getLocalidadNombre() {
+        return localidad != null ? localidad.getNombre() : null;
+    }
 
 }

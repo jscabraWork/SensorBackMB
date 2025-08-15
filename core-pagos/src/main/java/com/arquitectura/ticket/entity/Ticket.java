@@ -195,7 +195,18 @@ public class Ticket extends Auditable {
         return estado == 4;
     }
     public boolean isVendido() {
-        return estado == 2;
+        return estado == 1;
+    }
+
+    /**
+     * Verifica si todos los ingresos del ticket han sido utilizados
+     * @return true si todos los ingresos están utilizados, false si hay alguno sin utilizar o no hay ingresos
+     */
+    public boolean todosIngresosUtilizados() {
+        if (ingresos == null || ingresos.isEmpty()) {
+            return false;
+        }
+        return ingresos.stream().allMatch(ingreso -> ingreso.isUtilizado());
     }
 
 

@@ -2,9 +2,11 @@ package com.arquitectura.orden.controller;
 
 import com.arquitectura.alcancia.entity.Alcancia;
 import com.arquitectura.cliente.entity.Cliente;
+import com.arquitectura.cliente.service.ClienteService;
 import com.arquitectura.configSeguro.entity.ConfigSeguro;
 import com.arquitectura.configSeguro.service.ConfigSeguroService;
 import com.arquitectura.controller.CommonController;
+import com.arquitectura.dto.ComprasPendientesDto;
 import com.arquitectura.evento.entity.Evento;
 import com.arquitectura.orden.entity.Orden;
 import com.arquitectura.orden.service.OrdenService;
@@ -15,6 +17,7 @@ import com.arquitectura.transaccion.service.TransaccionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
@@ -35,6 +38,9 @@ public class OrdenController extends CommonController<Orden, OrdenService> {
 
     @Autowired
     private PlaceToPlayService placeToPlayService;
+
+    @Autowired
+    private ClienteService clienteService;
 
     /** CREACIÓN DE ORDENES **/
 
@@ -145,71 +151,6 @@ public class OrdenController extends CommonController<Orden, OrdenService> {
         return new ResponseEntity<>(response,HttpStatus.OK);
     }
 
-
-    @GetMapping("/ver/{pId}")
-    public ResponseEntity<?> verPorId(@PathVariable Long pId) {
-        Map<String, Object> response = new HashMap<>();
-        Orden orden = service.findById(pId);
-
-        if (orden == null) {
-            return ResponseEntity.notFound().build();
-        }
-
-        List<Cliente> clientes = new ArrayList<>();
-        List<Long> idsLocalidades= new ArrayList<>();
-        Alcancia alcancia = null;
-        if(orden==null) {
-            return ResponseEntity.notFound().build();
-        }
-
-        List<Ticket> tickets = orden.getTickets();
-
-        if(orden.getTipo()==5) {
-            OrdenAlcancia oe = (OrdenAlcancia) orden;
-            alcancia = oe.getAlcancia();
-            tickets = alcancia.getTickets();
-        }
-
-        if(!tickets.isEmpty())
-        {
-            tickets.forEach(t->{
-                if(t.getCliente()!=null) {
-                    clientes.add(t.getCliente());
-                }
-                else {
-                    clientes.add(null);
-                }
-                idsLocalidades.add(t.getLocalidad().getId());
-            });
-        }
-
-        ConfigSeguro configSeguro = configSeguroService.findAll().stream().findFirst().orElse(null);
-
-        if (configSeguro == null) {
-            response.put("mensaje", "el seguro no fue configurado");
-            return ResponseEntity.ok(response);
-        }
-
-        response.put("cliente", orden.getCliente());
-        response.put("orden", orden);
-        response.put("alcancia", alcancia);
-
-        if(alcancia!=null) {
-            response.put("boletasAlcancia",alcancia.getTickets());
-        }
-
-        response.put("clientes", clientes);
-        response.put("tickets", tickets);
-        response.put("transacciones", orden.getTransacciones());
-
-        //Hice esto provisionalmente para que no falle, elimine el feign a eventos
-        //ATTE Isaac
-        response.put("infoEvento", null);
-
-        response.put("configSeguro", configSeguro);
-        return ResponseEntity.ok(response);
-    }
-
     @GetMapping("/carrito/{pId}")
     public ResponseEntity<?> getOrdenParaCarrito(@PathVariable Long pId) {
 
@@ -246,15 +187,45 @@ public class OrdenController extends CommonController<Orden, OrdenService> {
         return ResponseEntity.ok(response);
     }
 
-
     @PostMapping("/aplicar-cupon")
     @Transactional("transactionManager")
-    public ResponseEntity<?> aplicarCupon(@RequestParam String pCuponId,
-                                                   @RequestParam Long pOrdenId) throws Exception {
+    public ResponseEntity<?> aplicarCupon(@RequestParam String pCuponId, @RequestParam Long pOrdenId) throws Exception {
 
         Map<String, Object> response = new HashMap<>();
         response.put("mensaje",service.aplicarCupon(pCuponId, pOrdenId) );
         return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    /**
+     * Obtiene todas las compras pendientes (estado 3) de un cliente
+     * Valida que el usuario del token sea el mismo que solicita las compras o sea administrador
+     * @param numeroDocumento Número de documento del cliente
+     * @param token Token de autorización
+     * @return ResponseEntity con la lista de ComprasPendientesDto
+     */
+    @PreAuthorize("hasAnyRole('ADMIN', 'CLIENTE')")
+    @GetMapping("/compras-pendientes/{numeroDocumento}")
+    public ResponseEntity<?> getComprasPendientesByCliente(@PathVariable String numeroDocumento,
+                                                          @RequestHeader("Authorization") String token) {
+        try {
+            // Validar que el usuario del token sea el mismo o sea admin
+            if (!numeroDocumento.equals(clienteService.obtenerUsuarioDeToken(token)) &&
+                !clienteService.obtenerRolDeToken(token).equals("ROLE_ADMIN")) {
+                return new ResponseEntity<>("No tienes permisos para acceder a estas compras", HttpStatus.UNAUTHORIZED);
+            }
+
+            List<ComprasPendientesDto> comprasPendientes = service.getComprasPendientesByCliente(numeroDocumento);
+
+            if (comprasPendientes.isEmpty()) {
+                return ResponseEntity.noContent().build();
+            }
+
+            return ResponseEntity.ok(comprasPendientes);
+        } catch (Exception e) {
+            Map<String, String> errorResponse = new HashMap<>();
+            errorResponse.put("error", "Error al obtener las compras pendientes del cliente");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorResponse);
+        }
     }
 
 

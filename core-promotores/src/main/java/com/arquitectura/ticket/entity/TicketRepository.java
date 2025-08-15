@@ -11,4 +11,10 @@ public interface TicketRepository extends JpaRepository<Ticket, Long> {
             String promotorNumeroDocumento, 
             Integer estado
     );
+
+    List<Ticket> findByLocalidad_Dias_Evento_IdAndPromotor_NumeroDocumentoAndEstadoIn(
+            Long eventoId,
+            String promotorNumeroDocumento,
+            List<Integer> estado
+    );
 }

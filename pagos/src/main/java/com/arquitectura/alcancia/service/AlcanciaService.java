@@ -2,6 +2,7 @@ package com.arquitectura.alcancia.service;
 
 import com.arquitectura.alcancia.entity.Alcancia;
 import com.arquitectura.cliente.entity.Cliente;
+import com.arquitectura.dto.MisAlcanciasDto;
 import com.arquitectura.services.CommonService;
 import com.arquitectura.tarifa.entity.Tarifa;
 import com.arquitectura.ticket.entity.Ticket;
@@ -24,6 +25,13 @@ public interface AlcanciaService extends CommonService<Alcancia> {
      * @return La alcancía guardada
      */
     public Alcancia saveKafka(Alcancia pAlcancia);
+
+    /**
+     * Obtiene las alcancías de un cliente organizadas en DTOs
+     * @param numeroDocumento Número de documento del cliente
+     * @return Lista de MisAlcanciasDto del cliente
+     */
+    public List<MisAlcanciasDto> getMisAlcanciasByCliente(String numeroDocumento);
 
     /**
      * Elimina una alcancía por su ID y publica el evento de eliminación en Kafka
