@@ -44,7 +44,12 @@ public class Orden extends Auditable{
     @JsonBackReference(value="transaccionOrden_mov")
     protected List<Transaccion> transacciones;
 
-    @ManyToMany(fetch = FetchType.EAGER)
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(
+            name = "orden_tickets",
+            joinColumns = @JoinColumn(name = "orden_id"),
+            inverseJoinColumns = @JoinColumn(name = "ticket_id")
+    )
     @JsonIgnore
     protected List <Ticket> tickets;
 

@@ -96,5 +96,12 @@ public interface TicketRepository extends JpaRepository<Ticket, Long> {
 
     public Integer countByTarifaIdAndEstado(Long tarifaId, Integer estado);
 
+    /**
+     * Encuentra todos los tickets de un cliente que no estén en estado 3 (EN PROCESO)
+     * @param numeroDocumento Número de documento del cliente
+     * @return Lista de tickets del cliente no en proceso
+     */
+    @Query("SELECT DISTINCT t FROM Ticket t JOIN FETCH t.localidad l JOIN FETCH l.dias d JOIN FETCH d.evento e WHERE t.cliente.numeroDocumento = :numeroDocumento AND t.estado != :pEstado ORDER BY e.id, t.id")
+    List<Ticket> findByClienteNumeroDocumentoAndEventoEstadoNot(@Param("numeroDocumento") String numeroDocumento, @Param("pEstado") Integer pEstado);
 
 }

@@ -16,8 +16,11 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.FileSystemUtils;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
@@ -140,4 +143,19 @@ public class ImagenServiceImpl extends CommonServiceImpl<Imagen, ImagenRepositor
 		}
 	}
 
+
+	@Override
+	public void init() {
+		try {
+			Files.createDirectory(root);
+		} catch (IOException e) {
+			throw new RuntimeException("No se puede inciar el storage");
+		}
+	}
+
+	@Override
+	public void deleteAll() {
+		FileSystemUtils.deleteRecursively(root.toFile());
+
+	}
 }

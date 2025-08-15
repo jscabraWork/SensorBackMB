@@ -5,7 +5,9 @@ import com.arquitectura.cliente.entity.Cliente;
 import com.arquitectura.cliente.service.ClienteService;
 import com.arquitectura.clients.ReporteFeignClient;
 import com.arquitectura.configSeguro.service.ConfigSeguroService;
+import com.arquitectura.dto.MisTicketsDto;
 import com.arquitectura.evento.entity.Evento;
+import com.arquitectura.evento.service.EventoService;
 import com.arquitectura.ingreso.entity.Ingreso;
 import com.arquitectura.ingreso.entity.IngresoRepository;
 import com.arquitectura.localidad.entity.Localidad;
@@ -86,6 +88,9 @@ public class TicketServiceImpl extends CommonServiceImpl<Ticket, TicketRepositor
 
     @Autowired
     private KafkaTemplate<String, Object> kafkaTemplate;
+
+    @Autowired
+    private EventoService eventoService;
 
     @Autowired
     private ReporteFeignClient reporteFeignClient;
@@ -580,7 +585,7 @@ public class TicketServiceImpl extends CommonServiceImpl<Ticket, TicketRepositor
     public void mandarQR(Ticket pTicket) throws Exception {
 
         Localidad localidad = localidadService.findById(pTicket.getLocalidad().getId());
-        Evento evento = localidad.getDias().get(0).getEvento();
+        Evento evento = eventoService.findByLocalidadId(localidad.getId());
 
         String filepath = QR_CODE_IMAGE_PATH + "Ticket" + pTicket.getId() + ","
                 + pTicket.getCliente().getNumeroDocumento() + ".png";
@@ -723,6 +728,13 @@ public class TicketServiceImpl extends CommonServiceImpl<Ticket, TicketRepositor
     public Integer validarVentasCupon(Long pTarifaId){
         //Contar cuantos tickets hay vendidos con la tarifa indicada
         return repository.countByTarifaIdAndEstado(pTarifaId,1);
+    }
+
+    @Override
+    public List<MisTicketsDto> getMisTicketsByCliente(String numeroDocumento) {
+        //nombrar al método findByClienteNumeroDocumentoAnd - Evento- EstadoNoT falta especificar que te refieres al estado del evento
+        List<Ticket> tickets = repository.findByClienteNumeroDocumentoAndEventoEstadoNot(numeroDocumento,3);
+        return MisTicketsDto.TicketsToDto(tickets);
     }
 
 

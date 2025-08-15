@@ -15,4 +15,10 @@ public interface ImagenService extends CommonService<Imagen> {
 	public List<Imagen> findByEventoId(Long pIdEvento);
 
 	public Imagen editar(Imagen pImagen, Long pId) throws Exception;
+
+	public void deleteAll();
+
+	public void init();
+
+
 }

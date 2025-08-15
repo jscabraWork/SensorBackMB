@@ -51,4 +51,6 @@ public interface EventoService extends CommonService<Evento> {
      * @return ResponseEntity con el evento
      */
     public Evento getEventoPorIdAndEstadoIn(Long pId, List<Integer> pEstados);
+
+    public Evento findByLocalidadId(Long localidadId);
 }

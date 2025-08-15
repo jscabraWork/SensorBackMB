@@ -1,15 +1,19 @@
 package com.arquitectura.orden.service;
 
 import com.arquitectura.cliente.service.ClienteService;
+import com.arquitectura.configSeguro.entity.ConfigSeguro;
 import com.arquitectura.configSeguro.service.ConfigSeguroService;
 import com.arquitectura.cupon.entity.Cupon;
 import com.arquitectura.cupon.service.CuponService;
+import com.arquitectura.dto.ComprasPendientesDto;
 import com.arquitectura.evento.service.EventoService;
 import com.arquitectura.localidad.service.LocalidadService;
 import com.arquitectura.orden.entity.Orden;
 import com.arquitectura.orden.entity.OrdenRepository;
 import com.arquitectura.orden.helper.OrdenCreationHelper;
 import com.arquitectura.orden_promotor.service.OrdenPromotorService;
+import com.arquitectura.seguro.entity.Seguro;
+import com.arquitectura.seguro.service.SeguroService;
 import com.arquitectura.services.CommonServiceImpl;
 import com.arquitectura.tarifa.entity.Tarifa;
 import com.arquitectura.ticket.entity.Ticket;
@@ -72,6 +76,10 @@ public class OrdenServiceImpl extends CommonServiceImpl<Orden, OrdenRepository> 
 
     @Autowired
     private TransaccionService transaccionService;
+
+    @Autowired
+    private SeguroService seguroService;
+
 
     //Logger para registro de errores en consola
     private static final Logger logger = LoggerFactory.getLogger(OrdenServiceImpl.class);
@@ -206,6 +214,7 @@ public class OrdenServiceImpl extends CommonServiceImpl<Orden, OrdenRepository> 
 
         orden.confirmar();
 
+        //Enviar publica los tickets en kafka
         ticketService.enviar(orden.getTickets());
 
         Orden ordenBD = saveKafka(orden);
@@ -281,7 +290,6 @@ public class OrdenServiceImpl extends CommonServiceImpl<Orden, OrdenRepository> 
 
         Orden orden = findById(pOrdenId);
 
-
         if (orden == null) {
             response = "No se encontró ninguna orden para aplicar el cupón";
             return response;
@@ -315,6 +323,22 @@ public class OrdenServiceImpl extends CommonServiceImpl<Orden, OrdenRepository> 
         saveKafka(orden);
         transaccionService.saveAllKafka(orden.getTransacciones());
         ticketService.saveAllKafka(orden.getTickets());
+    }
+
+    @Override
+    public List<Orden> findByEstado(Integer estado) {
+        return repository.findByEstado(estado);
+    }
+
+    @Override
+    public List<Orden> findAllOrdenesSinConfirmacion() {
+        return repository.findAllOrdenesSinConfirmacion();
+    }
+
+    @Override
+    public List<ComprasPendientesDto> getComprasPendientesByCliente(String numeroDocumento) {
+        List<Orden> ordenes = repository.findByClienteNumeroDocumentoAndEstado(numeroDocumento, 3);
+        return ComprasPendientesDto.OrdenesToDto(ordenes);
     }
 
 

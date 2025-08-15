@@ -32,7 +32,6 @@
         @JoinColumn(name = "dia_id")
         private Dia dia;
 
-
         @ManyToOne(fetch = FetchType.LAZY)
         @JoinColumn(name = "ticket_id")
         @JsonBackReference(value = "ticket-ingreso")

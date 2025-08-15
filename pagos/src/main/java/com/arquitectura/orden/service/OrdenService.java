@@ -1,5 +1,6 @@
 package com.arquitectura.orden.service;
 
+import com.arquitectura.dto.ComprasPendientesDto;
 import com.arquitectura.orden.entity.Orden;
 import com.arquitectura.services.CommonService;
 import com.arquitectura.ticket.entity.Ticket;
@@ -65,4 +66,16 @@ public interface OrdenService extends CommonService<Orden> {
     public String aplicarCupon(String pCuponId, Long pOrdenId);
 
     public void rechazar(Orden orden);
+
+    public List<Orden> findByEstado(Integer estado);
+
+    public List<Orden> findAllOrdenesSinConfirmacion();
+
+    /**
+     * Obtiene las compras pendientes de un cliente organizadas en DTOs
+     * @param numeroDocumento Número de documento del cliente
+     * @return Lista de ComprasPendientesDto del cliente
+     */
+    public List<ComprasPendientesDto> getComprasPendientesByCliente(String numeroDocumento);
+
 }

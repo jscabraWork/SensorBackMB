@@ -3,6 +3,7 @@ package com.arquitectura.alcancia.service;
 import com.arquitectura.alcancia.entity.Alcancia;
 import com.arquitectura.alcancia.entity.AlcanciaRepository;
 import com.arquitectura.cliente.entity.Cliente;
+import com.arquitectura.dto.MisAlcanciasDto;
 import com.arquitectura.events.AlcanciaEvent;
 import com.arquitectura.events.EntityDeleteEventLong;
 import com.arquitectura.localidad.entity.Localidad;
@@ -164,6 +165,12 @@ public class AlcanciaServiceImpl extends CommonServiceImpl<Alcancia, AlcanciaRep
         }
 
         repository.deleteById(pId);
+    }
+
+    @Override
+    public List<MisAlcanciasDto> getMisAlcanciasByCliente(String numeroDocumento) {
+        List<Alcancia> alcancias = repository.findByClienteNumeroDocumentoAndActiva(numeroDocumento, true);
+        return MisAlcanciasDto.AlcanciastoDto(alcancias);
     }
 
 }

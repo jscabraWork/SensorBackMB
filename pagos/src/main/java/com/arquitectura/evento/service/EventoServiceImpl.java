@@ -121,4 +121,9 @@ public class EventoServiceImpl extends CommonServiceImpl<Evento, EventoRepositor
             throw new RuntimeException("No se puede eliminar el evento porque tiene días asociados");
         }
     }
+
+    @Override
+    public Evento findByLocalidadId(Long localidadId) {
+        return repository.findByDiasLocalidadesId(localidadId);
+    }
 }

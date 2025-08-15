@@ -20,6 +20,8 @@ import java.util.List;
 @NoArgsConstructor
 @EqualsAndHashCode(callSuper = true)
 @AllArgsConstructor
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
+@ToString(exclude = {"dias","venue"})
 @Table(name="eventos")
 public class Evento extends Auditable {
 
@@ -49,7 +51,8 @@ public class Evento extends Auditable {
     @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
     private Venue venue;
 
-    @ManyToMany(fetch = FetchType.LAZY)
+    @ManyToMany(fetch = FetchType.LAZY, mappedBy = "eventos")
+    @JsonManagedReference(value = "evento_organizador")
     @JsonIgnore
     private List<Organizador> organizadores;
 
@@ -69,6 +72,20 @@ public class Evento extends Auditable {
     public void prePersist() {
         estado=0; // Por defecto, el estado es CREADO (0)
         super.prePersist();
+    }
+
+    /**
+     * Obtiene la imagen del evento por tipo específico
+     * @param tipo Tipo de imagen (1: Perfil, 2: Banner, 3: QR, 4: Publicidad banner)
+     * @return Imagen del tipo especificado o null si no existe
+     */
+    public Imagen getImagenByTipo(int tipo) {
+        return imagenes != null ? 
+                imagenes.stream()
+                        .filter(imagen -> imagen.getTipo() == tipo)
+                        .findFirst()
+                        .orElse(null)
+                : null;
     }
 
 }
