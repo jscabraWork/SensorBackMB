@@ -194,6 +194,7 @@ public class Ticket extends Auditable {
     public boolean isNoDisponible() {
         return estado == 4;
     }
+
     public boolean isVendido() {
         return estado == 1;
     }

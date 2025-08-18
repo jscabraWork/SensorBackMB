@@ -56,8 +56,9 @@ public class TareaRecurrente {
             if(fechaVencida && orden.getIdTRXPasarela()==null) {
                 //Estas ordenes nunca pasaron al checkout o son de traspasoz
                 orden.rechazar();
-                ordenService.saveKafka(orden);
-                ticketService.saveAllKafka(orden.getTickets());
+                ordenService.saveKafka(orden); //GUARDAR LA ORDEN RECHAZADA
+                ticketService.saveAllKafka(orden.getTickets()); //GUARDAR LOS TICKETS ASOCIADOS A LA ORDEN RECHAZADA
+                transaccionService.saveAllKafka(orden.getTransacciones()); //GUARDAR LAS TRANSACCIONES ASOCIADAS A LA ORDEN RECHAZADA
             }
             else if(fechaVencida && orden.getIdTRXPasarela()!=null)
             {
