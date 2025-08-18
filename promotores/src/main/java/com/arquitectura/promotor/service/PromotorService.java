@@ -14,3 +14,4 @@ public interface PromotorService extends CommonServiceString<Promotor> {
     public List<Promotor> findByFiltro(String nombre, String numeroDocumento, String correo);
 }
 
+

@@ -33,7 +33,7 @@ public class TicketEventAdapterImpl extends EventAdapterImpl<Ticket, TicketPromo
         entity.setNumero(event.getNumero());
 
         if (event.getPromotorId() != null) {
-            entity.setPromotor(promotorRepository.findById(event.getPromotorId()).orElse(null));
+            entity.setPromotor(promotorRepository.findByCorreoOrNumeroDocumento(event.getPromotorId()).orElse(null));
         }
         if (event.getLocalidadId() != null) {
             entity.setLocalidad(localidadRepository.findById(event.getLocalidadId()).orElse(null));
