@@ -29,7 +29,6 @@ public class OrdenAlcancia extends Orden {
         this.alcancia = alcancia;
         cliente = alcancia.getCliente();
         estado = 3;
-        tickets = alcancia.getTickets();
         valorOrden = pAporte;
         tarifa = alcancia.getTickets().get(0).getTarifa();
         evento = localidad.getDias().get(0).getEvento();

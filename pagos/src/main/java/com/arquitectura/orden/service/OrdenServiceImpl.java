@@ -1,6 +1,7 @@
 package com.arquitectura.orden.service;
 
 import com.arquitectura.cliente.service.ClienteService;
+import com.arquitectura.configSeguro.entity.ConfigSeguro;
 import com.arquitectura.configSeguro.service.ConfigSeguroService;
 import com.arquitectura.cupon.entity.Cupon;
 import com.arquitectura.cupon.service.CuponService;
@@ -11,6 +12,8 @@ import com.arquitectura.orden.entity.Orden;
 import com.arquitectura.orden.entity.OrdenRepository;
 import com.arquitectura.orden.helper.OrdenCreationHelper;
 import com.arquitectura.orden_promotor.service.OrdenPromotorService;
+import com.arquitectura.seguro.entity.Seguro;
+import com.arquitectura.seguro.service.SeguroService;
 import com.arquitectura.services.CommonServiceImpl;
 import com.arquitectura.tarifa.entity.Tarifa;
 import com.arquitectura.ticket.entity.Ticket;
@@ -73,6 +76,10 @@ public class OrdenServiceImpl extends CommonServiceImpl<Orden, OrdenRepository> 
 
     @Autowired
     private TransaccionService transaccionService;
+
+    @Autowired
+    private SeguroService seguroService;
+
 
     //Logger para registro de errores en consola
     private static final Logger logger = LoggerFactory.getLogger(OrdenServiceImpl.class);
