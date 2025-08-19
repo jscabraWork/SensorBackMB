@@ -42,6 +42,7 @@ public class Evento  {
     private Venue venue;
 
     @ManyToMany(fetch = FetchType.LAZY, mappedBy = "eventos")
+    @JsonManagedReference(value = "evento_organizador")
     @JsonIgnore
     private List<Organizador> organizadores;
 
