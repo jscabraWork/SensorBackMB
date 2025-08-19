@@ -47,6 +47,7 @@ public class Evento  {
 
     @OneToMany(mappedBy = "evento", fetch = FetchType.LAZY, orphanRemoval = true)
     @JsonManagedReference(value = "evento_dia")
+    @JsonIgnore
     private List<Dia> dias;
 
     @ManyToOne(fetch = FetchType.LAZY)
