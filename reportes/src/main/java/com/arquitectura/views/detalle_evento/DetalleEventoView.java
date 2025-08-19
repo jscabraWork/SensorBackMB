@@ -73,6 +73,9 @@ public class DetalleEventoView {
     @Column(name = "total_recaudado")
     private Double totalRecaudado;
 
+    private Long utilizados;
+
+
     // Métodos de cálculo útiles
     @JsonIgnore
     public Long getTotalVendidosYReservados() {

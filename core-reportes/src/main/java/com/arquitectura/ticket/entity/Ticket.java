@@ -24,6 +24,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "tickets")
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class Ticket  extends Auditable{
 
     @Id
@@ -61,6 +62,7 @@ public class Ticket  extends Auditable{
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "tarifa_id")
+    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
     private Tarifa tarifa;
 
     @ManyToOne(fetch = FetchType.LAZY)

@@ -17,11 +17,6 @@ import java.util.List;
 public class EventoServiceImpl extends CommonServiceImpl<Evento, EventoRepository> implements EventoService {
 
 
-    @Autowired
-    private ResumenEventoViewRepository vistaResumenEvento;
-
-    @Autowired
-    private DetalleEventoViewRepository detalleRepository;
 
     //Se utiliza para encontrar los eventos no terminados por organizador
     @Override
@@ -35,14 +30,5 @@ public class EventoServiceImpl extends CommonServiceImpl<Evento, EventoRepositor
         return repository.findByOrganizadoresNumeroDocumentoAndEstadoOrderByFechaAperturaDesc(numeroDocumento, pEstado);
     }
 
-    @Override
-    public ResumenEventoView getResumenByEventoId(Long id) {
-        return vistaResumenEvento.findByEventoId(id).orElse(null);
-    }
-
-    @Override
-    public List<DetalleEventoView> getDetalleEvento(Long eventoId, Long tarifaId, Long localidadId, Long diaId) {
-        return detalleRepository.findDetalleFiltrado(eventoId, tarifaId, localidadId, diaId);
-    }
 
 }
