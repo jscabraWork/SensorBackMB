@@ -5,6 +5,7 @@ import com.arquitectura.evento.service.EventoService;
 import com.arquitectura.organizador.entity.Organizador;
 import com.arquitectura.organizador.service.OrganizadorService;
 import com.arquitectura.puntofisico.entity.PuntoFisico;
+import com.arquitectura.views.detalle_evento.DetalleEventoView;
 import com.arquitectura.views.graficas.service.GraficaService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -87,6 +88,36 @@ public class OrganizadorController extends CommonControllerString<Organizador, O
 
 
 
+    @GetMapping("/detalle-ventas/{pEventoId}")
+    public ResponseEntity<?> getDetalleVentasEvento(@PathVariable Long pEventoId,
+                                                    @RequestParam(required = false) Long tarifaId,
+                                                    @RequestParam(required = false) Long localidadId,
+                                                    @RequestParam(required = false) Long diaId) {
+        Map<String, Object> response = new HashMap<>();
+
+        try {
+            // Validar que el evento existe
+            Evento evento = eventoService.findById(pEventoId);
+            if (evento == null) {
+                response.put("message", "Evento no encontrado");
+                return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
+            }
+
+            // Obtener detalle de ventas con filtros opcionales
+            List<DetalleEventoView> detalleVentas = eventoService.getDetalleEvento(pEventoId, tarifaId, localidadId, diaId);
+
+            // Construir respuesta
+            response.put("evento", evento);
+            response.put("detalle", detalleVentas);
+
+            return new ResponseEntity<>(response, HttpStatus.OK);
+
+        } catch (Exception e) {
+            response.put("message", "Error al obtener detalle de ventas");
+            response.put("error", e.getMessage());
+            return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
 
 
 }
