@@ -6,6 +6,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface PromotorRepository extends JpaRepository<Promotor, String> {
@@ -32,4 +33,26 @@ public interface PromotorRepository extends JpaRepository<Promotor, String> {
     List<Promotor> findByFiltro(@Param("nombre") String nombre,
                                 @Param("numeroDocumento") String numeroDocumento,
                                 @Param("correo") String correo);
+
+    /**
+     * Busca un promotor por correo electrónico
+     * @param correo Correo electrónico del promotor
+     * @return Optional con el promotor si lo encuentra
+     */
+    Optional<Promotor> findByCorreo(String correo);
+
+    /**
+     * Busca un promotor por número de documento
+     * @param numeroDocumento Número de documento del promotor
+     * @return Optional con el promotor si lo encuentra
+     */
+    Optional<Promotor> findByNumeroDocumento(String numeroDocumento);
+
+    /**
+     * Busca un promotor primero por correo, si no lo encuentra busca por número de documento
+     * @param identificador Puede ser correo electrónico o número de documento del promotor
+     * @return Optional con el promotor si lo encuentra
+     */
+    @Query("SELECT p FROM Promotor p WHERE p.correo = :identificador OR p.numeroDocumento = :identificador")
+    Optional<Promotor> findByCorreoOrNumeroDocumento(@Param("identificador") String identificador);
 }

@@ -24,6 +24,7 @@ public class GraficaServiceImpl implements GraficaService{
     //Grafica de Lineas y Puntos para las ventas por periodo (meses o dias)
     @Override
     public List<GraficaLineasDTO> getGraficaLineaVentas(Long eventoId, Integer mes, Integer anio) {
-        return repository.getGraficaLineaVentas(eventoId, mes, anio);
+        List<Object[]> rawData = repository.getGraficaLineaVentas(eventoId, mes, anio);
+        return GraficaLineasDTO.fromObjectArray(rawData);
     }
 }

@@ -22,10 +22,4 @@ public class Ciudad {
     private Long id;
 
     private String nombre;
-
-
-    @OneToMany(mappedBy = "ciudad")
-    private List<Venue> venues;
-
-
 }

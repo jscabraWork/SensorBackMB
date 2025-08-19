@@ -12,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.time.Year;
@@ -20,7 +21,7 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/organizador")
+@RequestMapping("/organizadores")
 public class OrganizadorController extends CommonControllerString<Organizador, OrganizadorService> {
 
     @Autowired
@@ -48,7 +49,9 @@ public class OrganizadorController extends CommonControllerString<Organizador, O
 
 
     @GetMapping("/resumen/{pEventoId}")
-    public ResponseEntity<?> getEventosTerminadosByOrganizador(@PathVariable Long pEventoId) {
+    public ResponseEntity<?> getEventosTerminadosByOrganizador(@PathVariable Long pEventoId,
+                                                              @RequestParam(required = false) Integer anio,
+                                                              @RequestParam(required = false) Integer mes) {
         Map<String, Object> response = new HashMap<>();
         Evento evento = eventoService.findById(pEventoId);
 
@@ -57,12 +60,26 @@ public class OrganizadorController extends CommonControllerString<Organizador, O
             return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
         }
 
-        //Obtener el año del evento
-        Integer anio = evento.getFechaApertura().getYear();
+        // Si no se proporciona el año como parámetro, usar la lógica existente
+        if (anio == null) {
+            //Obtener el año del evento
+            anio = evento.getFechaApertura().getYear();
+            Integer anioActual = Year.now().getValue();
+
+            //Si el año del evento es mayor al año actual, se asigna el año actual para las consultas de las graficas
+            if(anio > anioActual) {
+                anio = anioActual;
+            }
+        }
+
+        // Si no se proporciona el mes como parámetro, usar -1 (todos los meses)
+        if (mes == null) {
+            mes = -1;
+        }
 
         response.put("resumen", eventoService.getResumenByEventoId(pEventoId));
-        response.put("graficaCircular", graficaService.getGraficaDineroRecaudadoByMetodo(pEventoId, null, anio));
-        response.put("graficaLineas", graficaService.getGraficaLineaVentas(pEventoId, null, anio));
+        response.put("graficaCircular", graficaService.getGraficaDineroRecaudadoByMetodo(pEventoId, mes, anio));
+        response.put("graficaLineas", graficaService.getGraficaLineaVentas(pEventoId, mes, anio));
         response.put("evento", evento);
 
         return new ResponseEntity<>(response, HttpStatus.OK);

@@ -139,7 +139,7 @@ public class Orden extends Auditable {
         }
 
         if(transacciones!= null && !transacciones.isEmpty()) {
-            transacciones.forEach(transaccion -> rechazar());
+            transacciones.forEach(transaccion -> transaccion.rechazar());
         }
     }
 
