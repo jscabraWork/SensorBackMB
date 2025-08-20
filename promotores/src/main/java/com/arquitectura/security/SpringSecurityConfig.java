@@ -27,7 +27,7 @@ public class SpringSecurityConfig {
 
                         //----------------EVENTOS---------------------
                         //TODOS
-                        .requestMatchers(HttpMethod.GET, "/**").hasAnyRole("ADMIN", "PROMOTOR", "ORGANIZADOR", "CONTADOR")
+                        .requestMatchers(HttpMethod.GET, "/**").permitAll()
                         // SOLO-ADMIN
                         .requestMatchers(HttpMethod.POST, "/**").hasRole("PROMOTOR")
                         .requestMatchers(HttpMethod.PUT, "/**").hasRole("ADMIN")

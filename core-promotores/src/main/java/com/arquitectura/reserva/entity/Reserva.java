@@ -5,6 +5,7 @@ import com.arquitectura.localidad.entity.Localidad;
 import com.arquitectura.promotor.entity.Promotor;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -17,6 +18,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @EqualsAndHashCode(callSuper = true)
 @Table(name="reservas")
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class Reserva extends Auditable {
 
     @Id
@@ -36,7 +38,6 @@ public class Reserva extends Auditable {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name ="promotor_id")
-    @JsonIgnore
     private Promotor promotor;
 
     @PrePersist

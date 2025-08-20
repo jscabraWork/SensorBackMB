@@ -5,6 +5,7 @@ import com.arquitectura.reserva.entity.Reserva;
 import com.arquitectura.reserva.service.ReservaService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
@@ -31,8 +32,15 @@ public class ReservaController extends CommonController<Reserva, ReservaService>
        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
+    @Override
+    @GetMapping("/{pId}")
+    public ResponseEntity<?> verPorId(Long pId){
+        Map<String, Object> response = new HashMap<>();
+        Reserva reserva = service.findById(pId);
 
-
-
-
+        response.put("reserva", reserva);
+        response.put("localidad", reserva.getLocalidad());
+        response.put("evento", reserva.getLocalidad().getDias().get(0).getEvento());
+        return new ResponseEntity<>(response,HttpStatus.OK);
+    }
 }
