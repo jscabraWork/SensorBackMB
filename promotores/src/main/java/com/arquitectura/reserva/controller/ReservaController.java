@@ -41,7 +41,6 @@ public class ReservaController extends CommonController<Reserva, ReservaService>
         response.put("reserva", reserva);
         response.put("localidad", reserva.getLocalidad());
         response.put("evento", reserva.getLocalidad().getDias().get(0).getEvento());
-
         return new ResponseEntity<>(response,HttpStatus.OK);
     }
 }
