@@ -4,6 +4,7 @@ import com.arquitectura.evento.entity.Evento;
 import com.arquitectura.localidad.entity.Localidad;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -18,6 +19,7 @@ import java.util.Set;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "dias")
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class Dia {
 
     @Id

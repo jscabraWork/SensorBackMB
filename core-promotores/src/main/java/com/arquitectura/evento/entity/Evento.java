@@ -21,6 +21,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "eventos")
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class Evento {
 
     @Id
