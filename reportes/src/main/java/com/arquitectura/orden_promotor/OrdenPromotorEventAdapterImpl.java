@@ -54,7 +54,9 @@ public class OrdenPromotorEventAdapterImpl extends EventAdapterImpl<OrdenPromoto
         }
         entity.setTickets(tickets);
         entity.setTarifa(tarifaRepository.findById(event.getTarifaId()).orElse(null));
-        entity.setPromotor(promotorRepository.findById(event.getPromotorId()).orElse(null));
+        if (event.getPromotorId() != null) {
+            entity.setPromotor(promotorRepository.findByCorreoOrNumeroDocumento(event.getPromotorId()).orElse(null));
+        }
         return super.creacion(entity,event);
     }
 

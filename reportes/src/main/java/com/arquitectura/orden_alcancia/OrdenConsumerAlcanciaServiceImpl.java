@@ -73,7 +73,7 @@ public class OrdenConsumerAlcanciaServiceImpl implements OrdenConsumerAlcancialS
                 // Verificar si existe una orden base en la tabla 'ordenes'
                 boolean existeOrdenBase = ordenRepository.existsById(event.getId());
                 
-                if (existeOrdenBase) {
+                if (existeOrdenBase) { //CREACION DE ALCANCIA
 
                     //Si es una orden de creacion de alcancía, se debe crear la alcancia antes
                     if(event.getAlcanciaEvent()!=null){
@@ -92,7 +92,7 @@ public class OrdenConsumerAlcanciaServiceImpl implements OrdenConsumerAlcancialS
                     // Recuperar la OrdenAlcancia recién creada
                     orden = repository.findById(event.getId())
                             .orElseThrow(() -> new RuntimeException("Error al crear la orden alcancía con ID: " + event.getId()));
-                } else {
+                } else { //APORTES A ALCANCIA
                     // ESCENARIO B: No existe orden base → Crear orden completa desde cero
                     orden = new OrdenAlcancia();
                 }

@@ -4,8 +4,11 @@ import com.arquitectura.evento.entity.Evento;
 import com.arquitectura.evento.service.EventoService;
 import com.arquitectura.organizador.entity.Organizador;
 import com.arquitectura.organizador.service.OrganizadorService;
+import com.arquitectura.organizador.service.ReporteService;
 import com.arquitectura.puntofisico.entity.PuntoFisico;
+import com.arquitectura.views.detalle_evento.DetalleEventoView;
 import com.arquitectura.views.graficas.service.GraficaService;
+import com.arquitectura.views.historial_transacciones.HistorialDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.time.LocalDateTime;
 import java.time.Year;
 import java.util.HashMap;
 import java.util.List;
@@ -26,6 +30,9 @@ public class OrganizadorController extends CommonControllerString<Organizador, O
 
     @Autowired
     private EventoService eventoService;
+
+    @Autowired
+    private ReporteService reporteService;
 
     @Autowired
     private GraficaService graficaService;
@@ -77,7 +84,7 @@ public class OrganizadorController extends CommonControllerString<Organizador, O
             mes = -1;
         }
 
-        response.put("resumen", eventoService.getResumenByEventoId(pEventoId));
+        response.put("resumen", reporteService.getResumenByEventoId(pEventoId));
         response.put("graficaCircular", graficaService.getGraficaDineroRecaudadoByMetodo(pEventoId, mes, anio));
         response.put("graficaLineas", graficaService.getGraficaLineaVentas(pEventoId, mes, anio));
         response.put("evento", evento);
@@ -85,8 +92,73 @@ public class OrganizadorController extends CommonControllerString<Organizador, O
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
+    @GetMapping("/detalle-ventas/{pEventoId}")
+    public ResponseEntity<?> getDetalleVentasEvento(@PathVariable Long pEventoId,
+                                                    @RequestParam(required = false) Long tarifaId,
+                                                    @RequestParam(required = false) Long localidadId,
+                                                    @RequestParam(required = false) Long diaId) {
+        Map<String, Object> response = new HashMap<>();
 
+        try {
+            // Validar que el evento existe
+            Evento evento = eventoService.findById(pEventoId);
+            if (evento == null) {
+                response.put("message", "Evento no encontrado");
+                return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
+            }
 
+            // Obtener detalle de ventas con filtros opcionales
+            List<DetalleEventoView> detalleVentas = reporteService.getDetalleEvento(pEventoId, tarifaId, localidadId, diaId);
 
+            // Construir respuesta
+            response.put("evento", evento);
+            response.put("detalle", detalleVentas);
+            response.put("resumen", reporteService.getResumenByEventoId(pEventoId));
+
+            return new ResponseEntity<>(response, HttpStatus.OK);
+
+        } catch (Exception e) {
+            response.put("message", "Error al obtener detalle de ventas");
+            response.put("error", e.getMessage());
+            return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @GetMapping("/historial-transacciones/{pEventoId}")
+    public ResponseEntity<?> getHistorialTransaccionesEvento(@PathVariable Long pEventoId,
+                                                             @RequestParam Integer status,
+                                                             @RequestParam int page,
+                                                             @RequestParam int size,
+                                                             @RequestParam(required = false) LocalDateTime fechaInicio,
+                                                             @RequestParam(required = false) LocalDateTime fechaFin,
+                                                             @RequestParam(required = false) Integer tipo) {
+        Map<String, Object> response = new HashMap<>();
+
+        try {
+            // Validar que el evento existe
+            Evento evento = eventoService.findById(pEventoId);
+            if (evento == null) {
+                response.put("message", "Evento no encontrado");
+                return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
+            }
+
+            // Obtener historial de transacciones con filtros
+            List<HistorialDTO> historialTransacciones = reporteService.getHistorialByEventoAndStatus(
+                    pEventoId, status, fechaInicio, fechaFin, tipo, page, size);
+
+            // Construir respuesta
+            response.put("evento", evento);
+            response.put("historial", historialTransacciones);
+            response.put("page", page);
+            response.put("size", size);
+
+            return new ResponseEntity<>(response, HttpStatus.OK);
+
+        } catch (Exception e) {
+            response.put("message", "Error al obtener historial de transacciones");
+            response.put("error", e.getMessage());
+            return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
 
 }
