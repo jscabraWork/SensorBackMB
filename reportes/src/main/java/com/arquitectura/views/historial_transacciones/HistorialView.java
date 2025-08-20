@@ -92,4 +92,13 @@ public class HistorialView {
 
     @Column(name = "cantidad")
     private Long cantidad;
+
+    @Column(name = "alcancia_id")
+    private Long alcanciaId;
+
+    @Column(name = "precio_total")
+    private Double precioTotal;
+
+    @Column(name = "precio_parcial_pagado")
+    private Double precioParcialPagado;
 }
