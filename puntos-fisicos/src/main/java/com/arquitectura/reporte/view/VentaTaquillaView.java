@@ -9,11 +9,11 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.Immutable;
 
 @Entity
-@Table(name = "ventas_promotor")
+@Table(name = "ventas_taquilla")
 @AllArgsConstructor
 @NoArgsConstructor
 @Immutable
-public class VentaPromorView {
+public class VentaTaquillaView {
 
     @Column(name = "evento_id")
     @Id

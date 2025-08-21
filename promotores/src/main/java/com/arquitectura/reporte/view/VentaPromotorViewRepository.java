@@ -6,7 +6,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface VentaPromotorViewRepository extends JpaRepository<Long, VentaPromorView> {
+public interface VentaPromotorViewRepository extends JpaRepository<VentaPromorView, Long> {
 
     List<VentaPromorView> findByEventoId(Long eventoId);
 

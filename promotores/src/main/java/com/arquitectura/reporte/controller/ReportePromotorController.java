@@ -33,7 +33,7 @@ public class ReportePromotorController {
     @GetMapping("/{pEventoId}/promotor/{pNumeroDocumento}")
     public ResponseEntity<?> getVentasByEventoIdAndPromotor(@PathVariable Long pEventoId, @PathVariable String pNumeroDocumento){
         VentaPromorView ventas = service.findByDocumentoAndEventoId(pNumeroDocumento, pEventoId);
-        List<Ticket> tickets= ticketService.findVentasByPromotorAndEvento(pEventoId, pNumeroDocumento);
+        List<Ticket> tickets= ticketService.findByEventoIdAndPromotorNumeroDocumentoAndEstado(pEventoId, pNumeroDocumento,1);
 
         Map<String, Object> response = new HashMap<>();
         response.put("resumen", ventas);
