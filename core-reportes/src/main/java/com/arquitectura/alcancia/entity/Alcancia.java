@@ -36,5 +36,4 @@ public class Alcancia extends Auditable {
     @ManyToMany(fetch = FetchType.LAZY)
     @JsonManagedReference(value = "alcancia-tickets")
     private List<Ticket> tickets;
-
 }

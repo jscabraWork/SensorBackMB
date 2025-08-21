@@ -1,4 +1,5 @@
 package com.arquitectura.organizador.controller;
+import com.arquitectura.alcancia.entity.Alcancia;
 import com.arquitectura.controller.CommonControllerString;
 import com.arquitectura.evento.entity.Evento;
 import com.arquitectura.evento.service.EventoService;
@@ -9,7 +10,10 @@ import com.arquitectura.puntofisico.entity.PuntoFisico;
 import com.arquitectura.views.detalle_evento.DetalleEventoView;
 import com.arquitectura.views.graficas.service.GraficaService;
 import com.arquitectura.views.historial_transacciones.HistorialDTO;
+import com.arquitectura.views.historial_transacciones.HistorialView;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -23,6 +27,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.time.LocalDateTime;
 import java.time.Year;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -81,7 +86,6 @@ public class OrganizadorController extends CommonControllerString<Organizador, O
                 anio = anioActual;
             }
         }
-
         // Si no se proporciona el mes como parámetro, usar -1 (todos los meses)
         if (mes == null) {
             mes = -1;
@@ -146,14 +150,11 @@ public class OrganizadorController extends CommonControllerString<Organizador, O
             }
 
             // Obtener historial de transacciones con filtros
-            List<HistorialDTO> historialTransacciones = reporteService.getHistorialByEventoAndStatus(
-                    pEventoId, status, fechaInicio, fechaFin, tipo, page, size);
-
-            // Construir respuesta
+            Page<HistorialDTO> historialTransacciones = reporteService.getHistorialByEventoAndStatus(pEventoId, status, fechaInicio, fechaFin, tipo, page, size);
             response.put("evento", evento);
-            response.put("historial", historialTransacciones);
-            response.put("page", page);
-            response.put("size", size);
+            response.put("historial", historialTransacciones.getContent());
+            response.put("totalElements", historialTransacciones.getTotalElements());
+            response.put("totalPages", historialTransacciones.getTotalPages());
 
             return new ResponseEntity<>(response, HttpStatus.OK);
 
@@ -181,6 +182,16 @@ public class OrganizadorController extends CommonControllerString<Organizador, O
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
         }
+    }
+
+
+
+    @GetMapping("/alcancias/{pEventoId}")
+    public ResponseEntity<?> getAlcanciasByEventoAndEstado(@PathVariable Long pEventoId, @RequestParam(required = false) Boolean estado) {
+        Map<String, Object> response = new HashMap<>();
+        List<Alcancia> alcancias = reporteService.findAlcanciasByEventoIdAndEstado(pEventoId, estado);
+        response.put("alcancias", alcancias);
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
 }

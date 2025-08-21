@@ -1,5 +1,8 @@
 package com.arquitectura.organizador.service;
 
+import com.arquitectura.alcancia.entity.Alcancia;
+import com.arquitectura.alcancia.entity.AlcanciaRepository;
+import com.arquitectura.alcancia.service.AlcanciaService;
 import com.arquitectura.ticket.entity.TicketRepository;
 import com.arquitectura.views.detalle_evento.DetalleEventoView;
 import com.arquitectura.views.detalle_evento.DetalleEventoViewRepository;
@@ -11,6 +14,7 @@ import com.arquitectura.views.resumen_evento.ResumenEventoViewRepository;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
@@ -38,6 +42,9 @@ public class ReporteServiceImpl implements ReporteService{
     @Autowired
     private TicketRepository ticketRepository;
 
+    @Autowired
+    private AlcanciaService alcanciaService;
+
 
     @Override
     public ResumenEventoView getResumenByEventoId(Long id) {
@@ -50,20 +57,20 @@ public class ReporteServiceImpl implements ReporteService{
     }
 
     @Override
-    public List<HistorialDTO> getHistorialByEventoAndStatus(Long eventoId, Integer status, LocalDateTime fechaInicio, LocalDateTime fechaFin, Integer tipo, int page, int size) {
+    public Page<HistorialDTO> getHistorialByEventoAndStatus(Long eventoId, Integer status, LocalDateTime fechaInicio, LocalDateTime fechaFin, Integer tipo, int page, int size) {
 
         Page<HistorialView> historial = historialRepository.findByFiltrosOrderByFechaDesc(eventoId, status, tipo, fechaInicio, fechaFin, PageRequest.of(page, size));
-        List<HistorialDTO> historialDTO = new ArrayList<>();
-        historial.forEach(venta ->{
+
+        List<HistorialDTO> historialDTO = historial.map(venta -> {
             HistorialDTO dto = new HistorialDTO();
             dto.setVenta(venta);
-            //Solo encontrar los tickets si no es una transacción de tipo 4 (APORTE ALCANCIA)
-            if(venta.getTipo()!=4){
+            if (venta.getTipo() != 4) {
                 dto.setTickets(ticketRepository.findByOrdenesId(dto.getVenta().getOrdenId()));
             }
-            historialDTO.add(dto);
-        });
-        return historialDTO;
+            return dto;
+        }).getContent();
+
+        return new PageImpl<>(historialDTO, historial.getPageable(), historial.getTotalElements());
     }
 
 
@@ -144,6 +151,12 @@ public byte[] generarExcelHistorialByEventoAndEstado(Long pEventoId, Integer sta
         throw new RuntimeException("Error al generar el archivo Excel: " + e.getMessage());
     }
 }
+
+    @Override
+    public List<Alcancia> findAlcanciasByEventoIdAndEstado(Long eventoId, Boolean estado) {
+
+        return alcanciaService.findByEventoIdAndEstado(eventoId, estado);
+    }
 
 
 }

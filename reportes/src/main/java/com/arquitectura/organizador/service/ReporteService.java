@@ -1,5 +1,6 @@
 package com.arquitectura.organizador.service;
 
+import com.arquitectura.alcancia.entity.Alcancia;
 import com.arquitectura.views.detalle_evento.DetalleEventoView;
 import com.arquitectura.views.historial_transacciones.HistorialDTO;
 import com.arquitectura.views.resumen_evento.ResumenEventoView;
@@ -14,7 +15,10 @@ public interface ReporteService {
 
     List<DetalleEventoView> getDetalleEvento(Long eventoId, Long tarifaId, Long localidadId, Long diaId);
 
-    List<HistorialDTO> getHistorialByEventoAndStatus(Long eventoId, Integer status, LocalDateTime fechaInicio, LocalDateTime fechaFin, Integer tipo, int page, int size);
+    Page<HistorialDTO> getHistorialByEventoAndStatus(Long eventoId, Integer status, LocalDateTime fechaInicio, LocalDateTime fechaFin, Integer tipo, int page, int size);
 
     public byte[] generarExcelHistorialByEventoAndEstado(Long pEventoId, Integer status);
+
+    List<Alcancia> findAlcanciasByEventoIdAndEstado(Long eventoId, Boolean estado);
+
 }
