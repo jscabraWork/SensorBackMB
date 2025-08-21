@@ -9,7 +9,7 @@ SELECT
     d.nombre as dia,
     l.nombre as localidad,
     o.creation_date as fecha,
-    o.valor_orden as valorOrden,
+    o.valor_orden as valor_orden,
     tr.amount as monto,
     o.tipo as tipo,
     CASE

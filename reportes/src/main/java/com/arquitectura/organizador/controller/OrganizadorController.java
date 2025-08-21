@@ -10,7 +10,9 @@ import com.arquitectura.views.detalle_evento.DetalleEventoView;
 import com.arquitectura.views.graficas.service.GraficaService;
 import com.arquitectura.views.historial_transacciones.HistorialDTO;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -20,6 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.time.LocalDateTime;
 import java.time.Year;
+import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -158,6 +161,25 @@ public class OrganizadorController extends CommonControllerString<Organizador, O
             response.put("message", "Error al obtener historial de transacciones");
             response.put("error", e.getMessage());
             return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+
+    @GetMapping("/historial-excel/{pEventoId}/excel")
+    public ResponseEntity<byte[]> descargarExcelTransaccionesByEstado(@PathVariable Long pEventoId, @RequestParam Integer status) {
+        try {
+
+            byte[] excelBytes = reporteService.generarExcelHistorialByEventoAndEstado(pEventoId, status);
+
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.parseMediaType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"));
+                headers.setContentDispositionFormData("attachment",
+                "historial_transacciones_" + pEventoId.toString() + "_" +
+                LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd_HHmmss")) + ".xlsx");
+
+            return new ResponseEntity<>(excelBytes, headers, HttpStatus.OK);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
         }
     }
 

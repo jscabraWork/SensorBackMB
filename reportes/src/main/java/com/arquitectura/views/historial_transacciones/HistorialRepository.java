@@ -47,21 +47,7 @@ public interface HistorialRepository extends JpaRepository<HistorialView, Long> 
             Pageable pageable
     );
 
-    /**
-     * Buscar transacciones por múltiples filtros opcionales con rango de fechas SIN paginación
-     */
-    @Query("SELECT h FROM HistorialView h WHERE " +
-           "(:eventoId IS NULL OR h.eventoId = :eventoId) AND " +
-           "(:status IS NULL OR h.status = :status) AND " +
-           "(:tipo IS NULL OR h.tipo = :tipo) AND " +
-           "(:fechaInicio IS NULL OR h.fecha >= :fechaInicio) AND " +
-           "(:fechaFin IS NULL OR h.fecha <= :fechaFin) " +
-           "ORDER BY h.fecha DESC")
-    List<HistorialView> findAllByFiltrosOrderByFechaDesc(
-            @Param("eventoId") Long eventoId,
-            @Param("status") Integer status,
-            @Param("tipo") Integer tipo,
-            @Param("fechaInicio") LocalDateTime fechaInicio,
-            @Param("fechaFin") LocalDateTime fechaFin
-    );
+
+    List<HistorialView> findByEventoIdAndStatusOrderByFechaDesc(Long eventoId, Integer status);
+
 }

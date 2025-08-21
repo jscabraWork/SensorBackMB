@@ -15,4 +15,6 @@ public interface ReporteService {
     List<DetalleEventoView> getDetalleEvento(Long eventoId, Long tarifaId, Long localidadId, Long diaId);
 
     List<HistorialDTO> getHistorialByEventoAndStatus(Long eventoId, Integer status, LocalDateTime fechaInicio, LocalDateTime fechaFin, Integer tipo, int page, int size);
+
+    public byte[] generarExcelHistorialByEventoAndEstado(Long pEventoId, Integer status);
 }
