@@ -40,7 +40,7 @@ public class ReporteTaquillaController {
         Map<String, Object> response = new HashMap<>();
         response.put("resumen", ventas);
         response.put("ventas", tickets);
-        return new ResponseEntity<>(ventas, HttpStatus.OK);
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
 }

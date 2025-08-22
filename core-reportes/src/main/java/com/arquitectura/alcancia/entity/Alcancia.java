@@ -27,7 +27,8 @@ public class Alcancia extends Auditable {
 
     private Double precioTotal;
 
-    private boolean activa;
+    //0:PAGADA, 1: ACTIVA, 2: CANCELADA
+    private Integer estado;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="cliente_id")
@@ -36,4 +37,11 @@ public class Alcancia extends Auditable {
     @ManyToMany(fetch = FetchType.LAZY)
     @JsonManagedReference(value = "alcancia-tickets")
     private List<Ticket> tickets;
+
+    @Transient
+    private String localidad;
+
+    public void setLocalidad(){
+        localidad = tickets.get(0).getLocalidad().getNombre();
+    }
 }

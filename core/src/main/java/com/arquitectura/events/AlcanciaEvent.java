@@ -22,7 +22,7 @@ public class AlcanciaEvent implements BaseEvent{
 	
 	private Double precioTotal;
 	
-	private boolean activa;
+	private Integer estado;
 
 	private String clienteNumeroDocumento;
 	

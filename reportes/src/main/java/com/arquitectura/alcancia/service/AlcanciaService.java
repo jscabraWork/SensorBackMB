@@ -9,5 +9,5 @@ import java.util.List;
 
 public interface AlcanciaService extends CommonService<Alcancia> {
 
-    List<Alcancia> findByEventoIdAndEstado(Long eventoId,Boolean activa);
+    List<Alcancia> findByEventoIdAndEstado(Long eventoId,Integer estado);
 }

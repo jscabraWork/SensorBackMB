@@ -20,12 +20,11 @@ public class AlcanciaEventAdapterImpl extends EventAdapterImpl<Alcancia, Alcanci
 		entity.setId(event.getId());
 		entity.setPrecioParcialPagado(event.getPrecioParcialPagado());
 		entity.setPrecioTotal(event.getPrecioTotal());
-		entity.setActiva(event.isActiva());
+		entity.setEstado(event.getEstado());
 		entity.setCliente(clienteRepository.findById(event.getClienteNumeroDocumento()).orElse(null));
 		if(event.getTicketsIds()!= null && !event.getTicketsIds().isEmpty()) {
 			entity.setTickets(ticketRepository.findAllById(event.getTicketsIds()));
 		}
 		return super.creacion(entity, event);
 	}
-
 }

@@ -19,8 +19,9 @@ LEFT JOIN dias_localidades dl ON dl.localidad_id = l.id
 LEFT JOIN dias d ON dl.dia_id = d.id
 GROUP BY ep.eventos_id, p.numero_documento;
 
-CREATE VIEW ventas_taquilla AS
+CREATE OR REPLACE VIEW ventas_taquilla AS
 SELECT
+   ROW_NUMBER() OVER() as id,
    ep.eventos_id as evento_id,
    p.numero_documento as documento,
    p.correo,

@@ -5,6 +5,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
+import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.Immutable;
 
@@ -12,11 +13,15 @@ import org.hibernate.annotations.Immutable;
 @Table(name = "ventas_promotor")
 @AllArgsConstructor
 @NoArgsConstructor
+@Data
 @Immutable
 public class VentaPromorView {
 
-    @Column(name = "evento_id")
     @Id
+    @Column(name = "id")
+    private Long id;
+
+    @Column(name = "evento_id")
     private Long eventoId;
 
     @Column(name = "documento")
@@ -29,7 +34,7 @@ public class VentaPromorView {
     private String nombre;
 
     @Column(name = "cantidad_vendida")
-    Long cantidadVendida;
+    private Long cantidadVendida;
 
     @Column(name = "recaudado")
     private Double recaudado;

@@ -187,7 +187,7 @@ public class OrganizadorController extends CommonControllerString<Organizador, O
 
 
     @GetMapping("/alcancias/{pEventoId}")
-    public ResponseEntity<?> getAlcanciasByEventoAndEstado(@PathVariable Long pEventoId, @RequestParam(required = false) Boolean estado) {
+    public ResponseEntity<?> getAlcanciasByEventoAndEstado(@PathVariable Long pEventoId, @RequestParam(required = false) Integer estado) {
         Map<String, Object> response = new HashMap<>();
         List<Alcancia> alcancias = reporteService.findAlcanciasByEventoIdAndEstado(pEventoId, estado);
         response.put("alcancias", alcancias);

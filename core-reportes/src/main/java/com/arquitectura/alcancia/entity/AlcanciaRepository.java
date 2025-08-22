@@ -13,11 +13,11 @@ public interface AlcanciaRepository extends JpaRepository<Alcancia,Long> {
            "JOIN t.localidad l " +
            "JOIN l.dias d " +
            "WHERE d.evento.id = :eventoId " +
-           "AND (:activa IS NULL OR a.activa = :activa) " +
+           "AND (:estado IS NULL OR a.estado = :estado) " +
            "ORDER BY a.creationDate DESC")
     List<Alcancia> findByEventoIdAndEstado(
         @Param("eventoId") Long eventoId,
-        @Param("activa") Boolean activa
+        @Param("estado") Integer estado
     );
 
 }

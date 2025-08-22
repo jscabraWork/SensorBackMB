@@ -153,9 +153,13 @@ public byte[] generarExcelHistorialByEventoAndEstado(Long pEventoId, Integer sta
 }
 
     @Override
-    public List<Alcancia> findAlcanciasByEventoIdAndEstado(Long eventoId, Boolean estado) {
+    public List<Alcancia> findAlcanciasByEventoIdAndEstado(Long eventoId, Integer estado) {
 
-        return alcanciaService.findByEventoIdAndEstado(eventoId, estado);
+        List<Alcancia> alcancias = alcanciaService.findByEventoIdAndEstado(eventoId, estado);
+
+        alcancias.forEach(Alcancia::setLocalidad);
+
+        return alcancias;
     }
 
 

@@ -19,6 +19,6 @@ public interface ReporteService {
 
     public byte[] generarExcelHistorialByEventoAndEstado(Long pEventoId, Integer status);
 
-    List<Alcancia> findAlcanciasByEventoIdAndEstado(Long eventoId, Boolean estado);
+    List<Alcancia> findAlcanciasByEventoIdAndEstado(Long eventoId, Integer estado);
 
 }

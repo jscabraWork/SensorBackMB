@@ -12,7 +12,7 @@ public class AlcanciaServiceImpl extends CommonServiceImpl<Alcancia, AlcanciaRep
 
 
     @Override
-    public List<Alcancia> findByEventoIdAndEstado(Long eventoId, Boolean activa) {
-        return repository.findByEventoIdAndEstado(eventoId, activa);
+    public List<Alcancia> findByEventoIdAndEstado(Long eventoId, Integer estado) {
+        return repository.findByEventoIdAndEstado(eventoId, estado);
     }
 }
