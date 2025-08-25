@@ -32,7 +32,8 @@ public class Alcancia extends Auditable {
 
     private Double precioTotal;
 
-    private boolean activa;
+    //0: PAGADA | 1: ABIERTA | 2: DEVUELTA
+    private Integer estado;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="cliente_id")
@@ -43,7 +44,7 @@ public class Alcancia extends Auditable {
     private List<Ticket> tickets;
 
     public void devolver() {
-        activa=false;
+        estado =2;
         precioParcialPagado=0.0;
         tickets.forEach(Ticket::liberar);
     }
@@ -53,7 +54,7 @@ public class Alcancia extends Auditable {
         this.tickets = tickets;
         this.precioTotal = precioTotal;
         this.precioParcialPagado = precioParcialPagado;
-        this.activa = true;
+        estado = 1; // Estado 1 indica que la alcancía está abierta
         reservarTickets(tarifa);
     }
 
@@ -64,8 +65,8 @@ public class Alcancia extends Auditable {
         // Si el nuevo precio parcial pagado es mayor o igual al precio total, se cierra la alcancía
         if (nuevoPrecioParcialPagado >= precioTotal) {
             precioParcialPagado = precioTotal;
-            activa = false; // La alcancía se cierra al alcanzar el total
-        }
+            estado =0;
+            }
         else {
             precioParcialPagado += aporte;
         }
@@ -74,5 +75,9 @@ public class Alcancia extends Auditable {
     private void reservarTickets(Tarifa tarifa) {
         tickets.forEach(ticket -> ticket.reservar(tarifa));
     }
+
+    public boolean isActiva() {
+        return estado == 1;
+        }
 
 }

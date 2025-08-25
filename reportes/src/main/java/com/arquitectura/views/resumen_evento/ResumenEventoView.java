@@ -32,6 +32,9 @@ public class ResumenEventoView {
     @Column(name = "total_recaudado")
     private BigDecimal totalRecaudado;
 
+    @Column(name = "total_recaudado_transacciones")
+    private BigDecimal totalRecaudadoTransacciones;
+
     @Column(name = "servicio_recaudado")
     private BigDecimal servicioRecaudado;
 

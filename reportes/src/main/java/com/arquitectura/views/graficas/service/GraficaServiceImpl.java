@@ -20,11 +20,21 @@ public class GraficaServiceImpl implements GraficaService{
         return repository.graficaRecaudadoByMetodo(eventoId, mes, anio);
     }
 
-
     //Grafica de Lineas y Puntos para las ventas por periodo (meses o dias)
     @Override
     public List<GraficaLineasDTO> getGraficaLineaVentas(Long eventoId, Integer mes, Integer anio) {
         List<Object[]> rawData = repository.getGraficaLineaVentas(eventoId, mes, anio);
+        return GraficaLineasDTO.fromObjectArray(rawData);
+    }
+
+    @Override
+    public List<GraficaDonaDTO> getGraficaDineroRecaudadoByMetodoAdmin(Long eventoId, Integer mes, Integer anio) {
+        return repository.graficaRecaudadoByMetodoAdmin(eventoId, mes, anio);
+    }
+
+    @Override
+    public List<GraficaLineasDTO> getGraficaLineaVentasAdmin(Long eventoId, Integer mes, Integer anio) {
+        List<Object[]> rawData = repository.getGraficaLineaVentasAdmin(eventoId, mes, anio);
         return GraficaLineasDTO.fromObjectArray(rawData);
     }
 }

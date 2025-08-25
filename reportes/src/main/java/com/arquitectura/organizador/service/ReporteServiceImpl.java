@@ -9,8 +9,12 @@ import com.arquitectura.views.detalle_evento.DetalleEventoViewRepository;
 import com.arquitectura.views.historial_transacciones.HistorialDTO;
 import com.arquitectura.views.historial_transacciones.HistorialRepository;
 import com.arquitectura.views.historial_transacciones.HistorialView;
+import com.arquitectura.views.resumen_admin.ResumenAdminDTO;
+import com.arquitectura.views.resumen_admin.ResumenAdminRepository;
 import com.arquitectura.views.resumen_evento.ResumenEventoView;
 import com.arquitectura.views.resumen_evento.ResumenEventoViewRepository;
+import com.arquitectura.views.resumen_organizador.ResumenOrganizadorDTO;
+import com.arquitectura.views.resumen_organizador.ResumenOrganizadorViewRepository;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +26,7 @@ import org.springframework.stereotype.Service;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -34,6 +39,9 @@ public class ReporteServiceImpl implements ReporteService{
     private ResumenEventoViewRepository vistaResumenEvento;
 
     @Autowired
+    private ResumenOrganizadorViewRepository vistaResumenOrganizador;
+
+    @Autowired
     private DetalleEventoViewRepository detalleRepository;
 
     @Autowired
@@ -44,6 +52,9 @@ public class ReporteServiceImpl implements ReporteService{
 
     @Autowired
     private AlcanciaService alcanciaService;
+
+    @Autowired
+    private ResumenAdminRepository adminRepository;
 
 
     @Override
@@ -162,5 +173,20 @@ public byte[] generarExcelHistorialByEventoAndEstado(Long pEventoId, Integer sta
         return alcancias;
     }
 
+    @Override
+    public ResumenOrganizadorDTO getResumenOrganizador(String numeroDocumento, LocalDate fechaInicio, LocalDate fechaFin) {
+
+        Object[] result = vistaResumenOrganizador.getResumenOrganizador(numeroDocumento, fechaInicio, fechaFin);
+
+        System.out.println("RESULTADO: " + result);
+
+        return ResumenOrganizadorDTO.fromArray(result);
+
+    }
+
+    @Override
+    public ResumenAdminDTO getResumenAdmin(Long eventoId, Integer anio, Integer mes, Integer dia) {
+        return adminRepository.getResumenAdminDTO(eventoId, anio, mes, dia);
+    }
 
 }
