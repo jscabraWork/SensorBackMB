@@ -3,11 +3,14 @@ package com.arquitectura.imagen.entity;
 import com.arquitectura.entity.Auditable;
 import com.arquitectura.evento.entity.Evento;
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 import java.time.LocalDateTime;
 
@@ -16,6 +19,8 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @EqualsAndHashCode(callSuper = true)
 @Table(name="imagenes")
+@ToString(exclude = {"evento"})
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class Imagen extends Auditable {
 
 	@Id

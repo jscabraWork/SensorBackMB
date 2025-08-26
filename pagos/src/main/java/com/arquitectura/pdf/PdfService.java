@@ -3,6 +3,7 @@ package com.arquitectura.pdf;
 import com.arquitectura.aws.AWSS3Service;
 import com.arquitectura.dia.entity.Dia;
 import com.arquitectura.evento.entity.Evento;
+import com.arquitectura.ingreso.entity.Ingreso;
 import com.arquitectura.localidad.entity.Localidad;
 import com.arquitectura.ticket.entity.Ticket;
 import com.lowagie.text.DocumentException;
@@ -37,16 +38,19 @@ public class PdfService implements PdfGenerateService {
     private static final String QR_CODE_IMAGE_PATH = "./uploads/";
 
     @Override
-    public void generatePdfFileTicket(String templateName, Ticket ticket, String pdfFileName, String imagen,
+    public void generatePdfFileTicket(String templateName, Ingreso ingreso, String pdfFileName, String imagenQR,
                                       Evento evento, Localidad localidad){
 
         Context context = new Context();
+
+        Ticket ticket = ingreso.getTicket();
 
         Map<String, Object> data = new HashMap<>();
 
         int year = 0;
         int month = 0;
         int day = 0;
+        String hora ="";
         String fecha = "";
         String localidadString=localidad.getNombre();
 
@@ -56,32 +60,22 @@ public class PdfService implements PdfGenerateService {
             }
         }
 
-        List<Dia> dias = evento.getDias();
-        List<String> diasInfo = new ArrayList<>();
+        Dia dia = ingreso.getDia();
 
-        if (dias != null && !dias.isEmpty()) {
-            diasInfo = dias.stream()
-                    .map(dia -> {
-                        String info = dia.getNombre();
-                        if (dia.getHoraInicio() != null && !dia.getHoraInicio().isEmpty()) {
-                            info += " - " + dia.getHoraInicio();
-                        } else {
-                            info += " - Pendiente por confirmar";
-                        }
-                        return info;
-                    })
-                    .collect(Collectors.toList());
+
+        if (dia.getHoraInicio()!=null) {
+            hora = dia.getHoraInicio();
         } else {
-            diasInfo.add("Pendiente por confirmar");
+            hora = "Por confirmar";
         }
 
-        if (ticket.getIngresos().get(0).getDia()!= null) {
-            year = ticket.getIngresos().get(0).getDia().getFechaInicio().getYear();
-            month = ticket.getIngresos().get(0).getDia().getFechaInicio().getMonthValue();
-            day = ticket.getIngresos().get(0).getDia().getFechaInicio().getDayOfMonth();
+        if (dia.getFechaInicio() !=null ) {
+            year = dia.getFechaInicio().getYear();
+            month = dia.getFechaInicio().getMonthValue();
+            day = dia.getFechaInicio().getDayOfMonth();
             fecha = year + "-" + month + "-" + day;
         }  else {
-            fecha = "Fecha: Por confirmar";
+            fecha = "Por confirmar";
         }
 
         String imgFondo = "https://allticketscol.com/assets/images/img/concierto.jpg";
@@ -101,8 +95,8 @@ public class PdfService implements PdfGenerateService {
         data.put("cantidadP", cantidadP);
         data.put("id", id);
         data.put("imgFondo", imgFondo);
-        data.put("imagen",imagen);
-        data.put("diasInfo",diasInfo);
+        data.put("imagen",imagenQR);
+        data.put("hora",hora);
         System.out.println("toda la informacion para la plantilla html para enviar QR: " + data);
         context.setVariables(data);
         String htmlContent = templateEngine.process(templateName, context);

@@ -50,7 +50,7 @@ public class QRController {
                 return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
             }
 
-            //-- DESDE AQUI PASAR LÓGICA A UN SERVICE ---
+            //-- DESDE AQUI PASAR LÓGICA A UN SERVICE  ATTE: ISAAC---
 
             // Validar que el ticket esté vendido
             if (!ticketPrincipal.isVendido()) {

@@ -163,7 +163,7 @@ public class Ticket extends Auditable {
     }
 
 
-    public void asignarClientesAAsientos(Cliente cliente) {
+    public void ve(Cliente cliente, Tarifa tarifa) {
         Cliente lider = asientos.get(0).getPalco().getCliente();
         asientos.forEach(a->{
             if(lider!=null) {

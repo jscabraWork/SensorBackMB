@@ -531,20 +531,13 @@ public class TicketServiceImpl extends CommonServiceImpl<Ticket, TicketRepositor
     public String agregarTicketACliente(Long pIdTicket, Cliente pCliente, String token) throws Exception {
 
         Ticket ticket = repository.findById(pIdTicket).orElse(null);
+        Integer estado = ticket.getEstado();
 
         // Si el cliente del ticket es diferente al del token y el usuario no es
         // administrador, no permitir hacer nada
-        if (ticket.getCliente() != null) {
-            if (!ticket.getCliente().getNumeroDocumento().equals(clienteService.obtenerUsuarioDeToken(token))
+        if (!pCliente.getNumeroDocumento().equals(clienteService.obtenerUsuarioDeToken(token))
                     && !clienteService.obtenerRolDeToken(token).equals("ROLE_ADMIN")) {
-                return "No se pudo agregar el ticket a cliente";
-            }
-        }
-
-        // Si el cliente del ticket es diferente al del token y el usuario no es
-        // administrador, no permitir hacer nada
-        if (ticket.getCliente() == null && !clienteService.obtenerRolDeToken(token).equals("ROLE_ADMIN")) {
-            return "No se pudo agregar el ticket a cliente";
+          return "No se pudo agregar el ticket a cliente";
         }
 
         String retorno = "Agregado el cliente exitosamente";
@@ -553,6 +546,7 @@ public class TicketServiceImpl extends CommonServiceImpl<Ticket, TicketRepositor
 
         List<Ticket> tickets = new ArrayList<>();
 
+        //Vender ticket principal
         ticket.vender(pCliente, localidad.getTarifaActiva());
 
         tickets.add(ticket);
@@ -565,55 +559,74 @@ public class TicketServiceImpl extends CommonServiceImpl<Ticket, TicketRepositor
            });
         }
 
+       //Guardar y enviar a kafka
        List<Ticket> ticketsEnviar = saveAllKafka(tickets);
 
        //Enviar todos los qrs
        enviar(ticketsEnviar);
 
-        if (ticket.getEstado() == 1) {
+        if (estado == 1) {
             retorno = "Se agrego el cliente, ten en cuenta que estaba previamente vendido";
-        } else if (ticket.getEstado() == 3) {
-            ticket.setEstado(1);
-
+        } else if (estado == 3) {
             retorno = "Se agrego el cliente, ten en cuenta que estaba en proceso de venta";
         }
 
         return retorno;
     }
 
-    public void mandarQR(Ticket pTicket) throws Exception {
+    public void mandarQR(Ticket pTicket) {
+        try {
 
-        Localidad localidad = localidadService.findById(pTicket.getLocalidad().getId());
-        Evento evento = eventoService.findByLocalidadId(localidad.getId());
+            Localidad localidad = pTicket.getLocalidad();
 
-        String filepath = QR_CODE_IMAGE_PATH + "Ticket" + pTicket.getId() + ","
-                + pTicket.getCliente().getNumeroDocumento() + ".png";
-        String contenidoPre = "TICKET:" + pTicket.getId() + "," + pTicket.getCliente().getNumeroDocumento() + ","
-                + evento.getId();
-        String contenido = encriptador.encrypt(contenidoPre);
+            Evento evento = eventoService.findByLocalidadId(localidad.getId());
 
-        QRCodeGenerator.generateQRCodeImage(contenido, 400, 400, filepath);
-        File file = new File(filepath);
-        FileInputStream input = new FileInputStream(file);
-        MultipartFile multipartFile = new MockMultipartFile("file", file.getName(), "image/png",
-                IOUtils.toByteArray(input));
-        String nombre = awsService.uploadFile(multipartFile);
-        String src = "https://codigos.allticketscol.com/" + nombre;
-        String path = "MARCABLANCA" + pTicket.getId() + pTicket.getCliente().getNumeroDocumento()
-                + System.currentTimeMillis() + "_" + "ticket.pdf";
+            Cliente cliente = pTicket.getCliente();
 
-        servicioPDF.generatePdfFileTicket("ticketMarcaBlanca", pTicket, path, src, evento, localidad);
+            String filepath = QR_CODE_IMAGE_PATH + "Ticket" + pTicket.getId() + "," + pTicket.getCliente().getNumeroDocumento() + ".png";
 
-        File file2 = new File(QR_CODE_IMAGE_PATH + path);
+            //Obtener ingresos del ticket
+            List<Ingreso> ingresos = pTicket.getIngresos();
 
-        String numeroTicket = pTicket.getNumero();
+            //MANDAR QR por cada ingreso del ticket
+            ingresos.forEach(ingreso -> {
 
-        if (numeroTicket == null) {
-            numeroTicket = "" + pTicket.getId();
+                try {
+                    String contenidoQR = "INGRESO:" + ingreso.getId() + "," + cliente.getNumeroDocumento() + "," + evento.getId();
+
+                    String contenido = encriptador.encrypt(contenidoQR);
+
+                    QRCodeGenerator.generateQRCodeImage(contenido, 400, 400, filepath);
+
+                    File file = new File(filepath);
+                    FileInputStream input = new FileInputStream(file);
+
+                    MultipartFile multipartFile = new MockMultipartFile("file", file.getName(), "image/png", IOUtils.toByteArray(input));
+
+                    String nombre = awsService.uploadFile(multipartFile);
+                    String src = "https://marcablanca.allticketscol.com/" + nombre;
+                    String path = "MARCABLANCA" + pTicket.getId() + pTicket.getCliente().getNumeroDocumento() + System.currentTimeMillis() + "_" + "ticket.pdf";
+
+                    servicioPDF.generatePdfFileTicket("ticketMarcaBlanca", ingreso, path, src, evento, localidad);
+
+                    File file2 = new File(QR_CODE_IMAGE_PATH + path);
+
+                    String numeroTicket = pTicket.getNumero();
+
+                    if (numeroTicket == null) {
+                        numeroTicket = "" + pTicket.getId();
+                    }
+
+                    emailService.mandarCorreo(numeroTicket, cliente.getCorreo(), file2);
+
+                } catch (Exception e) {
+
+                    logger.error("Error generando y enviando QR para el ingreso {}: {}", ingreso.getId(), e.getMessage(), e);
+                }
+            });
+        } catch (Exception e) {
+            logger.error("Error en mandarQR para el ticket {}: {}", pTicket.getId(), e.getMessage(), e);
         }
-
-        emailService.mandarCorreo(numeroTicket, pTicket.getCliente().getCorreo(), pTicket.getAsientos().size() + 1, file2);
-
     }
 
     @Transactional("transactionManager")
