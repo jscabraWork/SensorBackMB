@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.List;
 
-@FeignClient(name="microservicio-reportes", configuration = FeignClientConfig.class)
+@FeignClient(name="microservicio-reporte", configuration = FeignClientConfig.class)
 public interface ReporteFeignClient {
 
     @PostMapping("/tickets/crear/{pLocalidadId}")
