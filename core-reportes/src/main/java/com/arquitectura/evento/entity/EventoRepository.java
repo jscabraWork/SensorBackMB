@@ -15,5 +15,6 @@ public interface EventoRepository extends JpaRepository<Evento,Long> {
 
     List<Evento> findByOrganizadoresNumeroDocumentoAndEstadoOrderByFechaAperturaDesc(String numeroDocumento, Integer pEstado);
 
+    List<Evento> findByEstado(Integer estado);
 
 }

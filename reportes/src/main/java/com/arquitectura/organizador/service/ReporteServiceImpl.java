@@ -9,8 +9,14 @@ import com.arquitectura.views.detalle_evento.DetalleEventoViewRepository;
 import com.arquitectura.views.historial_transacciones.HistorialDTO;
 import com.arquitectura.views.historial_transacciones.HistorialRepository;
 import com.arquitectura.views.historial_transacciones.HistorialView;
+import com.arquitectura.views.localidades_acabar.LocalidadesPorAcabar;
+import com.arquitectura.views.localidades_acabar.LocalidadesPorAcabarRepository;
+import com.arquitectura.views.resumen_admin.ResumenAdminDTO;
+import com.arquitectura.views.resumen_admin.ResumenAdminRepository;
 import com.arquitectura.views.resumen_evento.ResumenEventoView;
 import com.arquitectura.views.resumen_evento.ResumenEventoViewRepository;
+import com.arquitectura.views.resumen_organizador.ResumenOrganizadorDTO;
+import com.arquitectura.views.resumen_organizador.ResumenOrganizadorViewRepository;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +28,7 @@ import org.springframework.stereotype.Service;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -32,6 +39,9 @@ public class ReporteServiceImpl implements ReporteService{
 
     @Autowired
     private ResumenEventoViewRepository vistaResumenEvento;
+
+    @Autowired
+    private ResumenOrganizadorViewRepository vistaResumenOrganizador;
 
     @Autowired
     private DetalleEventoViewRepository detalleRepository;
@@ -161,6 +171,12 @@ public byte[] generarExcelHistorialByEventoAndEstado(Long pEventoId, Integer sta
 
         return alcancias;
     }
+
+    @Override
+    public ResumenOrganizadorDTO getResumenOrganizador(String numeroDocumento, LocalDate fechaInicio, LocalDate fechaFin) {
+        return vistaResumenOrganizador.getResumenOrganizador(numeroDocumento, fechaInicio, fechaFin);
+    }
+
 
 
 }

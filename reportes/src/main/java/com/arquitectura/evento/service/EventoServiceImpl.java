@@ -30,5 +30,10 @@ public class EventoServiceImpl extends CommonServiceImpl<Evento, EventoRepositor
         return repository.findByOrganizadoresNumeroDocumentoAndEstadoOrderByFechaAperturaDesc(numeroDocumento, pEstado);
     }
 
+    @Override
+    public List<Evento> findByEstado(Integer estado) {
+        return repository.findByEstado(estado);
+    }
+
 
 }

@@ -11,4 +11,8 @@ public interface GraficaService {
     List<GraficaDonaDTO> getGraficaDineroRecaudadoByMetodo(Long eventoId,Integer mes,Integer anio);
 
     List<GraficaLineasDTO> getGraficaLineaVentas(Long eventoId,Integer mes,Integer anio);
+
+    List<GraficaDonaDTO> getGraficaDineroRecaudadoByMetodoAdmin(Long eventoId,Integer anio,Integer mes,Integer dia);
+
+    List<GraficaLineasDTO> getGraficaLineaVentasAdmin(Long eventoId,Integer anio,Integer mes, Integer dia);
 }

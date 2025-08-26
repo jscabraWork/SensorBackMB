@@ -8,6 +8,6 @@ import java.util.List;
 @Repository
 public interface AlcanciaRepository extends JpaRepository<Alcancia,Long> {
 
-    List<Alcancia> findByClienteNumeroDocumentoAndActiva(String pClienteId, Boolean activa);
+    List<Alcancia> findByClienteNumeroDocumentoAndEstado(String pClienteId, Integer estado);
 
 }

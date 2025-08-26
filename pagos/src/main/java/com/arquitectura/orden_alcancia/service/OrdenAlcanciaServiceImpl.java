@@ -139,7 +139,7 @@ public class OrdenAlcanciaServiceImpl extends CommonServiceImpl<OrdenAlcancia, O
                     alcancia.getId(),
                     alcancia.getPrecioParcialPagado(),
                     alcancia.getPrecioTotal(),
-                    alcancia.isActiva(),
+                    alcancia.getEstado(),
                     alcancia.getCliente() != null ? alcancia.getCliente().getNumeroDocumento() : null,
                     alcancia.getTickets() != null ? alcancia.getTickets().stream().map(t -> t.getId()).toList() : List.of()
             );

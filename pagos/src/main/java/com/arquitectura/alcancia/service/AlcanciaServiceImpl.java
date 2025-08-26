@@ -106,7 +106,7 @@ public class AlcanciaServiceImpl extends CommonServiceImpl<Alcancia, AlcanciaRep
 
     @Override
     public List<Alcancia> findActivasByCliente(String pClienteId) {
-        return repository.findByClienteNumeroDocumentoAndActiva(pClienteId, true);
+        return repository.findByClienteNumeroDocumentoAndEstado(pClienteId, 1);
     }
 
     //----------------Métodos para Kafka-------------------
@@ -127,7 +127,7 @@ public class AlcanciaServiceImpl extends CommonServiceImpl<Alcancia, AlcanciaRep
                 alcancia.getId(),
                 alcancia.getPrecioParcialPagado(),
                 alcancia.getPrecioTotal(),
-                alcancia.isActiva(),
+                alcancia.getEstado(),
                 alcancia.getCliente() != null ? alcancia.getCliente().getNumeroDocumento() : null,
                 alcancia.getTickets() != null ? alcancia.getTickets().stream().map(t -> t.getId()).toList() : List.of()
         );
@@ -169,7 +169,7 @@ public class AlcanciaServiceImpl extends CommonServiceImpl<Alcancia, AlcanciaRep
 
     @Override
     public List<MisAlcanciasDto> getMisAlcanciasByCliente(String numeroDocumento) {
-        List<Alcancia> alcancias = repository.findByClienteNumeroDocumentoAndActiva(numeroDocumento, true);
+        List<Alcancia> alcancias = repository.findByClienteNumeroDocumentoAndEstado(numeroDocumento, 1);
         return MisAlcanciasDto.AlcanciastoDto(alcancias);
     }
 

@@ -169,7 +169,6 @@ JOIN comisiones c ON c.concepto = 'pasarela'
 WHERE tr.status = 34 and tr.metodo in (1,2)
 AND o.evento_id = 1 AND o.tipo != 5;
 
-
 -- COMISION 3DS
 -- 367 pesos por cantidad de transacciones aprobadas o no por TC
 -- Excluye órdenes tipo 5

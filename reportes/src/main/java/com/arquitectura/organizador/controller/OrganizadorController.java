@@ -11,6 +11,7 @@ import com.arquitectura.views.detalle_evento.DetalleEventoView;
 import com.arquitectura.views.graficas.service.GraficaService;
 import com.arquitectura.views.historial_transacciones.HistorialDTO;
 import com.arquitectura.views.historial_transacciones.HistorialView;
+import com.arquitectura.views.resumen_organizador.ResumenOrganizadorDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -23,6 +24,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDateTime;
 import java.time.Year;
@@ -184,14 +186,30 @@ public class OrganizadorController extends CommonControllerString<Organizador, O
         }
     }
 
-
-
     @GetMapping("/alcancias/{pEventoId}")
     public ResponseEntity<?> getAlcanciasByEventoAndEstado(@PathVariable Long pEventoId, @RequestParam(required = false) Integer estado) {
         Map<String, Object> response = new HashMap<>();
         List<Alcancia> alcancias = reporteService.findAlcanciasByEventoIdAndEstado(pEventoId, estado);
         response.put("alcancias", alcancias);
         return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    @GetMapping("/resumen-organizador/{numeroDocumento}")
+    public ResponseEntity<?> getResumenOrganizador(
+            @PathVariable String numeroDocumento,
+            @RequestParam(required = false) LocalDateTime fechaInicio,
+            @RequestParam(required = false) LocalDateTime fechaFin) {
+
+        Map<String, Object> response = new HashMap<>();
+            ResumenOrganizadorDTO resumen = reporteService.getResumenOrganizador(numeroDocumento,
+                fechaInicio != null ? fechaInicio.toLocalDate() : null,
+                fechaFin != null ? fechaFin.toLocalDate() : null);
+            List<Evento> eventosProximos = eventoService.findByOrganizadoresNumeroDocumentoAndEstadoNot(numeroDocumento, 3);
+
+            response.put("resumen", resumen);
+            response.put("eventos", eventosProximos);
+            return new ResponseEntity<>(response, HttpStatus.OK);
+
     }
 
 }
