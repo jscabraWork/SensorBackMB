@@ -535,7 +535,6 @@ public class TicketServiceImpl extends CommonServiceImpl<Ticket, TicketRepositor
         // Si el cliente del ticket es diferente al del token y el usuario no es
         // administrador, no permitir hacer nada
         if (ticket.getCliente() != null) {
-
             if (!ticket.getCliente().getNumeroDocumento().equals(clienteService.obtenerUsuarioDeToken(token))
                     && !clienteService.obtenerRolDeToken(token).equals("ROLE_ADMIN")) {
                 return "No se pudo agregar el ticket a cliente";
@@ -548,25 +547,28 @@ public class TicketServiceImpl extends CommonServiceImpl<Ticket, TicketRepositor
             return "No se pudo agregar el ticket a cliente";
         }
 
-        Long tipo = ticket.getLocalidad().getId();
         String retorno = "Agregado el cliente exitosamente";
 
-        if (ticket.getAsientos().size() > 0) {
-            if (tipo == 2 || tipo == 3 || ticket.getTipo() == 0) {
+        Localidad localidad = ticket.getLocalidad();
 
-                ticket.asignarClientesAAsientos(pCliente);
-                ticket.getAsientos().forEach(a -> {
-                    publicarModificacionDeTicket(a);
-                    try {
-                        mandarQR(a);
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                });
-            }
+        List<Ticket> tickets = new ArrayList<>();
+
+        ticket.vender(pCliente, localidad.getTarifaActiva());
+
+        tickets.add(ticket);
+
+        //Vender todos los asientos
+       if( ticket.getTipo() == 0 && ticket.getAsientos() != null && !ticket.getAsientos().isEmpty()) {
+           ticket.getAsientos().forEach(asiento -> {
+               asiento.vender(pCliente, localidad.getTarifaActiva());
+               tickets.add(asiento);
+           });
         }
 
-        ticket.setCliente(pCliente);
+       List<Ticket> ticketsEnviar = saveAllKafka(tickets);
+
+       //Enviar todos los qrs
+       enviar(ticketsEnviar);
 
         if (ticket.getEstado() == 1) {
             retorno = "Se agrego el cliente, ten en cuenta que estaba previamente vendido";
@@ -575,9 +577,6 @@ public class TicketServiceImpl extends CommonServiceImpl<Ticket, TicketRepositor
 
             retorno = "Se agrego el cliente, ten en cuenta que estaba en proceso de venta";
         }
-        ticket.setEstado(1);
-        publicarModificacionDeTicket(ticket);
-        mandarQR(ticket);
 
         return retorno;
     }
