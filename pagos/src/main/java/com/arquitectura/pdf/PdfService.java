@@ -3,6 +3,7 @@ package com.arquitectura.pdf;
 import com.arquitectura.aws.AWSS3Service;
 import com.arquitectura.dia.entity.Dia;
 import com.arquitectura.evento.entity.Evento;
+import com.arquitectura.imagen.entity.Imagen;
 import com.arquitectura.ingreso.entity.Ingreso;
 import com.arquitectura.localidad.entity.Localidad;
 import com.arquitectura.ticket.entity.Ticket;
@@ -62,11 +63,12 @@ public class PdfService implements PdfGenerateService {
 
         Dia dia = ingreso.getDia();
 
+        hora = dia.getNombre();
 
         if (dia.getHoraInicio()!=null) {
-            hora = dia.getHoraInicio();
+            hora = hora + " " + dia.getHoraInicio();
         } else {
-            hora = "Por confirmar";
+            hora = hora + " Por confirmar";
         }
 
         if (dia.getFechaInicio() !=null ) {
@@ -80,25 +82,30 @@ public class PdfService implements PdfGenerateService {
 
         String imgFondo = "https://allticketscol.com/assets/images/img/concierto.jpg";
 
+        Imagen imagen = evento.getImagenByTipo(3);
+
+        if(imagen != null) {
+        	imgFondo = imagen.getUrl();
+        }
+
         String id = ticket.getId().toString();
         if (ticket.getNumero() != null) {
             id = ticket.getNumero();
         }
-
-        String cantidadP = "1";
 
         data.put("fecha", fecha);
         data.put("localidad", localidadString);
         data.put("cliente", ticket.getCliente());
         data.put("evento", evento);
         data.put("boleta", ticket);
-        data.put("cantidadP", cantidadP);
+        data.put("cantidadP", "1");
         data.put("id", id);
         data.put("imgFondo", imgFondo);
         data.put("imagen",imagenQR);
         data.put("hora",hora);
-        System.out.println("toda la informacion para la plantilla html para enviar QR: " + data);
+        data.put("dia",dia.getNombre());
         context.setVariables(data);
+
         String htmlContent = templateEngine.process(templateName, context);
 
         try {

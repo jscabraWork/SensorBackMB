@@ -552,18 +552,16 @@ public class TicketServiceImpl extends CommonServiceImpl<Ticket, TicketRepositor
         tickets.add(ticket);
 
         //Vender todos los asientos
-       if( ticket.getTipo() == 0 && ticket.getAsientos() != null && !ticket.getAsientos().isEmpty()) {
+       if( ticket.getTipo() == 0 && ticket.getAsientos() != null && !ticket.getAsientos().isEmpty())
+       {
            ticket.getAsientos().forEach(asiento -> {
                asiento.vender(pCliente, localidad.getTarifaActiva());
                tickets.add(asiento);
            });
-        }
+       }
 
-       //Guardar y enviar a kafka
-       List<Ticket> ticketsEnviar = saveAllKafka(tickets);
-
-       //Enviar todos los qrs
-       enviar(ticketsEnviar);
+       //Publicar en KAFKA Enviar todos los qrs
+       enviar(tickets);
 
         if (estado == 1) {
             retorno = "Se agrego el cliente, ten en cuenta que estaba previamente vendido";
