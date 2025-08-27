@@ -3,6 +3,7 @@ package com.arquitectura.ticket;
 import com.arquitectura.PagosApplication;
 import com.arquitectura.cliente.entity.Cliente;
 import com.arquitectura.orden.entity.Orden;
+import com.arquitectura.qr.service.QRService;
 import com.arquitectura.ticket.controller.TicketController;
 import com.arquitectura.ticket.entity.Ticket;
 import com.arquitectura.ticket.service.TicketService;
@@ -44,6 +45,9 @@ public class TicketTestController {
 
     @MockBean
     private TicketService ticketService;
+
+    @MockBean
+    private QRService qrService;
 
 
     private Orden orden1;
@@ -420,14 +424,14 @@ public class TicketTestController {
         Ticket ticketDisponible = Ticket.builder().id(2L).estado(0).build();
 
         when(ticketService.findAllByLocalidad(localidadId)).thenReturn(List.of(ticketVendido, ticketDisponible));
-        doNothing().when(ticketService).mandarQR(ticketVendido);
+        doNothing().when(qrService).mandarQR(ticketVendido);
 
         mockMvc.perform(MockMvcRequestBuilders.put("/tickets/qrs/{pIdLocalidad}", localidadId))
                 .andExpect(status().isOk());
 
         verify(ticketService).findAllByLocalidad(localidadId);
-        verify(ticketService).mandarQR(ticketVendido);
-        verify(ticketService, never()).mandarQR(ticketDisponible);
+        verify(qrService).mandarQR(ticketVendido);
+        verify(qrService, never()).mandarQR(ticketDisponible);
     }
 
     @Test
@@ -437,12 +441,12 @@ public class TicketTestController {
         Ticket ticket = Ticket.builder().id(1L).estado(1).build();
 
         when(ticketService.findAllByLocalidad(localidadId)).thenReturn(List.of(ticket));
-        doThrow(new WriterException("Error generando QR")).when(ticketService).mandarQR(ticket);
+        doThrow(new WriterException("Error generando QR")).when(qrService).mandarQR(ticket);
 
         mockMvc.perform(MockMvcRequestBuilders.put("/tickets/qrs/{pIdLocalidad}", localidadId))
                 .andExpect(status().isOk());
 
-        verify(ticketService).mandarQR(ticket);
+        verify(qrService).mandarQR(ticket);
     }
 
     @Test
@@ -451,10 +455,10 @@ public class TicketTestController {
         Long localidadId = 1L;
         Ticket ticket = Ticket.builder().id(1L).estado(1).build();
         when(ticketService.findAllByLocalidad(localidadId)).thenReturn(List.of(ticket));
-        doThrow(new IOException("Error de IO")).when(ticketService).mandarQR(ticket);
+        doThrow(new IOException("Error de IO")).when(qrService).mandarQR(ticket);
         mockMvc.perform(MockMvcRequestBuilders.put("/tickets/qrs/{pIdLocalidad}", localidadId))
                 .andExpect(status().isOk());
-        verify(ticketService).mandarQR(ticket);
+        verify(qrService).mandarQR(ticket);
     }
 
     @Test
@@ -464,7 +468,7 @@ public class TicketTestController {
         when(ticketService.findAllByLocalidad(localidadId)).thenReturn(Collections.emptyList());
         mockMvc.perform(MockMvcRequestBuilders.put("/tickets/qrs/{pIdLocalidad}", localidadId))
                 .andExpect(status().isOk());
-        verify(ticketService, never()).mandarQR(any());
+        verify(qrService, never()).mandarQR(any());
     }
 
     @Test
@@ -480,7 +484,7 @@ public class TicketTestController {
         when(ticketService.findAllByLocalidad(localidadId)).thenReturn(tickets);
         mockMvc.perform(MockMvcRequestBuilders.put("/tickets/qrs/{pIdLocalidad}", localidadId))
                 .andExpect(status().isOk());
-        verify(ticketService, never()).mandarQR(any());
+        verify(qrService, never()).mandarQR(any());
     }
 
     @Test

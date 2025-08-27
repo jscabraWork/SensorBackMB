@@ -123,15 +123,6 @@ public interface TicketService extends CommonService<Ticket> {
      */
     public List<Ticket> findAllByLocalidad(Long pLocalidadId);
 
-
-    /**
-     * Envia un codigo QR con la informacion del ticket.
-     *
-     * @param pTicket  el ticket comprado
-     */
-    public void mandarQR(Ticket pTicket) throws WriterException, IOException, Exception;
-
-
     //----------------Métodos para Kafka-------------------
     /**
      * Guarda un ticket y publica el evento en Kafka

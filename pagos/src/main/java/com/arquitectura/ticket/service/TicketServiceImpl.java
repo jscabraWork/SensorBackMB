@@ -14,6 +14,7 @@ import com.arquitectura.localidad.entity.Localidad;
 import com.arquitectura.localidad.entity.LocalidadRepository;
 import com.arquitectura.localidad.service.LocalidadService;
 import com.arquitectura.pdf.PdfService;
+import com.arquitectura.qr.service.QRService;
 import com.arquitectura.seguro.service.SeguroService;
 import com.arquitectura.services.CommonServiceImpl;
 import com.arquitectura.ticket.entity.Ticket;
@@ -50,8 +51,8 @@ public class TicketServiceImpl extends CommonServiceImpl<Ticket, TicketRepositor
 
     private static final Logger logger = LoggerFactory.getLogger(TicketServiceImpl.class);
 
-    private static final String QR_CODE_IMAGE_PATH = "./uploads/";
-
+    @Autowired
+    private QRService qrService;
 
     @Autowired
     private TicketFactory ticketFactory;
@@ -73,18 +74,6 @@ public class TicketServiceImpl extends CommonServiceImpl<Ticket, TicketRepositor
 
     @Autowired
     private IngresoRepository ingresoRepository;
-
-    @Autowired
-    private AWSS3Service awsService;
-
-    @Autowired
-    private PdfService servicioPDF;
-
-    @Autowired
-    private SendEmailAmazonService emailService;
-
-    @Autowired
-    private EncriptarTexto encriptador;
 
     @Autowired
     private KafkaTemplate<String, Object> kafkaTemplate;
@@ -572,66 +561,6 @@ public class TicketServiceImpl extends CommonServiceImpl<Ticket, TicketRepositor
         return retorno;
     }
 
-    public void mandarQR(Ticket pTicket) {
-        try {
-
-            Localidad localidad = pTicket.getLocalidad();
-
-            Evento evento = eventoService.findByLocalidadId(localidad.getId());
-
-            Cliente cliente = pTicket.getCliente();
-
-            String filepath = QR_CODE_IMAGE_PATH + "Ticket" + pTicket.getId() + "," + pTicket.getCliente().getNumeroDocumento() + ".png";
-
-            //Obtener ingresos del ticket
-            List<Ingreso> ingresos = pTicket.getIngresos();
-
-            //MANDAR QR por cada ingreso del ticket
-            ingresos.forEach(ingreso -> {
-
-                try {
-                    String contenidoQR = "INGRESO:" + ingreso.getId() + "," + cliente.getNumeroDocumento() + "," + evento.getId();
-
-                    String contenido = encriptador.encrypt(contenidoQR);
-
-                    QRCodeGenerator.generateQRCodeImage(contenido, 400, 400, filepath);
-
-                    File file = new File(filepath);
-                    FileInputStream input = new FileInputStream(file);
-
-                    MultipartFile multipartFile = new MockMultipartFile("file", file.getName(), "image/png", IOUtils.toByteArray(input));
-
-                    String nombre = awsService.uploadFile(multipartFile);
-                    String src = "https://marcablanca.allticketscol.com/" + nombre;
-                    String path = "MARCABLANCA" + pTicket.getId() + pTicket.getCliente().getNumeroDocumento() + System.currentTimeMillis() + "_" + "ticket.pdf";
-
-                    servicioPDF.generatePdfFileTicket("ticketMarcaBlanca", ingreso, path, src, evento, localidad);
-
-                    File file2 = new File(QR_CODE_IMAGE_PATH + path);
-
-                    String numeroTicket = pTicket.getNumero();
-
-                    if (numeroTicket == null) {
-                        numeroTicket = "" + pTicket.getId();
-                    }
-
-                    emailService.mandarCorreo(numeroTicket, cliente.getCorreo(), file2);
-
-                } catch (Exception e) {
-
-                    logger.error("Error generando y enviando QR para el ingreso {}: {}", ingreso.getId(), e.getMessage(), e);
-                }
-            });
-        } catch (Exception e) {
-            logger.error("Error en mandarQR para el ticket {}: {}", pTicket.getId(), e.getMessage(), e);
-        }
-    }
-
-    @Transactional("transactionManager")
-    public void publicarModificacionDeTicket(Ticket pTicket) {
-        Ticket ticketBd = repository.save(pTicket);
-    }
-
     @Override
     public List<Ticket> findAllByLocalidad(Long pLocalidadId) {
         return repository.findByLocalidadId(pLocalidadId);
@@ -727,7 +656,7 @@ public class TicketServiceImpl extends CommonServiceImpl<Ticket, TicketRepositor
             if(ticket.isVendido() && ticket.getCliente() != null){
                 try {
                     saveKafka(ticket);
-                    mandarQR(ticket);
+                    qrService.mandarQR(ticket);
                 } catch (Exception e) {
                     logger.error("Error al enviar QR del ticket {}: {}", ticket.getId(), e.getMessage());
                 }

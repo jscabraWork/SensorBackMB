@@ -252,27 +252,5 @@ public class TicketController extends CommonController<Ticket, TicketService> {
         }
     }
 
-    @PutMapping("/qrs/{pIdLocalidad}")
-    public ResponseEntity<?> enviarQRS(@PathVariable Long pIdLocalidad){
-        Map<String, Object> response = new HashMap<>();
-        List<Ticket> tickets = service.findAllByLocalidad(pIdLocalidad);
-        tickets.forEach(t->{
-            if(t.getEstado()==1) {
-                try {
-                    service.mandarQR(t);
-                } catch (WriterException e) {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
-                } catch (IOException e) {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
-                } catch (Exception e) {
-
-                    e.printStackTrace();
-                }
-            }
-        });
-        return new ResponseEntity<>(response, HttpStatus.OK);
-    }
 
 }

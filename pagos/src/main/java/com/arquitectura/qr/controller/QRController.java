@@ -1,6 +1,7 @@
 package com.arquitectura.qr.controller;
 
 import com.arquitectura.cliente.service.ClienteService;
+import com.arquitectura.qr.service.QRService;
 import com.arquitectura.ticket.entity.Ticket;
 import com.arquitectura.ticket.service.TicketService;
 import com.google.zxing.WriterException;
@@ -22,6 +23,9 @@ public class QRController {
 
     @Autowired
     private TicketService ticketService;
+
+    @Autowired
+    private QRService qrService;
 
     @Autowired
     private ClienteService clienteService;
@@ -81,7 +85,7 @@ public class QRController {
 
             // Enviar QR para todos los tickets
             for (Ticket ticket : ticketsAEnviar) {
-                ticketService.mandarQR(ticket);
+                qrService.mandarQR(ticket);
             }
 
             response.put("mensaje", "QR(s) enviado(s) correctamente");

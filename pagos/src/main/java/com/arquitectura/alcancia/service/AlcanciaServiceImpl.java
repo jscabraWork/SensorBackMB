@@ -7,6 +7,7 @@ import com.arquitectura.dto.MisAlcanciasDto;
 import com.arquitectura.events.AlcanciaEvent;
 import com.arquitectura.events.EntityDeleteEventLong;
 import com.arquitectura.localidad.entity.Localidad;
+import com.arquitectura.qr.service.QRService;
 import com.arquitectura.services.CommonServiceImpl;
 import com.arquitectura.tarifa.entity.Tarifa;
 import com.arquitectura.ticket.entity.Ticket;
@@ -25,6 +26,9 @@ public class AlcanciaServiceImpl extends CommonServiceImpl<Alcancia, AlcanciaRep
 
     @Autowired
     private TicketService ticketService;
+
+    @Autowired
+    private QRService qrService;
 
     @Autowired
     private KafkaTemplate<String, Object> kafkaTemplate;
@@ -93,7 +97,7 @@ public class AlcanciaServiceImpl extends CommonServiceImpl<Alcancia, AlcanciaRep
             if (ticket.getEstado() != 1 && venderBoleta) {
                 ticket.vender(cliente, ticket.getTarifa());
                 ticketService.saveKafka(ticket);
-                ticketService.mandarQR(ticket);
+                qrService.mandarQR(ticket);
                 contador++;
             } else {
                 contador++;

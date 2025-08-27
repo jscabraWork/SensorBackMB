@@ -13,6 +13,7 @@ import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
 import java.io.File;
+import java.util.List;
 import java.util.Properties;
 
 @Service
@@ -26,13 +27,13 @@ public class SendEmailAmazonService {
     static final int PORT = 587;
 
 
-    public void mandarCorreo(String numero, String to, File adjunto) throws Exception {
+    public void mandarCorreo(String numero, String to, List<File> adjuntos) throws Exception {
         String SUBJECT = "Ticket Sensor Events: " + numero;
 
         String BODY = String.join(
                 System.getProperty("line.separator"),
                 "<body style=\"font-family: Arial, Helvetica, sans-serif; margin: 0; padding: 0; background-color: #1a1a1a; color: #ffffff;\">\r\n"
-                        + "    <section style=\"width: 100%; max-width: 600px; margin: 0 auto;\">\r\n"
+                        + "    <section style=\"width: 100%; margin: 0 auto;\">\r\n"
                         + "        <div style=\"background-color: #FFFFFF; text-align: center; padding: 20px 0;\">\r\n"
                         + "            <img style=\"width: 150px;\" src=\"https://codigos.allticketscol.com/sensorImg.png\" alt=\"Sensor Events\">\r\n"
                         + "            <h2 style=\"color: #1a1a1a; margin: 10px 0 0 0;\">SENSOR EVENTS</h2>\r\n"
@@ -90,15 +91,17 @@ public class SendEmailAmazonService {
         BodyPart mensaje = new MimeBodyPart();
         mensaje.setContent(BODY,"text/html; charset=utf-8");
 
-        MimeBodyPart archivoAdjunto = new MimeBodyPart();
-        FileDataSource fuenteArchivosDatos = new FileDataSource(adjunto);
-        DataHandler manejadorDatos = new DataHandler(fuenteArchivosDatos);
-        archivoAdjunto.setDataHandler(manejadorDatos);
         MimeMultipart multiParte = new MimeMultipart();
-        archivoAdjunto.setFileName(adjunto.getName());
-
         multiParte.addBodyPart(mensaje);
-        multiParte.addBodyPart(archivoAdjunto);
+
+        for (File adjunto : adjuntos) {
+            MimeBodyPart archivoAdjunto = new MimeBodyPart();
+            FileDataSource fuenteArchivosDatos = new FileDataSource(adjunto);
+            DataHandler manejadorDatos = new DataHandler(fuenteArchivosDatos);
+            archivoAdjunto.setDataHandler(manejadorDatos);
+            archivoAdjunto.setFileName(adjunto.getName());
+            multiParte.addBodyPart(archivoAdjunto);
+        }
 
         MimeMessage msg = new MimeMessage(session);
         msg.setFrom(new InternetAddress(FROM, FROMNAME));
