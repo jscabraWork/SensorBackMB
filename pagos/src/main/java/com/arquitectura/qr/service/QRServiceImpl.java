@@ -107,5 +107,4 @@ public class QRServiceImpl implements QRService{
             logger.error("Error en mandarQR para el ticket {}: {}", pTicket.getId(), e.getMessage(), e);
         }
     }
-
 }

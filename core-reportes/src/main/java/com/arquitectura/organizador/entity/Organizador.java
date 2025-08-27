@@ -3,6 +3,7 @@ package com.arquitectura.organizador.entity;
 import com.arquitectura.evento.entity.Evento;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToMany;
@@ -31,8 +32,9 @@ public class Organizador {
 
     private String tipoDocumento;
 
-    @ManyToMany
+    @ManyToMany(mappedBy = "organizadores")
     @JsonBackReference(value = "evento_organizador")
     @JsonIgnore
     private List<Evento> eventos;
+
 }

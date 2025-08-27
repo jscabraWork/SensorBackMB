@@ -4,10 +4,8 @@ import com.arquitectura.entity.Auditable;
 import com.arquitectura.evento.entity.Evento;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.ManyToMany;
-import jakarta.persistence.Table;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -19,6 +17,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name="organizadores")
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class Organizador {
 
     @Id
@@ -32,8 +31,7 @@ public class Organizador {
 
     private String tipoDocumento;
 
-    @ManyToMany
-    @JsonBackReference(value = "evento_organizador")
-    @JsonIgnore
+    @ManyToMany(mappedBy = "organizadores")
+    @JsonIgnoreProperties({"organizadores"})
     private List<Evento> eventos;
 }

@@ -31,10 +31,12 @@ import java.util.List;
 public class Ticket extends Auditable {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long id;
+
     // 0: DISPONIBLE, 1: VENDIDO, 2: RESERVADO, 3: EN PROCESO, 4: NO DISPONIBLE
     private int estado;
+
     // 0: TICKET COMPLETO, 1: TICKET MASTER DE PALCOS INDIVIDUALES
     private int tipo;
 

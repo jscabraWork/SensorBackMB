@@ -41,9 +41,14 @@ public class Evento  {
     @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
     private Venue venue;
 
-    @ManyToMany(fetch = FetchType.LAZY, mappedBy = "eventos")
+    @ManyToMany(fetch = FetchType.LAZY)
     @JsonManagedReference(value = "evento_organizador")
     @JsonIgnore
+    @JoinTable(
+            name = "organizadores_eventos",
+            joinColumns = @JoinColumn(name = "evento_id"),
+            inverseJoinColumns = @JoinColumn(name = "organizador_id")
+    )
     private List<Organizador> organizadores;
 
     @OneToMany(mappedBy = "evento", fetch = FetchType.LAZY, orphanRemoval = true)
