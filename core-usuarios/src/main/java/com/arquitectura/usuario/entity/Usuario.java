@@ -61,9 +61,8 @@ public class Usuario extends Auditable implements Serializable{
 	@ManyToMany(fetch=FetchType.LAZY, cascade = CascadeType.ALL)
 	@JoinTable(
 			name = "usuarios_roles",
-			joinColumns = @JoinColumn(name = "usuario_numero_documento"),
-			inverseJoinColumns = @JoinColumn(name = "roles_id"),
-			uniqueConstraints = @UniqueConstraint(columnNames = {"usuario_numero_documento", "roles_id"})
+			joinColumns = @JoinColumn(name = "usuario_id"),
+			inverseJoinColumns = @JoinColumn(name = "rol_id")
 	)
 	private List<Role> roles = new ArrayList<>();;
 	
