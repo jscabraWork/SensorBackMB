@@ -43,4 +43,13 @@ public class ReservaController extends CommonController<Reserva, ReservaService>
         response.put("evento", reserva.getLocalidad().getDias().get(0).getEvento());
         return new ResponseEntity<>(response,HttpStatus.OK);
     }
+
+
+    @PatchMapping("/inactivar/{pId}")
+    public ResponseEntity<?> cerrarReserva(@PathVariable Long pId) {
+        Reserva reservas = service.findById(pId);
+        reservas.setActiva(false);
+        service.save(reservas);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
 }

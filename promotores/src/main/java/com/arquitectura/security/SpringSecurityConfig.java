@@ -28,6 +28,8 @@ public class SpringSecurityConfig {
                         //----------------EVENTOS---------------------
                         //TODOS
                         .requestMatchers(HttpMethod.GET, "/reservas/*").permitAll()
+                        .requestMatchers(HttpMethod.PATCH, "/reservas/inactivar/*").hasRole("CLIENTE")
+
 
                         //GET ERS PARA REPORTE
                         .requestMatchers(HttpMethod.GET, "/**").hasAnyRole("ADMIN", "PROMOTOR", "ORGANIZADOR", "CONTADOR")
