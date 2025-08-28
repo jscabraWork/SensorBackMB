@@ -27,13 +27,17 @@ public class SpringSecurityConfig {
 
                         //----------------EVENTOS---------------------
                         //TODOS
+                        .requestMatchers(HttpMethod.GET, "/reservas/*").permitAll()
+
+                        //GET ERS PARA REPORTE
                         .requestMatchers(HttpMethod.GET, "/**").hasAnyRole("ADMIN", "PROMOTOR", "ORGANIZADOR", "CONTADOR")
+
                         // SOLO-ADMIN
-                        .requestMatchers(HttpMethod.POST, "/**").hasRole("PROMOTOR")
+                        .requestMatchers(HttpMethod.POST, "/reservas/**").hasRole("PROMOTOR")
                         .requestMatchers(HttpMethod.PUT, "/**").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.PATCH, "/**").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.DELETE, "/**").denyAll()
-                        .anyRequest().permitAll()
+                        .anyRequest().denyAll()
                 )
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();
