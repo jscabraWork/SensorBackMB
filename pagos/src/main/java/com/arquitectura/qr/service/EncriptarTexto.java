@@ -1,4 +1,4 @@
-package com.arquitectura.ticket.service;
+package com.arquitectura.qr.service;
 
 import org.springframework.stereotype.Component;
 
