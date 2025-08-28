@@ -11,7 +11,7 @@ import java.time.LocalDate;
 public interface ResumenOrganizadorViewRepository extends JpaRepository<ResumenOrganizadorView, Long> {
 
     @Query(value = """
-        SELECT organizador_numero_documento,
+        SELECT organizador_id,
             organizador,
             COUNT(*) as total_eventos,
             COALESCE(SUM(total_recaudado), 0.0) as dinero_total_recaudado,
@@ -29,9 +29,9 @@ public interface ResumenOrganizadorViewRepository extends JpaRepository<ResumenO
             COALESCE(ROUND((SUM(asistentes) / NULLIF(SUM(total_compradores), 0)), 2), 0.0) as tickets_promedio_por_comprador,
             COALESCE(SUM(total_cortesias), 0) as total_cortesias
         FROM resumen_evento_organizador
-        WHERE organizador_numero_documento = :numeroDocumento
+        WHERE organizador_id = :numeroDocumento
             AND (:fechaInicio IS NULL OR :fechaFin IS NULL OR fecha_evento BETWEEN :fechaInicio AND :fechaFin)
-        GROUP BY organizador_numero_documento, organizador
+        GROUP BY organizador_id, organizador
         """, nativeQuery = true)
     public ResumenOrganizadorDTO getResumenOrganizador(
             @Param("numeroDocumento") String numeroDocumento,

@@ -108,7 +108,6 @@ public class OrganizadorController extends CommonControllerString<Organizador, O
                                                     @RequestParam(required = false) Long diaId) {
         Map<String, Object> response = new HashMap<>();
 
-        try {
             // Validar que el evento existe
             Evento evento = eventoService.findById(pEventoId);
             if (evento == null) {
@@ -126,11 +125,6 @@ public class OrganizadorController extends CommonControllerString<Organizador, O
 
             return new ResponseEntity<>(response, HttpStatus.OK);
 
-        } catch (Exception e) {
-            response.put("message", "Error al obtener detalle de ventas");
-            response.put("error", e.getMessage());
-            return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
-        }
     }
 
     @GetMapping("/historial-transacciones/{pEventoId}")

@@ -1,7 +1,7 @@
 use db_microservicio_reporte_sensor;
 CREATE OR REPLACE VIEW detalle_ventas AS
 WITH localidad_stats AS (
-    SELECT 
+    SELECT
         d.evento_id,
         l.id as localidad_id,
         COUNT(CASE WHEN t.estado = 0 THEN 1 END) as cantidadDisponible,
@@ -13,7 +13,7 @@ WITH localidad_stats AS (
     JOIN dias d ON dl.dia_id = d.id
     GROUP BY d.evento_id, l.id
 )
-SELECT 
+SELECT
     d.evento_id as eventoId,
     ta.nombre as tarifa,
     l.nombre as localidad,
@@ -23,14 +23,14 @@ SELECT
     d.id as diaId,  -- Ahora es un número individual
     ta.precio, ta.servicio, ta.iva,
     (ta.precio+ta.servicio+ta.iva) as precioTotal,
-    
+
     COUNT(CASE WHEN t.estado = 1 THEN 1 END) as vendidos,
     COUNT(CASE WHEN t.estado = 2 THEN 1 END) as reservados,
-    
+
     COALESCE(MAX(ls.cantidadEnProceso), 0) as proceso,
     COALESCE(MAX(ls.cantidadDisponible), 0) as disponibles,
     COALESCE(MAX(ls.totalTicketsLocalidad), 0) as totalTickets,
-    
+
     COUNT(CASE WHEN t.estado = 1 THEN 1 END) * ta.precio as totalPrecio,
     COUNT(CASE WHEN t.estado = 1 THEN 1 END) * ta.servicio as totalServicio,
     COUNT(CASE WHEN t.estado = 1 THEN 1 END) * ta.iva as totalIva,

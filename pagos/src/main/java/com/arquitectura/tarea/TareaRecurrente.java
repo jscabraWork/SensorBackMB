@@ -39,6 +39,8 @@ public class TareaRecurrente {
     @Transactional("transactionManager")
     public void revisarOrdenesEnProceso() {
 
+        System.out.println("Revisando ordenes en proceso...");
+
         List<Orden> ordenes= ordenService.findByEstado(3);
 
         LocalDateTime fechaActual = LocalDateTime.now();

@@ -1,5 +1,33 @@
 USE db_microservicio_reporte_sensor;
 
+--INSERTAR TABLAS NECESARIAS PARA LA VISTA
+
+-- Tabla comisiones
+CREATE TABLE comisiones (
+   concepto VARCHAR(255),
+   valor DOUBLE
+);
+INSERT INTO comisiones (concepto, valor) VALUES
+('comisionAT', 0.05),
+('pasarela', 368),
+('3ds', 367);
+
+-- Tabla UVT
+CREATE TABLE uvt (
+    ano INT PRIMARY KEY,
+    valor DECIMAL(10,2) NOT NULL
+);
+
+insert into uvt values (
+2021,108924),
+(2022,14012),
+(2023,127236),
+(2024,141195),
+(2025,149397
+);
+-- Fin tablas necesarias
+
+-- INICIO VISTA
 CREATE OR REPLACE VIEW resumen_evento AS
 WITH base_tickets AS (
     SELECT
@@ -112,3 +140,6 @@ CROSS JOIN comisiones_data cd
 LEFT JOIN base_tickets bt ON bt.evento_id = e.id
 GROUP BY e.id, e.nombre, cd.comision_at, cd.comision_pasarela_valor, cd.comision_3ds_valor
 ORDER BY e.id;
+
+-- FIN VISTA
+

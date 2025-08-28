@@ -161,7 +161,14 @@ public class OrdenController extends CommonController<Orden, OrdenService> {
             return ResponseEntity.notFound().build();
         }
         Evento evento = orden.getEvento();
-        List<Ticket> tickets = orden.getTickets();
+
+        List<Ticket> tickets = new ArrayList<>();
+
+        // Si la orden es de tipo 4 (alcancía), no traer los tickets
+        if(orden.getTipo()!=4){
+            tickets = orden.getTickets();
+        }
+
         Cliente cliente = orden.getCliente();
         ConfigSeguro configSeguro = configSeguroService.getConfigSeguroActivo();
 
@@ -170,7 +177,7 @@ public class OrdenController extends CommonController<Orden, OrdenService> {
         response.put("orden", orden);
         response.put("tickets", tickets);
         response.put("configSeguro", configSeguro);
-        response.put("localidad", tickets.get(0).getLocalidad());
+        response.put("localidad", orden.getTarifa().getLocalidad());
         return ResponseEntity.ok(response);
     }
 
