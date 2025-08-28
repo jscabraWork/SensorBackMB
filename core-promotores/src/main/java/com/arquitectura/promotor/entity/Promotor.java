@@ -3,6 +3,7 @@ package com.arquitectura.promotor.entity;
 import com.arquitectura.evento.entity.Evento;
 import com.arquitectura.ticket.entity.Ticket;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.Data;
@@ -14,6 +15,7 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 @Table(name = "promotores")
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class Promotor {
 
     @Id
