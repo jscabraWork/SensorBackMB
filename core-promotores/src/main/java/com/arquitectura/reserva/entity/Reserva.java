@@ -33,7 +33,6 @@ public class Reserva extends Auditable {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="localidad_id")
-    @JsonBackReference(value="localidadReserva_mov")
     private Localidad localidad;
 
     @ManyToOne(fetch = FetchType.LAZY)

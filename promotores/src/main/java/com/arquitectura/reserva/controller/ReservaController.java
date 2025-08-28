@@ -24,12 +24,20 @@ public class ReservaController extends CommonController<Reserva, ReservaService>
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
-    @PostMapping("/activas")
+    @GetMapping("/activas")
     public ResponseEntity<?> findActivasByEventoAndPromotor(@RequestParam Long pEventoId, @RequestParam String pPromotorId) {
        Map<String, Object> response = new HashMap<>();
        List<Reserva> reservas = service.findByPromotorEventoAndEstado(pEventoId, pPromotorId, true);
        response.put("reservas", reservas);
        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    @GetMapping("/listar/evento")
+    public ResponseEntity<?> findByEventoAndPromotor(@RequestParam Long pEventoId, @RequestParam String pPromotorId) {
+        Map<String, Object> response = new HashMap<>();
+        List<Reserva> reservas = service.findByPromotorAndEvento(pEventoId, pPromotorId);
+        response.put("reservas", reservas);
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
     @Override

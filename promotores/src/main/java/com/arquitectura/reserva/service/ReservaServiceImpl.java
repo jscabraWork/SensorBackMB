@@ -49,5 +49,10 @@ public class ReservaServiceImpl extends CommonServiceImpl<Reserva, ReservaReposi
         return repository.findByLocalidadDiasEventoIdAndPromotorNumeroDocumentoAndActiva(eventoId, promotorNumeroDocumento, activa);
     }
 
+    public List<Reserva> findByPromotorAndEvento(Long eventoId, String promotorNumeroDocumento){
+        return repository.findByLocalidadDiasEventoIdAndPromotorNumeroDocumento(eventoId, promotorNumeroDocumento);
+    }
+
+
 
 }

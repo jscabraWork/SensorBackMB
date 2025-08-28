@@ -10,4 +10,7 @@ public interface ReservaService extends CommonService<Reserva> {
     public Reserva crear(Reserva reserva, Long pLocalidadId, String pPromotorId);
 
     public List<Reserva> findByPromotorEventoAndEstado(Long eventoId, String promotorNumeroDocumento, boolean activa);
+
+    public List<Reserva> findByPromotorAndEvento(Long eventoId, String promotorNumeroDocumento);
+
 }
