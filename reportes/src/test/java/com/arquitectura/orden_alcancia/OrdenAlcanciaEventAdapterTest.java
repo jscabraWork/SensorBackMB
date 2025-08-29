@@ -7,7 +7,6 @@ import com.arquitectura.cliente.entity.ClienteRepository;
 import com.arquitectura.evento.entity.Evento;
 import com.arquitectura.evento.entity.EventoRepository;
 import com.arquitectura.events.OrdenAlcanciaEvent;
-import com.arquitectura.orden.orden_alcancia.OrdenAlcanciaEventAdapterImpl;
 import com.arquitectura.orden_alcancia.entity.OrdenAlcancia;
 import com.arquitectura.tarifa.entity.Tarifa;
 import com.arquitectura.tarifa.entity.TarifaRepository;
@@ -81,7 +80,7 @@ public class OrdenAlcanciaEventAdapterTest {
         alcancia = new Alcancia();
         alcancia.setId(50L);
         alcancia.setPrecioTotal(200000.0);
-        alcancia.setActiva(true);
+        alcancia.setEstado(1);
 
         // Configurar comportamiento de los mocks
         when(clienteRepository.findById("12345678")).thenReturn(Optional.of(cliente));

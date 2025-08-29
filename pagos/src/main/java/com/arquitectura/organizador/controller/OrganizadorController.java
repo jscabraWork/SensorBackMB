@@ -8,6 +8,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/organizadores")
-public class OrganizadorController //extends CommonControllerString<Organizador, OrganizadorService>
+public class OrganizadorController extends CommonControllerString<Organizador, OrganizadorService>
 {
 }

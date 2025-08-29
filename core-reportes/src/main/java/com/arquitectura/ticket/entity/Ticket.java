@@ -25,6 +25,7 @@ import java.util.List;
 @AllArgsConstructor
 @Table(name = "tickets")
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
+@EqualsAndHashCode(callSuper=false)
 public class Ticket  extends Auditable{
 
     @Id

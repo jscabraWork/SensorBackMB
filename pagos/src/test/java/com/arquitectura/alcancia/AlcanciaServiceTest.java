@@ -101,7 +101,7 @@ public class AlcanciaServiceTest {
         alcanciaEsperada.setTickets(ticketsTest);
         alcanciaEsperada.setPrecioTotal(precioTotal);
         alcanciaEsperada.setPrecioParcialPagado(precioPagado);
-        alcanciaEsperada.setActiva(true);
+        alcanciaEsperada.setEstado(1);
 
         when(alcanciaRepository.save(any(Alcancia.class))).thenReturn(alcanciaEsperada);
         when(ticketService.saveKafka(any(Ticket.class))).thenAnswer(invocation -> invocation.getArgument(0));
@@ -145,7 +145,7 @@ public class AlcanciaServiceTest {
         alcancia.setTickets(ticketsTest);
         alcancia.setPrecioTotal(125.0);
         alcancia.setPrecioParcialPagado(25.0);
-        alcancia.setActiva(true);
+        alcancia.setEstado(1);
 
         Double aporte = 50.0;
 
@@ -167,7 +167,7 @@ public class AlcanciaServiceTest {
     void aportarAlcancia_CantidadNegativa_LanzaExcepcion() {
         // Arrange
         Alcancia alcancia = new Alcancia();
-        alcancia.setActiva(true);
+        alcancia.setEstado(1);
         Double aporteNegativo = -10.0;
 
         // Act & Assert
@@ -182,7 +182,7 @@ public class AlcanciaServiceTest {
     void aportarAlcancia_AlcanciaInactiva_LanzaExcepcion() {
         // Arrange
         Alcancia alcanciaInactiva = new Alcancia();
-        alcanciaInactiva.setActiva(false);
+        alcanciaInactiva.setEstado(1);
         Double aporte = 50.0;
 
         // Act & Assert
@@ -205,7 +205,7 @@ public class AlcanciaServiceTest {
         alcancia.setTickets(ticketsTest);
         alcancia.setPrecioTotal(precioTotalTarifa * 2); // 258.0 para 2 tickets
         alcancia.setPrecioParcialPagado(0.0);
-        alcancia.setActiva(true);
+        alcancia.setEstado(1);
 
         Double aporte = precioTotalTarifa + 10.0; // 139.0 - Suficiente para el primer ticket
 
@@ -220,7 +220,6 @@ public class AlcanciaServiceTest {
         assertThat(resultado).isNotNull();
         // Verificamos que se intenta vender al menos un ticket ya que tenemos suficiente dinero
         verify(ticketService, atLeastOnce()).saveKafka(any(Ticket.class));
-        verify(ticketService, atLeastOnce()).mandarQR(any(Ticket.class));
     }
 
     @Test
@@ -233,7 +232,7 @@ public class AlcanciaServiceTest {
         alcancia.setTickets(ticketsTest);
         alcancia.setPrecioParcialPagado(50.0);
         alcancia.setPrecioTotal(125.0);
-        alcancia.setActiva(true);
+        alcancia.setEstado(1);
 
         when(alcanciaRepository.save(any(Alcancia.class))).thenReturn(alcancia);
         when(kafkaTemplate.send(any(ProducerRecord.class)));

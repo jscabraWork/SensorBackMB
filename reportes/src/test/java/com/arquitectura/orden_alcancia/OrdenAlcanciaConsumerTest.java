@@ -4,8 +4,6 @@ import com.arquitectura.events.BaseEvent;
 import com.arquitectura.events.EntityDeleteEventLong;
 import com.arquitectura.events.OrdenAlcanciaEvent;
 import com.arquitectura.message.service.MessageService;
-import com.arquitectura.orden.orden_alcancia.OrdenAlcanciaEventAdapter;
-import com.arquitectura.orden.orden_alcancia.OrdenConsumerAlcanciaServiceImpl;
 import com.arquitectura.orden_alcancia.entity.OrdenAlcancia;
 import com.arquitectura.orden_alcancia.entity.OrdenAlcanciaRepository;
 import org.apache.kafka.clients.consumer.ConsumerConfig;

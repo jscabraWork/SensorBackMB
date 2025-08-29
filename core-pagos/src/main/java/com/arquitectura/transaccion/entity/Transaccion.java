@@ -4,10 +4,7 @@ import com.arquitectura.entity.Auditable;
 import com.arquitectura.orden.entity.Orden;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @Entity
 @Data
@@ -15,6 +12,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "transacciones")
+@EqualsAndHashCode(callSuper=false)
 public class Transaccion extends Auditable{
 
     @Id

@@ -4,8 +4,6 @@ import com.arquitectura.events.BaseEvent;
 import com.arquitectura.events.EntityDeleteEventLong;
 import com.arquitectura.events.OrdenPromotorEvent;
 import com.arquitectura.message.service.MessageService;
-import com.arquitectura.orden.orden_promotor.OrdenConsumerPromotorServiceImpl;
-import com.arquitectura.orden.orden_promotor.OrdenPromotorEventAdapter;
 import com.arquitectura.orden_promotor.entity.OrdenPromotor;
 import com.arquitectura.orden_promotor.entity.OrdenPromotorRepository;
 import org.apache.kafka.clients.consumer.ConsumerConfig;

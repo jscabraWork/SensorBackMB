@@ -63,6 +63,7 @@ public class EventoServiceImpl extends CommonServiceImpl<Evento, EventoRepositor
             eventoExistente.setVenue(evento.getVenue());
             eventoExistente.setFechaApertura(evento.getFechaApertura());
             eventoExistente.setOrganizadores(evento.getOrganizadores());
+            eventoExistente.setPulep(evento.getPulep());
 
             return this.saveKafka(eventoExistente);
         } catch (EntityNotFoundException e) {

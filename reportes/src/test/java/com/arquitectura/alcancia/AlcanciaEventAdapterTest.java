@@ -65,7 +65,7 @@ public class AlcanciaEventAdapterTest {
         event.setId(1L);
         event.setPrecioParcialPagado(50000.0);
         event.setPrecioTotal(100000.0);
-        event.setActiva(true);
+        event.setEstado(1);
         event.setClienteNumeroDocumento("12345678");
         event.setTicketsIds(Arrays.asList(1L, 2L));
 
@@ -79,7 +79,7 @@ public class AlcanciaEventAdapterTest {
         assertThat(result.getId()).isEqualTo(1L);
         assertThat(result.getPrecioParcialPagado()).isEqualTo(50000.0);
         assertThat(result.getPrecioTotal()).isEqualTo(100000.0);
-        assertThat(result.isActiva()).isTrue();
+        assertThat(result.getEstado()).isEqualTo(1);
         assertThat(result.getCliente()).isNotNull();
         assertThat(result.getCliente().getNumeroDocumento()).isEqualTo("12345678");
         assertThat(result.getTickets()).isNotNull();
@@ -94,7 +94,7 @@ public class AlcanciaEventAdapterTest {
         event.setId(1L);
         event.setPrecioParcialPagado(75000.0);
         event.setPrecioTotal(150000.0);
-        event.setActiva(false);
+        event.setEstado(1);
         event.setClienteNumeroDocumento("12345678");
         event.setTicketsIds(Arrays.asList(1L, 2L));
 
@@ -102,7 +102,7 @@ public class AlcanciaEventAdapterTest {
         alcanciaExistente.setId(1L);
         alcanciaExistente.setPrecioParcialPagado(50000.0);
         alcanciaExistente.setPrecioTotal(100000.0);
-        alcanciaExistente.setActiva(true);
+        alcanciaExistente.setEstado(1);
 
         // Act
         Alcancia result = adapter.creacion(alcanciaExistente, event);
@@ -112,7 +112,7 @@ public class AlcanciaEventAdapterTest {
         assertThat(result.getId()).isEqualTo(1L);
         assertThat(result.getPrecioParcialPagado()).isEqualTo(75000.0);
         assertThat(result.getPrecioTotal()).isEqualTo(150000.0);
-        assertThat(result.isActiva()).isFalse();
+        assertThat(result.getEstado()).isEqualTo(1);
         assertThat(result.getCliente()).isNotNull();
         assertThat(result.getCliente().getNumeroDocumento()).isEqualTo("12345678");
         assertThat(result.getTickets()).isNotNull();
@@ -127,7 +127,7 @@ public class AlcanciaEventAdapterTest {
         event.setId(1L);
         event.setPrecioParcialPagado(null);
         event.setPrecioTotal(null);
-        event.setActiva(false);
+        event.setEstado(1);
         event.setClienteNumeroDocumento(null);
         event.setTicketsIds(null);
 
@@ -143,7 +143,7 @@ public class AlcanciaEventAdapterTest {
         assertThat(result.getId()).isEqualTo(1L);
         assertThat(result.getPrecioParcialPagado()).isNull();
         assertThat(result.getPrecioTotal()).isNull();
-        assertThat(result.isActiva()).isFalse();
+        assertThat(result.getEstado()).isEqualTo(1);
         assertThat(result.getCliente()).isNull();
         assertThat(result.getTickets()).isNotNull();
         assertThat(result.getTickets()).isEmpty();
@@ -157,7 +157,7 @@ public class AlcanciaEventAdapterTest {
         event.setId(1L);
         event.setPrecioParcialPagado(50000.0);
         event.setPrecioTotal(100000.0);
-        event.setActiva(true);
+        event.setEstado(1);
         event.setClienteNumeroDocumento("12345678");
         event.setTicketsIds(Arrays.asList(1L));
 
@@ -178,7 +178,7 @@ public class AlcanciaEventAdapterTest {
         event.setId(1L);
         event.setPrecioParcialPagado(50000.0);
         event.setPrecioTotal(100000.0);
-        event.setActiva(true);
+        event.setEstado(1);
         event.setClienteNumeroDocumento("99999999");
         event.setTicketsIds(Arrays.asList(1L));
 
@@ -205,7 +205,7 @@ public class AlcanciaEventAdapterTest {
         event.setId(1L);
         event.setPrecioParcialPagado(50000.0);
         event.setPrecioTotal(100000.0);
-        event.setActiva(true);
+        event.setEstado(1);
         event.setClienteNumeroDocumento("12345678");
         event.setTicketsIds(Arrays.asList(999L, 888L));
 
@@ -234,7 +234,7 @@ public class AlcanciaEventAdapterTest {
         event.setId(1L);
         event.setPrecioParcialPagado(50000.0);
         event.setPrecioTotal(100000.0);
-        event.setActiva(true);
+        event.setEstado(1);
         event.setClienteNumeroDocumento("12345678");
         event.setTicketsIds(Arrays.asList());
 
@@ -259,7 +259,7 @@ public class AlcanciaEventAdapterTest {
         event.setId(1L);
         event.setPrecioParcialPagado(12345.67);
         event.setPrecioTotal(98765.43);
-        event.setActiva(true);
+        event.setEstado(1);
         event.setClienteNumeroDocumento("12345678");
         event.setTicketsIds(Arrays.asList(1L));
 
@@ -273,6 +273,6 @@ public class AlcanciaEventAdapterTest {
         assertThat(result.getId()).isEqualTo(1L);
         assertThat(result.getPrecioParcialPagado()).isEqualTo(12345.67);
         assertThat(result.getPrecioTotal()).isEqualTo(98765.43);
-        assertThat(result.isActiva()).isTrue();
+        assertThat(result.getEstado()).isEqualTo(1);
     }
 }

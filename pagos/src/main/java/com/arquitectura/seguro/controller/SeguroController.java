@@ -8,6 +8,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/seguros")
-public class SeguroController //extends CommonController<Seguro, SeguroService>
+public class SeguroController extends CommonController<Seguro, SeguroService>
 {
 }

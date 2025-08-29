@@ -1,10 +1,10 @@
 package com.arquitectura.cliente;
 
+import com.arquitectura.cliente.consumer.ClienteEventAdaparterImpl;
 import com.arquitectura.cliente.entity.Cliente;
 import com.arquitectura.events.UsuarioEvent;
 import com.arquitectura.tipo_documento.TipoDocumento;
 import com.arquitectura.tipo_documento.TipoDocumentoRepository;
-import com.arquitectura.usuarios.cliente.ClienteEventAdaparterImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

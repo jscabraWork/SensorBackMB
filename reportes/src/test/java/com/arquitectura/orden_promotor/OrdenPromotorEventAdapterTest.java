@@ -5,7 +5,6 @@ import com.arquitectura.cliente.entity.ClienteRepository;
 import com.arquitectura.evento.entity.Evento;
 import com.arquitectura.evento.entity.EventoRepository;
 import com.arquitectura.events.OrdenPromotorEvent;
-import com.arquitectura.orden.orden_promotor.OrdenPromotorEventAdapterImpl;
 import com.arquitectura.orden_promotor.entity.OrdenPromotor;
 import com.arquitectura.promotor.entity.Promotor;
 import com.arquitectura.promotor.entity.PromotorRepository;

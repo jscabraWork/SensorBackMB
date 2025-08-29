@@ -27,7 +27,7 @@ public class SpringSecurityConfig {
 
                         // Permiir post solo al endpoint para craear tickets
                         //tiene prioridad sobre todas las demás reglas
-                        .requestMatchers(HttpMethod.POST, "/tickets/crear/*").hasRole("ADMIN")
+                        //.requestMatchers(HttpMethod.POST, "/tickets/crear/*").hasRole("ADMIN")
 
                         //.requestMatchers(HttpMethod.POST, "/**").denyAll()
 

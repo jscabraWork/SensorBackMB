@@ -5,7 +5,6 @@ import com.arquitectura.cliente.entity.ClienteRepository;
 import com.arquitectura.evento.entity.Evento;
 import com.arquitectura.evento.entity.EventoRepository;
 import com.arquitectura.events.OrdenPuntoFisicoEvent;
-import com.arquitectura.orden.orden_puntofisico.OrdenPuntoFisicoEventAdapterImpl;
 import com.arquitectura.orden_puntofisico.entity.OrdenPuntoFisico;
 import com.arquitectura.puntofisico.entity.PuntoFisico;
 import com.arquitectura.puntofisico.entity.PuntoFisicoRepository;

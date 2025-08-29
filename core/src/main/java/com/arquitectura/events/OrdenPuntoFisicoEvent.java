@@ -2,6 +2,7 @@ package com.arquitectura.events;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 import java.util.List;
@@ -9,6 +10,7 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@EqualsAndHashCode(callSuper=false)
 public class OrdenPuntoFisicoEvent extends OrdenEvent implements BaseEvent{
 
     private String puntoFisicoId;

@@ -23,6 +23,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@EqualsAndHashCode(callSuper=false)
 @Inheritance(strategy = InheritanceType.JOINED)
 @Table(name = "ordenes")
 public class Orden extends Auditable{

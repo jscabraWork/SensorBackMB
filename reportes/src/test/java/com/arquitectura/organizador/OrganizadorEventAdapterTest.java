@@ -1,8 +1,8 @@
 package com.arquitectura.organizador;
 
 import com.arquitectura.events.UsuarioEvent;
+import com.arquitectura.organizador.consumer.OrganizadorEventAdapterImpl;
 import com.arquitectura.organizador.entity.Organizador;
-import com.arquitectura.usuarios.organizador.OrganizadorEventAdapterImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

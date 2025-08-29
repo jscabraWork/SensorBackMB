@@ -4,8 +4,6 @@ import com.arquitectura.events.BaseEvent;
 import com.arquitectura.events.EntityDeleteEventLong;
 import com.arquitectura.events.OrdenPuntoFisicoEvent;
 import com.arquitectura.message.service.MessageService;
-import com.arquitectura.orden.orden_puntofisico.OrdenConsumerPuntoFisicoServiceImpl;
-import com.arquitectura.orden.orden_puntofisico.OrdenPuntoFisicoEventAdapter;
 import com.arquitectura.orden_puntofisico.entity.OrdenPuntoFisico;
 import com.arquitectura.orden_puntofisico.entity.OrdenPuntoFisicoRepository;
 import org.apache.kafka.clients.consumer.ConsumerConfig;

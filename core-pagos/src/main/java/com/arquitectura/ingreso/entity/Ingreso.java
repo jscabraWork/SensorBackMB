@@ -18,6 +18,7 @@
     @Builder
     @ToString(exclude = {"dia","ticket"})
     @Table(name = "ingresos")
+    @EqualsAndHashCode(callSuper=false)
     public class Ingreso extends Auditable {
 
         @Id

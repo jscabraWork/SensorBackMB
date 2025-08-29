@@ -17,6 +17,7 @@ import java.util.List;
 @AllArgsConstructor
 @Table(name="alcancias")
 @Builder
+@EqualsAndHashCode(callSuper=false)
 @JsonIgnoreProperties(value={"handler","hibernateLazyInitializer"})
 public class Alcancia extends Auditable {
 

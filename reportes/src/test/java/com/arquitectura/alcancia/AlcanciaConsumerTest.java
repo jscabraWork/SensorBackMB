@@ -91,7 +91,7 @@ class AlcanciaConsumerTest {
         evt.setId(1L);
         evt.setPrecioParcialPagado(50000.0);
         evt.setPrecioTotal(100000.0);
-        evt.setActiva(true);
+        evt.setEstado(1);
         evt.setClienteNumeroDocumento("12345678");
         evt.setTicketsIds(List.of(1L, 2L));
 
@@ -108,7 +108,7 @@ class AlcanciaConsumerTest {
         nuevaAlcancia.setId(evt.getId());
         nuevaAlcancia.setPrecioParcialPagado(evt.getPrecioParcialPagado());
         nuevaAlcancia.setPrecioTotal(evt.getPrecioTotal());
-        nuevaAlcancia.setActiva(evt.isActiva());
+        nuevaAlcancia.setEstado(evt.getEstado());
         given(adapter.creacion(any(Alcancia.class), eq(evt))).willReturn(nuevaAlcancia);
 
         // Act - Publicamos en Kafka
@@ -133,7 +133,7 @@ class AlcanciaConsumerTest {
         evt.setId(1L);
         evt.setPrecioParcialPagado(75000.0);
         evt.setPrecioTotal(150000.0);
-        evt.setActiva(false);
+        evt.setEstado(1);
         evt.setClienteNumeroDocumento("87654321");
         evt.setTicketsIds(List.of(3L, 4L));
 
@@ -145,7 +145,7 @@ class AlcanciaConsumerTest {
         alcanciaExistente.setId(evt.getId());
         alcanciaExistente.setPrecioParcialPagado(50000.0);
         alcanciaExistente.setPrecioTotal(100000.0);
-        alcanciaExistente.setActiva(true);
+        alcanciaExistente.setEstado(1);
 
         given(messageService.existeMessage(msgId)).willReturn(false);
         given(repository.findById(evt.getId())).willReturn(Optional.of(alcanciaExistente));
@@ -155,7 +155,7 @@ class AlcanciaConsumerTest {
         alcanciaActualizada.setId(evt.getId());
         alcanciaActualizada.setPrecioParcialPagado(evt.getPrecioParcialPagado());
         alcanciaActualizada.setPrecioTotal(evt.getPrecioTotal());
-        alcanciaActualizada.setActiva(evt.isActiva());
+        alcanciaActualizada.setEstado(evt.getEstado());
         given(adapter.creacion(eq(alcanciaExistente), eq(evt))).willReturn(alcanciaActualizada);
 
         // Act
@@ -180,7 +180,7 @@ class AlcanciaConsumerTest {
         evt.setId(1L);
         evt.setPrecioParcialPagado(50000.0);
         evt.setPrecioTotal(100000.0);
-        evt.setActiva(true);
+        evt.setEstado(1);
 
         String msgId = UUID.randomUUID().toString();
         String messageKey = evt.getId().toString();

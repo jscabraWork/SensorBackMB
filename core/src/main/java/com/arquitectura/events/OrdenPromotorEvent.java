@@ -2,11 +2,13 @@ package com.arquitectura.events;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 import java.util.List;
 
 @Data
+@EqualsAndHashCode(callSuper=false)
 @NoArgsConstructor
 public class OrdenPromotorEvent extends OrdenEvent implements BaseEvent{
 

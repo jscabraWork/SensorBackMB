@@ -50,6 +50,21 @@ public class SpringSecurityConfig {
         corsConfig.addAllowedOrigin("https://allticketscol.com");
         corsConfig.addAllowedOrigin("https://www.allticketscol.com");
         corsConfig.addAllowedOrigin("https://allticketses.com");
+
+        corsConfig.addAllowedOrigin("https://www.ticketsensor.com");
+        corsConfig.addAllowedOrigin("https://ticketsensor.com");
+
+        corsConfig.addAllowedOrigin("https://organizadores.ticketsensor.com");
+        corsConfig.addAllowedOrigin("https://www.organizadores.ticketsensor.com");
+
+
+        corsConfig.addAllowedOrigin("https://promotores.ticketsensor.com");
+        corsConfig.addAllowedOrigin("https://www.promotores.ticketsensor.com");
+
+        corsConfig.addAllowedOrigin("https://taquillas.ticketsensor.com");
+        corsConfig.addAllowedOrigin("https://www.taquillas.ticketsensor.com");
+
+
         corsConfig.setAllowedMethods(Arrays.asList("POST", "GET", "PUT", "DELETE", "OPTIONS", "PATCH"));
         corsConfig.setAllowCredentials(true);
         corsConfig.setAllowedHeaders(Arrays.asList("Authorization", "Content-Type")); // Corrige "Content-Type"

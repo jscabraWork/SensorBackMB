@@ -41,7 +41,7 @@ public class Imagen extends Auditable {
 
 	public Imagen (String nombre, int tipo, Evento evento) {
 		this.nombre = setNombreImagen(tipo,evento.getNombre());
-		this.url = "https://marcablanca.allticketscol.com/"+nombre;
+		this.url = "https://codigos.ticketsensor.com/"+nombre;
 		this.tipo = tipo;
 		this.evento = evento;
 	}

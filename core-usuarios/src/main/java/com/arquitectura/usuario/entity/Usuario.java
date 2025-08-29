@@ -21,8 +21,8 @@ import lombok.*;
 @Entity
 @Data
 @NoArgsConstructor
-@Builder
 @AllArgsConstructor
+@Builder
 @EqualsAndHashCode(callSuper = true)
 @Table(name="usuarios")
 public class Usuario extends Auditable implements Serializable{

@@ -76,7 +76,7 @@ public class QRServiceImpl implements QRService{
                     MultipartFile multipartFile = new MockMultipartFile("file", file.getName(), "image/png", IOUtils.toByteArray(input));
 
                     String nombre = awsService.uploadFile(multipartFile);
-                    String src = "https://marcablanca.allticketscol.com/" + nombre;
+                    String src = "https://codigos.ticketsensor.com/" + nombre;
                     String path = "TICKET_SENSOR_" + pTicket.getId() + pTicket.getCliente().getNumeroDocumento() + System.currentTimeMillis() + "_" + "ticket.pdf";
 
                     servicioPDF.generatePdfFileTicket("ticketMarcaBlanca", ingreso, path, src, evento, localidad);
