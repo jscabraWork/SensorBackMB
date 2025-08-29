@@ -35,5 +35,10 @@ public class EventoServiceImpl extends CommonServiceImpl<Evento, EventoRepositor
         return repository.findByEstado(estado);
     }
 
+    @Override
+    public List<Evento> findByNoEstado(Integer estado) {
+        return repository.findByEstadoNot(estado);
+    }
+
 
 }

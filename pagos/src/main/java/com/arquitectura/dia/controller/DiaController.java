@@ -19,7 +19,7 @@ import java.util.Map;
 @RequestMapping("/dias")
 public class DiaController extends CommonController<Dia, DiaService> {
 
-
+    @PreAuthorize("hasRole('ADMIN')")
     @Override
     @PostMapping
     public ResponseEntity<?> crear(@Valid @RequestBody Dia pE, BindingResult result) {
@@ -37,6 +37,7 @@ public class DiaController extends CommonController<Dia, DiaService> {
      * @param pEstado Estado por el cual filtrar los dias (1 = inactivo, 0 = activo, etc.)
      * @return ResponseEntity con la lista de dias que coinciden con el estado proporcionado
      */
+    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/listar/estado")
     public ResponseEntity<?> getAllByEstadoAndEventoId(@RequestParam int pEstado,
                                                        @RequestParam Long eventoId) {
@@ -49,6 +50,7 @@ public class DiaController extends CommonController<Dia, DiaService> {
      * @param eventoId eventoId por el cual filtrar las tarifas
      * @return ResponseEntity con la lista de las tarifas que coinciden con el estado proporcionado
      */
+    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/listar/{eventoId}")
     public ResponseEntity<?> getAllByEventoId(@PathVariable Long eventoId) {
         try {

@@ -39,7 +39,7 @@ public class AdminController {
             pAnio = anioActual;
         }
 
-        response.put("eventos", eventoService.findByEstado(2)); // Lista de eventos visibles
+        response.put("eventos", eventoService.findByNoEstado(3)); // Lista de eventos no terminados
         response.put("localidades", reporteService.getLocalidadesPorAcabar());
         response.put("resumen", reporteService.getResumenAdmin(pEventoId, pAnio, pMes, pDia));
         response.put("graficaVentas", graficaService.getGraficaLineaVentasAdmin(pEventoId, pAnio, pMes, pDia));

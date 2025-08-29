@@ -5,6 +5,7 @@ import com.arquitectura.cupon.service.CuponService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
@@ -25,7 +26,7 @@ public class CuponController extends CommonControllerString<Cupon, CuponService>
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
-
+    @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/editar")
     @Transactional("transactionManager")
     public ResponseEntity<?> actualizar(@RequestParam String pCuponId, @RequestBody Cupon cupon) throws Exception {
@@ -35,6 +36,7 @@ public class CuponController extends CommonControllerString<Cupon, CuponService>
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @Override
     @PostMapping("")
     public ResponseEntity<?> crear(@Valid @RequestBody Cupon pE, BindingResult result) {

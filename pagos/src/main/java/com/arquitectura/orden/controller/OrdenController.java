@@ -44,6 +44,7 @@ public class OrdenController extends CommonController<Orden, OrdenService> {
 
     /** CREACIÓN DE ORDENES **/
 
+    @PreAuthorize("hasRole('CLIENTE')")
     @PostMapping("/crear-no-numerada")
     @Transactional("transactionManager")
     public ResponseEntity<?> crearOrdenNoNumerados(@RequestParam Long pLocalidadId,
@@ -57,6 +58,7 @@ public class OrdenController extends CommonController<Orden, OrdenService> {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
+    @PreAuthorize("hasRole('CLIENTE')")
     @PostMapping("/crear-numerada")
     @Transactional("transactionManager")
     public ResponseEntity<?> crearOrdenNumerados(@RequestBody List<Ticket> pTickets,
@@ -69,6 +71,7 @@ public class OrdenController extends CommonController<Orden, OrdenService> {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
+    @PreAuthorize("hasRole('CLIENTE')")
     @PostMapping("/crear-individual")
     @Transactional("transactionManager")
     public ResponseEntity<?> crearOrdenIndividuales(@RequestParam Long pTicketPadreId,
@@ -91,6 +94,7 @@ public class OrdenController extends CommonController<Orden, OrdenService> {
      * @param estado Nuevo estado a asignar
      * @return ResponseEntity con la orden actualizada
      */
+    @PreAuthorize("hasRole('CLIENTE')")
     @PutMapping("/estado/{ordenId}")
     public ResponseEntity<?> actualizarEstado(@PathVariable Long ordenId, @RequestParam int estado) {
         Orden ordenActualizada = service.actualizarEstado(ordenId, estado);
@@ -104,6 +108,7 @@ public class OrdenController extends CommonController<Orden, OrdenService> {
      * @param ticketId del ticket que se agregara a la orden
      * @return ResponseEntity con la orden actualizada
      */
+    @PreAuthorize("hasRole('CLIENTE')")
     @PostMapping("/agregar/orden/{ordenId}/ticket/{ticketId}")
     public ResponseEntity<?> agregarTicket(@PathVariable Long ordenId, @PathVariable Long ticketId){
         Orden agregarTicket = service.agregarTicketAOrden(ordenId,ticketId);
@@ -117,6 +122,7 @@ public class OrdenController extends CommonController<Orden, OrdenService> {
      * @param pIdTicket id del ticket a eliminar de la orden
      * @return ResponseEntity con la orden actualizada
      */
+    @PreAuthorize("hasRole('CLIENTE')")
     @DeleteMapping("/eliminar/orden/{pIdOrden}/ticket/{pIdTicket}")
     public ResponseEntity<?> deleteTicketFromOrden(@PathVariable Long pIdOrden, @PathVariable Long pIdTicket) {
             service.deleteTicketFromOrden(pIdOrden,pIdTicket);
@@ -144,6 +150,7 @@ public class OrdenController extends CommonController<Orden, OrdenService> {
      * @param numeroDocumento El ID del cliente
      * @return ResponseEntity con el código de estado 204 (No Content)
      */
+    @PreAuthorize("hasRole('CLIENTE')")
     @GetMapping("/ordenes/cliente/{numeroDocumento}")
     public ResponseEntity<?> getOrdenesByClienteId(@PathVariable String numeroDocumento) {
         Map<String, Object> response = new HashMap<>();
@@ -151,6 +158,7 @@ public class OrdenController extends CommonController<Orden, OrdenService> {
         return new ResponseEntity<>(response,HttpStatus.OK);
     }
 
+    @PreAuthorize("hasRole('CLIENTE')")
     @GetMapping("/carrito/{pId}")
     public ResponseEntity<?> getOrdenParaCarrito(@PathVariable Long pId) {
 
@@ -194,6 +202,7 @@ public class OrdenController extends CommonController<Orden, OrdenService> {
         return ResponseEntity.ok(response);
     }
 
+    @PreAuthorize("hasRole('CLIENTE')")
     @PostMapping("/aplicar-cupon")
     @Transactional("transactionManager")
     public ResponseEntity<?> aplicarCupon(@RequestParam String pCuponId, @RequestParam Long pOrdenId) throws Exception {

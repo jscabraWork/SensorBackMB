@@ -5,6 +5,7 @@ import com.arquitectura.orden_alcancia.entity.OrdenAlcancia;
 import com.arquitectura.orden_alcancia.service.OrdenAlcanciaService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -18,6 +19,7 @@ import java.util.Map;
 @RequestMapping("/ordenes_alcancias")
 public class OrdenAlcanciaController extends CommonController<OrdenAlcancia, OrdenAlcanciaService> {
 
+    @PreAuthorize("hasRole('CLIENTE')")
     @PostMapping("/crear-aporte")
     @Transactional("transactionManager")
     public ResponseEntity<?> crearOrdenAporte(@RequestParam Long pAlcanciaId,

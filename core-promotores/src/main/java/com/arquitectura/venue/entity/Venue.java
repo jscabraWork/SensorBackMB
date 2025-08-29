@@ -25,7 +25,7 @@ public class Venue {
 
     private String urlMapa;
 
-    private int mapaId;
+    private Long mapaId;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "ciudad_id", nullable = false)

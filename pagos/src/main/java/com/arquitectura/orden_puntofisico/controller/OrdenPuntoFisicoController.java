@@ -65,6 +65,7 @@ public class OrdenPuntoFisicoController extends CommonController<OrdenPuntoFisic
     /**
      * Obtiene todas las órdenes de punto físico por número de documento del cliente
      */
+    @PreAuthorize("hasRole('PUNTO')")
     @GetMapping("/ordenes/cliente/{numeroDocumento}")
     public ResponseEntity<?> getOrdenesByClienteId(@PathVariable String numeroDocumento) {
         Map<String, Object> response = new HashMap<>();
@@ -75,6 +76,7 @@ public class OrdenPuntoFisicoController extends CommonController<OrdenPuntoFisic
     /**
      * Obtiene todas las órdenes por número de documento del punto físico
      */
+    @PreAuthorize("hasRole('PUNTO')")
     @GetMapping("/ordenes/punto-fisico/{puntoFisicoNumeroDocumento}")
     public ResponseEntity<?> getOrdenesByPuntoFisicoId(@PathVariable String puntoFisicoNumeroDocumento) {
         Map<String, Object> response = new HashMap<>();

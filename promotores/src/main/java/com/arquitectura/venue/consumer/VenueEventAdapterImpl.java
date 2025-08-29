@@ -19,7 +19,7 @@ public class VenueEventAdapterImpl extends EventAdapterImpl<Venue, VenueEvent> i
 
         entity.setId(event.getId());
         entity.setNombre(event.getNombre());
-        entity.setUrlMapa(event.getUrlMapa());
+        entity.setMapaId(event.getMapaId());
 
         if(event.getCiudadId() != null) {
             Ciudad ciudad = ciudadRepository.findById(event.getCiudadId()).orElse(null);

@@ -15,4 +15,7 @@ public interface EventoService extends CommonService<Evento> {
     List<Evento> findByOrganizadoresNumeroDocumentoAndEstado(String numeroDocumento, Integer pEstado);
 
     List<Evento> findByEstado(Integer estado);
+
+    List<Evento> findByNoEstado(Integer estado);
+
 }

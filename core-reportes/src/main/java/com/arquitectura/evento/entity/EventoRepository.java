@@ -17,4 +17,7 @@ public interface EventoRepository extends JpaRepository<Evento,Long> {
 
     List<Evento> findByEstado(Integer estado);
 
+    List<Evento> findByEstadoNot(Integer estado);
+
+
 }

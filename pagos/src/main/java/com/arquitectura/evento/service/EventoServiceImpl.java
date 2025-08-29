@@ -57,9 +57,11 @@ public class EventoServiceImpl extends CommonServiceImpl<Evento, EventoRepositor
             eventoExistente.setArtistas(evento.getArtistas());
             eventoExistente.setNombre(evento.getNombre());
             eventoExistente.setRecomendaciones(evento.getRecomendaciones());
+            eventoExistente.setDescripcion(eventoExistente.getDescripcion());
             eventoExistente.setVideo(evento.getVideo());
             eventoExistente.setTipo(evento.getTipo());
             eventoExistente.setVenue(evento.getVenue());
+            eventoExistente.setFechaApertura(evento.getFechaApertura());
             eventoExistente.setOrganizadores(evento.getOrganizadores());
 
             return this.saveKafka(eventoExistente);

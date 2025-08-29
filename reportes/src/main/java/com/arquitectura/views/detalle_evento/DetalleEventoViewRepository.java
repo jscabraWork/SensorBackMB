@@ -17,7 +17,6 @@ public interface DetalleEventoViewRepository extends JpaRepository<DetalleEvento
             "AND (:tarifaId IS NULL OR d.tarifaId = :tarifaId) " +
             "AND (:localidadId IS NULL OR d.localidadId = :localidadId) " +
             "AND (:diaId IS NULL OR d.diaId = :diaId) " +
-            "GROUP BY d.localidadId " +
             "ORDER BY d.tarifa")
     List<DetalleEventoView> findDetalleFiltrado(
             @Param("eventoId") Long eventoId,

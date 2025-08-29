@@ -20,6 +20,7 @@ import java.util.Map;
 @RequestMapping("/tarifas")
 public class TarifaController extends CommonController<Tarifa, TarifaService> {
 
+    @PreAuthorize("hasRole('ADMIN')")
     @Override
     @PostMapping
     public ResponseEntity<?> crear(@Valid @RequestBody Tarifa pE, BindingResult result) {
@@ -37,6 +38,7 @@ public class TarifaController extends CommonController<Tarifa, TarifaService> {
      * @param localidadId eventoId por el cual filtrar las tarifas
      * @return ResponseEntity con la lista de tarifas que coinciden con el estado proporcionado
      */
+    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/listar/estado")
     public ResponseEntity<?> getAllByEstadoAndLocalidadId(@RequestParam int pEstado,
                                                           @RequestParam Long localidadId) {
@@ -49,6 +51,7 @@ public class TarifaController extends CommonController<Tarifa, TarifaService> {
      * @param eventoId eventoId por el cual filtrar las tarifas
      * @return ResponseEntity con la lista de las tarifas que coinciden con el estado proporcionado
      */
+    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/listar/{eventoId}")
     public ResponseEntity<?> getAllByEventoId(@PathVariable Long eventoId) {
         try {

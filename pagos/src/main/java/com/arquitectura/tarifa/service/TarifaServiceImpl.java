@@ -92,7 +92,6 @@ public class TarifaServiceImpl extends CommonServiceImpl<Tarifa, TarifaRepositor
         Tarifa tarifa = repository.findById(pId)
                 .orElseThrow(() -> new EntityNotFoundException("No se encontró ningúna tarifa con el id proporcionado"));
 
-        if(tarifa.getLocalidad() == null) {
             EntityDeleteEventLong tarifaDelete = new EntityDeleteEventLong(tarifa.getId());
             try {
                 // Envía el evento de eliminación a Kafka de forma sincrónica
@@ -107,9 +106,7 @@ public class TarifaServiceImpl extends CommonServiceImpl<Tarifa, TarifaRepositor
             } catch (ExecutionException e) {
                 e.printStackTrace();
             }
-        } else {
-            throw new RuntimeException("No se puede eliminar la tarifa porque tiene una localidad asociada");
-        }
+
     }
 
 

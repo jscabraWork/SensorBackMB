@@ -40,6 +40,9 @@ public class Evento extends Auditable {
 
     private String recomendaciones;
 
+    @Column(length = 500)
+    private String descripcion;
+
     private String video;
 
     private LocalDateTime fechaApertura;

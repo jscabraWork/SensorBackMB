@@ -10,4 +10,7 @@ public interface ReservaRepository extends JpaRepository<Reserva, Long> {
 
     //Lista las reservas por evento y promotor
     List<Reserva> findByLocalidadDiasEventoIdAndPromotorNumeroDocumentoAndActiva(Long eventoId, String promotorNumeroDocumento, boolean activa);
+
+    List<Reserva> findByLocalidadDiasEventoIdAndPromotorNumeroDocumento(Long eventoId, String promotorNumeroDocumento);
+
 }

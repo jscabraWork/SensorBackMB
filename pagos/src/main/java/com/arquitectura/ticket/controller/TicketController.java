@@ -11,6 +11,7 @@ import org.apache.coyote.Response;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -27,6 +28,8 @@ public class TicketController extends CommonController<Ticket, TicketService> {
      * Obtiene todos los tickets pór la orden id.
      * @return ResponseEntity con la lista de tickets
      */
+
+    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/listarTickets/{ordenId}")
     public ResponseEntity<?> getAllTicketsByOrdenId(@PathVariable Long ordenId) {
         return new ResponseEntity<>(service.getAllByOrdenId(ordenId), HttpStatus.OK);
@@ -39,6 +42,7 @@ public class TicketController extends CommonController<Ticket, TicketService> {
      * @param pEstado Estado por el cual filtrar los tickets (0: DISPONIBLE, 1: VENDIDO, 2: RESERVADO, 3: EN PROCESO, 4: NO DISPONIBLE)
      * @return ResponseEntity con la lista de tickets que coinciden con el estado proporcionado
      */
+    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/listar/estado/{localidadId}")
     public ResponseEntity<Page<Ticket>> getAllByLocalidadIdAndEstado(
             @PathVariable Long localidadId,
@@ -60,6 +64,7 @@ public class TicketController extends CommonController<Ticket, TicketService> {
      * @param id del ticket de tipo palco
      * @return ResponseEntity con la lista de tickets hijos de un ticket palgo
      */
+    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/{id}/hijos")
     public ResponseEntity<List<Ticket>> obtenerHijos(@PathVariable Long id) {
         List<Ticket> hijos = service.obtenerHijosDelPalco(id);
@@ -73,6 +78,7 @@ public class TicketController extends CommonController<Ticket, TicketService> {
      * @param pEstado estado en el que se encuentra el ticket
      * @return ResponseEntity con el ticket
      */
+    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/buscar/{pId}")
     public ResponseEntity<?> getByLocalidadAndEstado(@PathVariable Long pId,
                                                      @RequestParam Long localidadId,
@@ -104,6 +110,7 @@ public class TicketController extends CommonController<Ticket, TicketService> {
      *
      * @throws RuntimeException Si hay problemas al recuperar la localidad o guardar los tickets
      */
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/crear")
     public ResponseEntity<?> crearNumerado(@RequestParam Long localidadId,
                                             @RequestParam(required = false) Integer numeroArriba,
@@ -133,6 +140,7 @@ public class TicketController extends CommonController<Ticket, TicketService> {
      * @param pCantidad cantidad de tickets que se agregaran al palco
      * @return ResponseEntity OK indicando que fue un exito
      */
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/{id}/agregar-hijos")
     public ResponseEntity<?> agregarHijos(
             @PathVariable("id") Long pIdTicketPadre,
@@ -149,6 +157,7 @@ public class TicketController extends CommonController<Ticket, TicketService> {
      * @param estado Nuevo estado a asignar
      * @return ResponseEntity con el ticket actualizado
      */
+    @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/estado/{pId}")
     public ResponseEntity<?> updateEstado(
             @PathVariable Long pId,
@@ -188,6 +197,7 @@ public class TicketController extends CommonController<Ticket, TicketService> {
      * @param forzar confirmacion de usuario
      * @return ResponseEntity con el ticket actualizado
      */
+    @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/actualizar")
     public ResponseEntity<Map<String, Object>> actualizarTicket(@RequestBody Ticket ticket, @RequestParam boolean forzar) {
         Map<String, Object> response = new HashMap<>();
@@ -219,6 +229,7 @@ public class TicketController extends CommonController<Ticket, TicketService> {
      * @param pToken token para autorizacion de la asignacion
      * @return ResponseEntity 201 con el cliente asignado al ticket
      */
+    @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/agregar-cliente/{idTicket}")
     public ResponseEntity<?> agregarClienteATicket(@RequestBody Cliente cliente, @PathVariable Long idTicket, @RequestHeader("Authorization")String pToken) throws Exception
     {
@@ -236,6 +247,7 @@ public class TicketController extends CommonController<Ticket, TicketService> {
      * @return ResponseEntity sin contenido si se elimina correctamente,
      *         o con un mensaje de error si el ticket tiene órdenes asociadas
      */
+    @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("borrar/{pId}")
     public ResponseEntity<?> eliminarTicket(@PathVariable Long pId) {
         try {

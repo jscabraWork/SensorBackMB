@@ -8,5 +8,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/alcancias")
-public class AlcanciaController extends CommonController<Alcancia, AlcanciaService> {
+public class AlcanciaController //extends CommonController<Alcancia, AlcanciaService>
+{
 }

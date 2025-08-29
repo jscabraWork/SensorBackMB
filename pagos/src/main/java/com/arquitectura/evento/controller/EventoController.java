@@ -29,6 +29,7 @@ public class EventoController extends CommonController<Evento, EventoService> {
     @Autowired
     private LocalidadService localidadService;
 
+    @PreAuthorize("hasRole('ADMIN')")
     @Override
     @PostMapping
     public ResponseEntity<?> crear(@Valid @RequestBody Evento pE, BindingResult result) {
