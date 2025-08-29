@@ -22,7 +22,7 @@ public class IntentoRegistroServiceImpl implements IntentoRegistroService{
 
     @Override
     public IntentoRegistro crearIntentoRegistro(IntentoRegistro pIntentoRegistro) throws Exception {
-        pIntentoRegistro.setContraseña(passwordEncoder.encode(pIntentoRegistro.getContraseña()));
+        pIntentoRegistro.setContrasena(passwordEncoder.encode(pIntentoRegistro.getContrasena()));
         pIntentoRegistro.setIdBusqueda(Uuid.randomUuid().toString());
         IntentoRegistro intentoRegistroBd = repository.save(pIntentoRegistro);
         emailAmazonService.mandarCorreoUsuario(intentoRegistroBd.getCorreo(), intentoRegistroBd.getIdBusqueda(), intentoRegistroBd.getCorreo());

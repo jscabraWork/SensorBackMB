@@ -53,7 +53,7 @@ public class IntentoRegistroController {
 
             Usuario usuario = new Usuario(intentoRegistro.getNumeroDocumento(),
                     intentoRegistro.getNombre(),
-                    intentoRegistro.getContraseña(),
+                    intentoRegistro.getContrasena(),
                     intentoRegistro.getCorreo(),
                     intentoRegistro.getCelular(),
                     true,
