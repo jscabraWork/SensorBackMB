@@ -1,7 +1,10 @@
 package com.arquitectura.intento_registro.entity;
 
+import com.arquitectura.entity.Auditable;
+import com.arquitectura.tipo_documento.entity.TipoDocumento;
 import com.arquitectura.usuario.entity.Usuario;
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.Data;
@@ -11,7 +14,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @Table(name = "intento_registro")
-public class IntentoRegistro {
+public class IntentoRegistro extends Auditable {
 
     @Id
     @GeneratedValue
@@ -27,7 +30,10 @@ public class IntentoRegistro {
 
     private String contrasena;
 
-    private String tipoDocumento;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "tipo_documento_id")
+    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
+    private TipoDocumento tipoDocumento;
 
     private boolean activo;
 
@@ -44,4 +50,11 @@ public class IntentoRegistro {
     @JoinColumn(name = "usuario_numero_documento", referencedColumnName = "numeroDocumento", insertable = false, updatable = false)
     @JsonBackReference(value="usuario_intentos")
     private Usuario usuario;
+
+    @Override
+    @PrePersist
+    public void prePersist() {
+        super.prePersist();
+        this.activo = true;
+    }
 }

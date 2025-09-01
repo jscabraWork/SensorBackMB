@@ -1,9 +1,7 @@
 package com.arquitectura.intento_registro.controller;
 
-import com.arquitectura.codigo_validacion.entity.Codigo;
 import com.arquitectura.intento_registro.entity.IntentoRegistro;
 import com.arquitectura.intento_registro.service.IntentoRegistroService;
-import com.arquitectura.tipo_documento.entity.TipoDocumento;
 import com.arquitectura.tipo_documento.service.TipoDocumentoService;
 import com.arquitectura.usuario.entity.Usuario;
 import com.arquitectura.usuario.service.UsuarioService;
@@ -26,8 +24,6 @@ public class IntentoRegistroController {
     @Autowired
     private UsuarioService usuarioService;
 
-    @Autowired
-    private TipoDocumentoService tipoDocumentoService;
 
     @PostMapping("/registro")
     public ResponseEntity<?> crearCliente(@RequestBody IntentoRegistro pIntentoRegistro) throws Exception {
@@ -47,18 +43,16 @@ public class IntentoRegistroController {
         Map<String, Object> response = new HashMap<>();
         IntentoRegistro intentoRegistro = service.getIntentoRegistro(pIdBusqueda);
         if(intentoRegistro!=null&& intentoRegistro.isActivo()) {
-            TipoDocumento tipoDocumento = tipoDocumentoService.findByNombre(
-                    intentoRegistro.getTipoDocumento()
-            );
 
-            Usuario usuario = new Usuario(intentoRegistro.getNumeroDocumento(),
+            Usuario usuario = new Usuario(
+                    intentoRegistro.getNumeroDocumento(),
                     intentoRegistro.getNombre(),
                     intentoRegistro.getContrasena(),
                     intentoRegistro.getCorreo(),
                     intentoRegistro.getCelular(),
                     true,
                     new ArrayList<>(),
-                    tipoDocumento,
+                    intentoRegistro.getTipoDocumento(),
                     null);
 
             Usuario usuarioBd=usuarioService.crearCliente(usuario, true);
