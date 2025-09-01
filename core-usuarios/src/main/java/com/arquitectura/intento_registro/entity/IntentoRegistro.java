@@ -25,7 +25,7 @@ public class IntentoRegistro {
 
     private String celular;
 
-    private String contraseña;
+    private String contrasena;
 
     private String tipoDocumento;
 
