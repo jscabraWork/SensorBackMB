@@ -51,6 +51,7 @@ public class TicketController extends CommonController<Ticket, TicketService> {
             @RequestParam(defaultValue = "10") int size) {
 
         Page<Ticket> tickets = service.getAllByLocalidadIdAndEstado(localidadId, pEstado, page, size);
+        tickets.forEach(Ticket::setClienteTransient);
 
         if (tickets.isEmpty()) {
             return ResponseEntity.noContent().build();
@@ -263,6 +264,5 @@ public class TicketController extends CommonController<Ticket, TicketService> {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
         }
     }
-
 
 }

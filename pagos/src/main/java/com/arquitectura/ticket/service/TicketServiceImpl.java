@@ -342,7 +342,7 @@ public class TicketServiceImpl extends CommonServiceImpl<Ticket, TicketRepositor
             }
 
             ticketsActualizados.addAll(actualizarTicketYHijos(ticket, estado));
-            repository.saveAll(ticketsActualizados);
+            saveAllKafka((ticketsActualizados));
 
             response.put("ticketsActualizados", ticketsActualizados);
             response.put("exito", true);
@@ -667,6 +667,13 @@ public class TicketServiceImpl extends CommonServiceImpl<Ticket, TicketRepositor
     public Integer validarVentasCupon(Long pTarifaId){
         //Contar cuantos tickets hay vendidos con la tarifa indicada
         return repository.countByTarifaIdAndEstado(pTarifaId,1);
+    }
+
+    @Override
+    public void cambiarTipo(Ticket ticket, Integer tipo) throws Exception {
+
+        ticket.setTipo(tipo);
+
     }
 
     @Override

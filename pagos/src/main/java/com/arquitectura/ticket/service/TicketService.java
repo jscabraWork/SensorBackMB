@@ -151,4 +151,7 @@ public interface TicketService extends CommonService<Ticket> {
     public void enviar(List<Ticket> tickets) throws Exception;
 
     public Integer validarVentasCupon(Long pTarifaId);
+
+    public void cambiarTipo(Ticket ticket, Integer tipo) throws Exception;
+
 }

@@ -10,4 +10,7 @@ public interface AlcanciaRepository extends JpaRepository<Alcancia,Long> {
 
     List<Alcancia> findByClienteNumeroDocumentoAndEstado(String pClienteId, Integer estado);
 
+
+    List<Alcancia> findByClienteNumeroDocumento(String pClienteId);
+
 }

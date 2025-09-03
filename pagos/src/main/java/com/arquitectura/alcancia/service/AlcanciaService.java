@@ -33,6 +33,7 @@ public interface AlcanciaService extends CommonService<Alcancia> {
      */
     public List<MisAlcanciasDto> getMisAlcanciasByCliente(String numeroDocumento);
 
+    public List<Alcancia> findByCliente(String pClienteId);
     /**
      * Elimina una alcancía por su ID y publica el evento de eliminación en Kafka
      * @param pId El ID de la alcancía a eliminar
@@ -42,5 +43,9 @@ public interface AlcanciaService extends CommonService<Alcancia> {
     public Alcancia aportarAdmin(Alcancia alcancia, Double aporte) throws Exception;
 
     public List<Alcancia> findActivasByCliente(String pClienteId);
+
+    public void agregarTicket(Alcancia alcancia, Ticket ticket);
+
+    public void eliminarTicket(Alcancia alcancia, Ticket ticket);
 
 }

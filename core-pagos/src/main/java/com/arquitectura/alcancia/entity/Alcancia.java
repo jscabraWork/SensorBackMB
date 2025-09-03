@@ -80,4 +80,30 @@ public class Alcancia extends Auditable {
         return estado == 1;
         }
 
+    public void agregarTicket(Ticket ticket, Tarifa tarifa) {
+        tickets.add(ticket);
+        ticket.reservar(tarifa);
+        precioTotal += tarifa.calcularPrecioTotal();
+    }
+
+    public void eliminarTicket(Ticket ticket) {
+        tickets.remove(ticket);
+        ticket.liberar();
+        precioTotal -= ticket.getPrecio();
+    }
+
+    @Transient
+    private String localidad;
+
+    public void setLocalidadTransient(){
+        localidad = tickets.get(0).getLocalidad().getNombre();
+    }
+
+    @Transient
+    private String evento;
+
+    public void setEvetoTransient(){
+        evento = tickets.get(0).getLocalidad().getDias().get(0).getEvento().getNombre();
+    }
+
 }

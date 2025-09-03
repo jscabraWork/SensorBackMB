@@ -7,6 +7,7 @@ import com.arquitectura.dto.MisAlcanciasDto;
 import com.arquitectura.events.AlcanciaEvent;
 import com.arquitectura.events.EntityDeleteEventLong;
 import com.arquitectura.localidad.entity.Localidad;
+import com.arquitectura.orden.entity.Orden;
 import com.arquitectura.qr.service.QRService;
 import com.arquitectura.services.CommonServiceImpl;
 import com.arquitectura.tarifa.entity.Tarifa;
@@ -116,6 +117,7 @@ public class AlcanciaServiceImpl extends CommonServiceImpl<Alcancia, AlcanciaRep
         return save(alcancia);
     }
 
+    @Transactional("transactionManager")
     private void procesarTickets(List<Ticket> tickets, Cliente cliente, double dineroActual) throws Exception {
         int contador = 0;
 
@@ -147,6 +149,32 @@ public class AlcanciaServiceImpl extends CommonServiceImpl<Alcancia, AlcanciaRep
     @Override
     public List<Alcancia> findActivasByCliente(String pClienteId) {
         return repository.findByClienteNumeroDocumentoAndEstado(pClienteId, 1);
+    }
+
+    @Override
+    public List<Alcancia> findByCliente(String pClienteId) {
+        return repository.findByClienteNumeroDocumento(pClienteId);
+    }
+
+    @Transactional("transactionManager")
+    @Override
+    public void agregarTicket(Alcancia alcancia, Ticket ticket) {
+
+        if(alcancia.getTickets().contains(ticket)) {
+            throw new RuntimeException("El ticket ya está asociado a esta orden");
+        }
+        Localidad localidad = alcancia.getTickets().get(0).getLocalidad();
+        alcancia.agregarTicket(ticket, localidad.getTarifaActiva());
+        ticketService.saveKafka(ticket);
+        saveKafka(alcancia);
+    }
+
+    @Transactional("transactionManager")
+    @Override
+    public void eliminarTicket(Alcancia alcancia, Ticket ticket) {
+        alcancia.eliminarTicket(ticket);
+        ticketService.saveKafka(ticket);
+        saveKafka(alcancia);
     }
 
     //----------------Métodos para Kafka-------------------
