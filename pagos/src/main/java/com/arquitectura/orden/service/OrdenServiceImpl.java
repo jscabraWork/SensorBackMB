@@ -132,12 +132,9 @@ public class OrdenServiceImpl extends CommonServiceImpl<Orden, OrdenRepository> 
                 .orElseThrow(() -> new RuntimeException("No se encontro ningun ticket con el id proporcionado"));
 
         orden.getTickets().remove(ticket);
-
         ticket.getOrdenes().remove(orden);
-
-        ticketRepository.save(ticket);
-
-        repository.save(orden);
+        ticketService.saveKafka(ticket);
+        saveKafka(orden);
     }
 
 
