@@ -150,11 +150,12 @@ public class OrdenController extends CommonController<Orden, OrdenService> {
      * @param numeroDocumento El ID del cliente
      * @return ResponseEntity con el código de estado 204 (No Content)
      */
-    @PreAuthorize("hasRole('CLIENTE')")
+    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/ordenes/cliente/{numeroDocumento}")
     public ResponseEntity<?> getOrdenesByClienteId(@PathVariable String numeroDocumento) {
         Map<String, Object> response = new HashMap<>();
         response.put("ordenes",service.getAllOrdenesByClienteNumeroDocumento(numeroDocumento));
+        response.put("cliente", clienteService.findById(numeroDocumento));
         return new ResponseEntity<>(response,HttpStatus.OK);
     }
 

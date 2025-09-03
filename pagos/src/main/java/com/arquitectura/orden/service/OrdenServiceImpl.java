@@ -148,7 +148,9 @@ public class OrdenServiceImpl extends CommonServiceImpl<Orden, OrdenRepository> 
      */
     @Override
     public List<Orden> getAllOrdenesByClienteNumeroDocumento(String numeroDocumento){
-        return repository.findByClienteNumeroDocumento(numeroDocumento);
+        List<Orden> ordenes = repository.findByClienteNumeroDocumento(numeroDocumento);
+        ordenes.forEach(Orden::setEventoNombre);
+        return ordenes;
     }
 
     @Transactional("transactionManager")

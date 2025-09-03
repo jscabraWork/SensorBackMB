@@ -74,7 +74,6 @@ public class Orden extends Auditable {
     protected Evento evento;
 
     public Double calcularValorOrden() {
-
         //Validar que el valorSeguro no sea nulo, si es nulo se asigna 0.0
         double seguro = (valorSeguro != null) ? valorSeguro : 0.0;
 
@@ -180,6 +179,15 @@ public class Orden extends Auditable {
         String nombreLocalidad = (tickets != null && !tickets.isEmpty()) ? tickets.get(0).getLocalidad().getNombre() : "GENERAL";
         String nombreEvento = (evento != null) ? evento.getNombre() : "EVENTO";
         return cantidadTickets + " ticket(s) " + nombreLocalidad + " para el evento " + nombreEvento;
+    }
+
+
+    //Se utiliza para mostrar el nombre del evento en las respuestas
+    // de la API sin cargar el objeto completo
+    @Transient
+    private String eventoNombre;
+    public void setEventoNombre() {
+        this.eventoNombre = evento.getNombre();
     }
 
 }
