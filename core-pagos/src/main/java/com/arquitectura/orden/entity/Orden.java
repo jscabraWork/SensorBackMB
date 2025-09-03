@@ -181,13 +181,31 @@ public class Orden extends Auditable {
         return cantidadTickets + " ticket(s) " + nombreLocalidad + " para el evento " + nombreEvento;
     }
 
-
     //Se utiliza para mostrar el nombre del evento en las respuestas
     // de la API sin cargar el objeto completo
     @Transient
     private String eventoNombre;
     public void setEventoNombre() {
         this.eventoNombre = evento.getNombre();
+    }
+
+    public void devolver(){
+        estado = 4; // Devolución
+        liberarTickets();
+        transacciones.forEach(transaccion -> transaccion.setStatus(4));
+    }
+
+    public void fraude(){
+        estado = 5; // Fraude
+        liberarTickets();
+        transacciones.forEach(transaccion -> transaccion.setStatus(5));
+    }
+
+    public void upgrade(){
+        estado = 6; // Upgrade
+        liberarTickets();
+        transacciones.forEach(transaccion -> transaccion.setStatus(6));
+
     }
 
 }

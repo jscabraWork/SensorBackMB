@@ -85,24 +85,38 @@ public class OrdenServiceImpl extends CommonServiceImpl<Orden, OrdenRepository> 
     private static final Logger logger = LoggerFactory.getLogger(OrdenServiceImpl.class);
 
     @Override
+    @Transactional("transactionManager")
     public Orden actualizarEstado(Long pId, int estado){
 
         Orden orden = repository.findById(pId)
                 .orElseThrow(() -> new RuntimeException("No se encontro ninguna orden con el id proporcionado"));
         orden.setEstado(estado);
 
-        orden.getTransacciones().forEach(tr->{tr.setStatus(estado);});
+        switch (estado){
+            case 4: //DEVOLUCIÓN
+                orden.devolver();
+                break;
+            case 5: //FRAUDE
+                orden.fraude();;
+                break;
+            case 6:  //UPGRADE
+                orden.upgrade();
+                break;
+        }
 
-        ticketRepository.saveAll(orden.getTickets());
+        //Guardar estado de los tickets
+        ticketService.saveAllKafka(orden.getTickets());
 
-        trxRepository.saveAll(orden.getTransacciones());
+        //
+        transaccionService.saveAllKafka(orden.getTransacciones());
 
-        repository.save(orden);
+        saveKafka(orden);
 
         return orden;
     }
 
     @Override
+    @Transactional("transactionManager")
     public Orden agregarTicketAOrden(Long ordenId, Long idTicket){
 
         Orden orden = repository.findById(ordenId)
@@ -117,12 +131,13 @@ public class OrdenServiceImpl extends CommonServiceImpl<Orden, OrdenRepository> 
 
         orden.getTickets().add(ticket);
 
-        return repository.save(orden);
+        return saveKafka(orden);
     }
 
 
     /*** Elimina un ticket existente de una orden*/
     @Override
+    @Transactional("transactionManager")
     public void deleteTicketFromOrden(Long pIdOrden, Long pIdTicket) {
 
         Orden orden = repository.findById(pIdOrden)

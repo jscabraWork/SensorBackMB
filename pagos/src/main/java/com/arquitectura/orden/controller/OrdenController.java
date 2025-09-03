@@ -94,7 +94,7 @@ public class OrdenController extends CommonController<Orden, OrdenService> {
      * @param estado Nuevo estado a asignar
      * @return ResponseEntity con la orden actualizada
      */
-    @PreAuthorize("hasRole('CLIENTE')")
+    @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/estado/{ordenId}")
     public ResponseEntity<?> actualizarEstado(@PathVariable Long ordenId, @RequestParam int estado) {
         Orden ordenActualizada = service.actualizarEstado(ordenId, estado);
@@ -108,7 +108,7 @@ public class OrdenController extends CommonController<Orden, OrdenService> {
      * @param ticketId del ticket que se agregara a la orden
      * @return ResponseEntity con la orden actualizada
      */
-    @PreAuthorize("hasRole('CLIENTE')")
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/agregar/orden/{ordenId}/ticket/{ticketId}")
     public ResponseEntity<?> agregarTicket(@PathVariable Long ordenId, @PathVariable Long ticketId){
         Orden agregarTicket = service.agregarTicketAOrden(ordenId,ticketId);
@@ -122,7 +122,7 @@ public class OrdenController extends CommonController<Orden, OrdenService> {
      * @param pIdTicket id del ticket a eliminar de la orden
      * @return ResponseEntity con la orden actualizada
      */
-    @PreAuthorize("hasRole('CLIENTE')")
+    @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/eliminar/orden/{pIdOrden}/ticket/{pIdTicket}")
     public ResponseEntity<?> deleteTicketFromOrden(@PathVariable Long pIdOrden, @PathVariable Long pIdTicket) {
             service.deleteTicketFromOrden(pIdOrden,pIdTicket);
@@ -173,7 +173,7 @@ public class OrdenController extends CommonController<Orden, OrdenService> {
 
         List<Ticket> tickets = new ArrayList<>();
 
-        // Si la orden es de tipo 4 (alcancía), no traer los tickets
+        // Si la orden es de tipo 4 (aporte alcancía), no traer los tickets porque no tiene
         if(orden.getTipo()!=4){
             tickets = orden.getTickets();
         }
@@ -192,7 +192,6 @@ public class OrdenController extends CommonController<Orden, OrdenService> {
 
     @GetMapping("/orden/respuesta/{pIdOrden}")
     public ResponseEntity<?> getOrdenRespuesta(@PathVariable Long pIdOrden){
-
         Map<String, Object> response = new HashMap<>();
         Orden orden = service.findById(pIdOrden);
         if (orden == null) {
@@ -245,6 +244,37 @@ public class OrdenController extends CommonController<Orden, OrdenService> {
         }
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
+    @GetMapping("/admin/{pId}")
+    public ResponseEntity<?> getParaAdmin(@PathVariable Long pId) {
 
+        Map<String, Object> response = new HashMap<>();
+        Orden orden = service.findById(pId);
+
+        if (orden == null) {
+            return ResponseEntity.notFound().build();
+        }
+        Evento evento = orden.getEvento();
+
+        List<Ticket> tickets = new ArrayList<>();
+
+        // Si la orden es de tipo 4 (aporte alcancía), no traer los tickets porque no tiene
+        if(orden.getTipo()!=4){
+            tickets = orden.getTickets();
+            tickets.forEach(Ticket::setClienteTransient);
+        }
+
+        Cliente cliente = orden.getCliente();
+        ConfigSeguro configSeguro = configSeguroService.getConfigSeguroActivo();
+
+        response.put("evento", evento);
+        response.put("cliente", cliente);
+        response.put("orden", orden);
+        response.put("transacciones", orden.getTransacciones());
+        response.put("tickets", tickets);
+        response.put("configSeguro", configSeguro);
+        response.put("localidad", orden.getTarifa().getLocalidad());
+        return ResponseEntity.ok(response);
+    }
 
 }

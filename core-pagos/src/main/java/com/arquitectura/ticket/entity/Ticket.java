@@ -12,6 +12,7 @@ import com.arquitectura.tarifa.entity.Tarifa;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -85,28 +86,6 @@ public class Ticket extends Auditable {
     @ManyToOne
     @JoinColumn(name = "seguro_id")
     private Seguro seguro;
-
-    //Atributos para venta desde mapas
-    @Transient
-    private Integer personasPorTicket;
-
-    @Transient
-    private Integer asientosDisponibles;
-
-
-    //Atributos para creación de tickets en reporte de ventas
-        @Transient
-        private List<Ingreso> ingresosReporte;
-        public void setIngresosReporte() {
-            this.ingresosReporte = ingresos;
-        }
-
-        @Transient
-        private List<Ticket> asientosReporte;
-
-    public void setAsientosReporte() {
-        this.asientosReporte = asientos;
-    }
 
     //-------------------------------------------------------
 
@@ -213,5 +192,32 @@ public class Ticket extends Auditable {
     }
 
 
+    //Atributos para venta desde mapas
+    @Transient
+    private Integer personasPorTicket;
 
+    @Transient
+    private Integer asientosDisponibles;
+
+
+    //Atributos para creación de tickets en reporte de ventas
+    @Transient
+    private List<Ingreso> ingresosReporte;
+    public void setIngresosReporte() {
+        this.ingresosReporte = ingresos;
+    }
+
+    //Atributos para creación de tickets en reporte de ventas
+    @Transient
+    private List<Ticket> asientosReporte;
+    public void setAsientosReporte() {
+        this.asientosReporte = asientos;
+    }
+
+    @JsonProperty("cliente")
+    @Transient
+    private Cliente clienteT;
+    public void setClienteTransient() {
+        this.clienteT = cliente;
+    }
 }
