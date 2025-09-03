@@ -24,6 +24,7 @@ PtpAdapterImpl implements PtpAdapter {
             transaccion.setEmail(payer.getEmail());
             transaccion.setIdPersona(payer.getDocumentType()+ payer.getDocument());
             transaccion.setPhone(payer.getMobile());
+            transaccion.setFullName(payer.getName());
         }
         List<PaymentResponse> payments = request.getPayment();
         if(payments !=null) {

@@ -39,6 +39,8 @@ public interface AlcanciaService extends CommonService<Alcancia> {
      */
     public void deleteById(Long pId);
 
+    public Alcancia aportarAdmin(Alcancia alcancia, Double aporte) throws Exception;
+
     public List<Alcancia> findActivasByCliente(String pClienteId);
 
 }

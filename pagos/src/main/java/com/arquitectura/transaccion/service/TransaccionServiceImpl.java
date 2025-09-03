@@ -11,10 +11,13 @@ import com.arquitectura.events.EntityDeleteEventLong;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Date;
 import java.util.List;
 
 
@@ -117,6 +120,12 @@ public class TransaccionServiceImpl extends CommonServiceImpl<Transaccion, Trans
     @Override
     public void saveAllKafka(List<Transaccion> pTransaccion) {
         pTransaccion.forEach(this::saveKafka);
+    }
+
+    @Override
+    public Page<Transaccion> findByFiltro(String numeroDocumento, String correo, Date fechaInicio, 
+                                         Date fechaFin, Integer estado, Integer metodo, String metodoNombre, Pageable pageable) {
+        return repository.findByFiltro(numeroDocumento, correo, fechaInicio, fechaFin, estado, metodo, metodoNombre, pageable);
     }
 
 }

@@ -77,9 +77,48 @@ public class AlcanciaServiceImpl extends CommonServiceImpl<Alcancia, AlcanciaRep
         double dineroActual = alcancia.getPrecioParcialPagado() + aporte;
         
         Cliente cliente = alcancia.getCliente();
-        int contador = 0;
+
         List<Ticket> tickets = alcancia.getTickets();
+
+        procesarTickets(tickets, cliente, dineroActual);
+
+        alcancia.aportar(aporte);
         
+        return save(alcancia);
+    }
+
+    @Override
+    @Transactional("transactionManager")
+    public Alcancia aportarAdmin(Alcancia alcancia, Double aporte) throws Exception {
+
+        // Localidad de la alcancia para validar aporte minimo
+        Localidad localidad = alcancia.getTickets().get(0).getLocalidad();
+
+        // Validar que el aporte sea válido y la alcancía esté activa
+        if (aporte <= 0) {
+            throw new IllegalArgumentException("El aporte debe ser mayor a 0");
+        }
+
+        if (!alcancia.isActiva()) {
+            throw new IllegalStateException("No se puede aportar a una alcancía inactiva");
+        }
+
+        double dineroActual = alcancia.getPrecioParcialPagado() + aporte;
+
+        Cliente cliente = alcancia.getCliente();
+
+        List<Ticket> tickets = alcancia.getTickets();
+
+        procesarTickets(tickets, cliente, dineroActual);
+
+        alcancia.aportar(aporte);
+
+        return save(alcancia);
+    }
+
+    private void procesarTickets(List<Ticket> tickets, Cliente cliente, double dineroActual) throws Exception {
+        int contador = 0;
+
         for (int i = 0; i < tickets.size(); i++) {
             Ticket ticket = tickets.get(i);
             boolean venderBoleta = false;
@@ -103,9 +142,6 @@ public class AlcanciaServiceImpl extends CommonServiceImpl<Alcancia, AlcanciaRep
                 contador++;
             }
         }
-        alcancia.aportar(aporte);
-        
-        return save(alcancia);
     }
 
     @Override
