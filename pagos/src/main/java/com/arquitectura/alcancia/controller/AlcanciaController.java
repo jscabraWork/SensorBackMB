@@ -14,6 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -39,10 +40,17 @@ public class AlcanciaController extends CommonController<Alcancia, AlcanciaServi
         if (alcancia == null) {
             return ResponseEntity.notFound().build();
         }
-        List<Ticket> tickets = alcancia.getTickets();
+        List<Ticket> tickets = new ArrayList<>();
+        tickets = alcancia.getTickets();
         Cliente cliente = alcancia.getCliente();
-        Localidad localidad = alcancia.getTickets().get(0).getLocalidad();
-        Evento evento = localidad.getDias().get(0).getEvento();
+        Localidad localidad = new Localidad();
+        Evento evento = new Evento();
+
+        if(!tickets.isEmpty()){
+            localidad = alcancia.getTickets().get(0).getLocalidad();
+            evento = localidad.getDias().get(0).getEvento();
+            tickets.forEach(Ticket::setClienteTransient);
+        }
 
         response.put("evento", evento);
         response.put("alcancia", alcancia);
@@ -114,5 +122,20 @@ public class AlcanciaController extends CommonController<Alcancia, AlcanciaServi
 
         service.eliminarTicket(alcancia, ticket);
         return ResponseEntity.ok().build();
+    }
+
+    @PreAuthorize("hasRole('ADMIN')")
+    @GetMapping("/devolver/{pId}")
+    public ResponseEntity<?> devolverAlcanciaAdmin(@PathVariable Long pId) {
+
+        Map<String, Object> response = new HashMap<>();
+        Alcancia alcancia = service.findById(pId);
+
+        if (alcancia == null) {
+            return ResponseEntity.notFound().build();
+        }
+        service.devolver(alcancia);
+        return ResponseEntity.ok().build();
+
     }
 }

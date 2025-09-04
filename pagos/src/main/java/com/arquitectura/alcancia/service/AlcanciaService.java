@@ -48,4 +48,6 @@ public interface AlcanciaService extends CommonService<Alcancia> {
 
     public void eliminarTicket(Alcancia alcancia, Ticket ticket);
 
+    public void devolver(Alcancia alcancia);
+
 }

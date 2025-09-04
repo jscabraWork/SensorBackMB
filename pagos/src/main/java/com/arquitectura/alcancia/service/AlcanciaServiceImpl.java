@@ -163,7 +163,19 @@ public class AlcanciaServiceImpl extends CommonServiceImpl<Alcancia, AlcanciaRep
         if(alcancia.getTickets().contains(ticket)) {
             throw new RuntimeException("El ticket ya está asociado a esta orden");
         }
-        Localidad localidad = alcancia.getTickets().get(0).getLocalidad();
+        Localidad localidad = new Localidad();
+
+        if(!alcancia.getTickets().isEmpty()){
+            localidad = alcancia.getTickets().get(0).getLocalidad();
+
+            if(localidad.getId() != ticket.getLocalidad().getId()){
+                throw new RuntimeException("El ticket no pertenece a la misma localidad que los tickets actuales de la alcancía");
+            }
+        }
+        else{
+            localidad = ticket.getLocalidad();
+        }
+
         alcancia.agregarTicket(ticket, localidad.getTarifaActiva());
         ticketService.saveKafka(ticket);
         saveKafka(alcancia);
@@ -174,6 +186,14 @@ public class AlcanciaServiceImpl extends CommonServiceImpl<Alcancia, AlcanciaRep
     public void eliminarTicket(Alcancia alcancia, Ticket ticket) {
         alcancia.eliminarTicket(ticket);
         ticketService.saveKafka(ticket);
+        saveKafka(alcancia);
+    }
+
+    @Override
+    @Transactional("transactionManager")
+    public void devolver(Alcancia alcancia) {
+        alcancia.devolver();
+        ticketService.saveAllKafka(alcancia.getTickets());
         saveKafka(alcancia);
     }
 
