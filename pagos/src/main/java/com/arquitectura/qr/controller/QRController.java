@@ -1,5 +1,6 @@
 package com.arquitectura.qr.controller;
 
+import com.arquitectura.cliente.entity.Cliente;
 import com.arquitectura.cliente.service.ClienteService;
 import com.arquitectura.qr.service.QRService;
 import com.arquitectura.ticket.entity.Ticket;
@@ -31,27 +32,29 @@ public class QRController {
     private ClienteService clienteService;
 
     @PreAuthorize("hasAnyRole('ADMIN', 'CLIENTE')")
-    @PutMapping("/enviar/{numeroDocumento}/{pTicketId}")
-    public ResponseEntity<?> enviarQR(@PathVariable Long pTicketId, @PathVariable String numeroDocumento,
-                                      @RequestHeader("Authorization") String token) {
+    @PutMapping("/enviar/{pTicketId}")
+    public ResponseEntity<?> enviarQR(@PathVariable Long pTicketId, @RequestHeader("Authorization") String token) {
 
         // PASAR TODA LA LOGICA A UN SERVICE
         // Se puede simplificar el codigo
         //No necesitas una lista de tickets a enviar, puedes enviar directamente el ticket principal y sus hijos si es un palco.
         Map<String, Object> response = new HashMap<>();
 
+        Ticket ticketPrincipal = ticketService.findById(pTicketId);
+
+        // Obtener el ticket principal evitando cargar relaciones innecesarias
+        if (ticketPrincipal == null) {
+            response.put("error", "Ticket no encontrado");
+            return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
+        }
+
+        Cliente cliente =ticketPrincipal.getCliente();
+
         try {
             // Validar que el usuario del token sea el mismo o sea admin
-            if (!numeroDocumento.equals(clienteService.obtenerUsuarioDeToken(token)) &&
+            if (!cliente.getNumeroDocumento().equals(clienteService.obtenerUsuarioDeToken(token)) &&
                     !clienteService.obtenerRolDeToken(token).equals("ROLE_ADMIN")) {
                 return new ResponseEntity<>("No tienes permisos para realizar esta acción", HttpStatus.UNAUTHORIZED);
-            }
-
-            // Obtener el ticket principal evitando cargar relaciones innecesarias
-            Ticket ticketPrincipal = ticketService.findById(pTicketId);
-            if (ticketPrincipal == null) {
-                response.put("error", "Ticket no encontrado");
-                return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
             }
 
             //-- DESDE AQUI PASAR LÓGICA A UN SERVICE  ATTE: ISAAC---
