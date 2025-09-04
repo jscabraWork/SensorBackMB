@@ -87,9 +87,9 @@ public class Alcancia extends Auditable {
     }
 
     public void eliminarTicket(Ticket ticket) {
+        precioTotal -= ticket.getPrecio();
         tickets.remove(ticket);
         ticket.liberar();
-        precioTotal -= ticket.getPrecio();
     }
 
     @Transient
