@@ -18,7 +18,7 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/ordenes_traspaso")
+@RequestMapping("/ordenes-traspaso")
 public class OrdenTraspasoController extends CommonController<OrdenTraspaso, OrdenTraspasoService>{
 
     @Autowired
@@ -56,7 +56,7 @@ public class OrdenTraspasoController extends CommonController<OrdenTraspaso, Ord
 
     @PreAuthorize("hasRole('CLIENTE')")
     @PostMapping("/confirmar-traspaso/{pCodigo}")
-    public ResponseEntity<?> confirmarTransferenciaTicket(@PathVariable String pCodigo) throws Exception {
+    public ResponseEntity<?> confirmarTransferenciaTicket(@PathVariable String pCodigo,  @RequestHeader("Authorization") String pToken) throws Exception {
 
         Map<String, Object> response = new HashMap<>();
 
@@ -81,7 +81,7 @@ public class OrdenTraspasoController extends CommonController<OrdenTraspaso, Ord
             return new ResponseEntity<>(response, HttpStatus.OK);
         }
 
-        Cliente clienteReceptor = clienteService.findByCorreo(codigoTraspaso.getCorreoDestino());
+        Cliente clienteReceptor = clienteService.findById(clienteService.obtenerUsuarioDeToken(pToken));
 
         if(clienteReceptor == null){
             response.put("mensaje", "Debes estar registrado para reclamar tu ticket");
@@ -103,5 +103,32 @@ public class OrdenTraspasoController extends CommonController<OrdenTraspaso, Ord
 
     }
 
+    @GetMapping("/codigo/{pCodigo}")
+    public ResponseEntity<?> getCodigoParaConfirmacion(@PathVariable String pCodigo) throws Exception {
+
+        Map<String, Object> response = new HashMap<>();
+
+        CodigoTraspaso codigoTraspaso = codigoTraspasoService.findByCodigo(pCodigo);
+
+        if(codigoTraspaso == null){
+            response.put("mensaje", "El codigo que intenta confirmar no existe");
+            return new ResponseEntity<>(response, HttpStatus.OK);
+        }
+
+        if(!codigoTraspaso.isActivo()){
+            response.put("mensaje", "Este código de traspaso ya fue utilizado");
+            return new ResponseEntity<>(response, HttpStatus.OK);
+        }
+
+        Ticket ticket = codigoTraspaso.getTicket();
+
+        response.put("ticket", ticket);
+        response.put("localidad", ticket.getLocalidad());
+        response.put("evento", ticket.getEvento());
+        response.put("codigo", codigoTraspaso);
+        response.put("mensaje", "El código es válido para transferir el ticket");
+        return new ResponseEntity<>(response, HttpStatus.OK);
+
+    }
 
 }

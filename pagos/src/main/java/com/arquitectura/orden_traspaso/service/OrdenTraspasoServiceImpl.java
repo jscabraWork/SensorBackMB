@@ -6,6 +6,7 @@ import com.arquitectura.orden_traspaso.entity.OrdenTraspaso;
 import com.arquitectura.orden_traspaso.entity.OrdenTraspasoRepository;
 import com.arquitectura.services.CommonServiceImpl;
 import com.arquitectura.ticket.entity.Ticket;
+import com.arquitectura.ticket.service.TicketService;
 import com.arquitectura.transaccion.entity.Transaccion;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.apache.kafka.common.Uuid;
@@ -16,12 +17,15 @@ import org.springframework.kafka.support.SendResult;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
 @Service
 public class OrdenTraspasoServiceImpl extends CommonServiceImpl<OrdenTraspaso, OrdenTraspasoRepository> implements OrdenTraspasoService {
 
+    @Autowired
+    private TicketService ticketService;
 
     @Value("${ordenes.traspaso.topic}")
     private String ordenesTraspasoTopic;
@@ -33,8 +37,10 @@ public class OrdenTraspasoServiceImpl extends CommonServiceImpl<OrdenTraspaso, O
     @Override
     public OrdenTraspaso transferirTicket(Ticket ticket, Cliente cliente, Cliente receptor) throws Exception {
 
-        List<Ticket> tickets = new ArrayList<>();
-        tickets.add(ticket);
+        // Asigna el nuevo cliente al ticket
+        ticket.setCliente(receptor);
+
+        List<Ticket> tickets = new ArrayList<>(List.of(ticket));
 
         OrdenTraspaso orden = new OrdenTraspaso(
                 receptor,
@@ -53,7 +59,10 @@ public class OrdenTraspasoServiceImpl extends CommonServiceImpl<OrdenTraspaso, O
                 orden
         );
 
-        orden.getTransacciones().add(transaccion);
+        orden.setTransacciones(new ArrayList<>(List.of(transaccion)));
+
+        //Guarda, publica el ticket y manda el QR
+        ticketService.enviar(tickets);
 
         return this.saveKafka(orden);
     }

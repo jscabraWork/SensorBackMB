@@ -40,6 +40,6 @@ public class CodigoTraspaso extends  Auditable{
         this.cliente = cliente;
         this.ticket = ticket;
         activo = true;
-        codigo = java.util.UUID.randomUUID().toString();
+        codigo = java.util.UUID.randomUUID().toString().replaceAll("-", "").substring(0, 10);
     }
 }
