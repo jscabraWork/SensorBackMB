@@ -35,10 +35,11 @@ public class CodigoTraspaso extends  Auditable{
     @JoinColumn(name = "ticket_id")
     private Ticket ticket;
 
-    public CodigoTraspaso( String correo, Cliente cliente, Ticket ticket) {
+    public CodigoTraspaso(String correo, Cliente cliente, Ticket ticket) {
         this.correoDestino = correo;
         this.cliente = cliente;
         this.ticket = ticket;
         activo = true;
+        codigo = java.util.UUID.randomUUID().toString();
     }
 }

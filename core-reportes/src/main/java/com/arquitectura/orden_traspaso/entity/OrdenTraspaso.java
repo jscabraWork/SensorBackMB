@@ -28,21 +28,4 @@ public class OrdenTraspaso extends Orden {
     @JoinColumn(name = "cliente_receptor_id")
     private Cliente receptor;
 
-    public OrdenTraspaso(Cliente receptor, Cliente cliente, List<Ticket> tickets) {
-        this.receptor = receptor;
-        this.cliente = cliente;
-        tipo = 5;
-        estado = 1;
-        Localidad localidad = tickets.get(0).getLocalidad();
-        tarifa = localidad.getTarifaActiva();
-        evento = localidad.getEvento();
-        valorSeguro =0.0;
-
-        //El método setTickets tiene en cuenta asientos de tickets que se agregan individualmente a la orden
-        super.setTickets(tickets);
-
-        //Si la orden es de tipo alcancía, no se calcula el valor de la orden
-        this.valorOrden = super.calcularValorOrden();
-    }
-
 }

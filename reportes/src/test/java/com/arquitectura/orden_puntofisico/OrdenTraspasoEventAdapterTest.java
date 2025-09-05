@@ -27,7 +27,7 @@ import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
-public class OrdenPuntoFisicoEventAdapterTest {
+public class OrdenTraspasoEventAdapterTest {
 
     @InjectMocks
     private OrdenPuntoFisicoEventAdapterImpl adapter;

@@ -25,7 +25,7 @@ public class Transaccion extends Auditable{
     private String idPersona;
     private String idPasarela;
     private String ip;
-    //1: TARJETA CREDITO, 2: PSE 3: DATAFONO 4: EFECTIVO 5: TRANSFERENCIA 6: TOKEN TARJETA
+    //1: TARJETA CREDITO, 2: PSE 3: DATAFONO 4: EFECTIVO 5: TRANSFERENCIA 6: TOKEN TARJETA | 7: TRASPASO
     private int metodo;
     private String metodoNombre;
     private String phone;
@@ -56,18 +56,6 @@ public class Transaccion extends Auditable{
         this.orden = orden;
     }
 
-    private static int metodoPago(String metodo) {
-        if (metodo == null) return 5;
-        switch (metodo.toUpperCase()) {
-            case "EFECTIVO": return 5;
-            case "DATAFONO": return 4;
-            case "TRANSFERENCIA": return 6;
-            case "TARJETA CREDITO": return 1;
-            case "PSE": return 2;
-            case "TOKEN TARJETA": return 7;
-            default: return 5;
-        }
-    }
 
     private static String nombreMetodoPago(int metodo) {
         switch (metodo) {
@@ -77,6 +65,7 @@ public class Transaccion extends Auditable{
             case 4: return "EFECTIVO";
             case 5: return "TRANSFERENCIA";
             case 6: return "TOKEN TARJETA";
+            case 7: return "TRASPASO";
             default: return "EFECTIVO";
         }
     }

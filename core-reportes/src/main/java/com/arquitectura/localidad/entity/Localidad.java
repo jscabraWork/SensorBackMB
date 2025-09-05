@@ -3,6 +3,7 @@ package com.arquitectura.localidad.entity;
 
 import com.arquitectura.dia.entity.Dia;
 import com.arquitectura.entity.Auditable;
+import com.arquitectura.evento.entity.Evento;
 import com.arquitectura.tarifa.entity.Tarifa;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
@@ -52,6 +53,11 @@ public class Localidad  {
                 .filter(tarifa -> tarifa.getEstado() == 1)
                 .findFirst()
                 .orElse(null);
+    }
+
+    @JsonIgnore
+    public Evento getEvento() {
+        return dias.get(0).getEvento();
     }
 
 }

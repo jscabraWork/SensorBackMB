@@ -56,7 +56,7 @@ public class MisTicketsDto {
                 .eventoId(evento.getId())
                 .eventoNombre(evento.getNombre())
                 .imagen(imagenUrl)
-                .utilizado(ticket.todosIngresosUtilizados())
+                .utilizado(ticket.isUtilizado())
                 .localidad(ticket.getLocalidad().getNombre())
                 .build();
     }

@@ -3,6 +3,7 @@ package com.arquitectura.ticket.entity;
 import com.arquitectura.alcancia.entity.Alcancia;
 import com.arquitectura.cliente.entity.Cliente;
 import com.arquitectura.entity.Auditable;
+import com.arquitectura.evento.entity.Evento;
 import com.arquitectura.ingreso.entity.Ingreso;
 import com.arquitectura.localidad.entity.Localidad;
 import com.arquitectura.orden.entity.Orden;
@@ -184,13 +185,17 @@ public class Ticket extends Auditable {
      * Verifica si todos los ingresos del ticket han sido utilizados
      * @return true si todos los ingresos están utilizados, false si hay alguno sin utilizar o no hay ingresos
      */
-    public boolean todosIngresosUtilizados() {
+    public boolean isUtilizado() {
         if (ingresos == null || ingresos.isEmpty()) {
             return false;
         }
         return ingresos.stream().allMatch(ingreso -> ingreso.isUtilizado());
     }
 
+    @JsonIgnore
+    public Evento getEvento() {
+        return localidad.getEvento();
+    }
 
     //Atributos para venta desde mapas
     @Transient
@@ -219,5 +224,10 @@ public class Ticket extends Auditable {
     private Cliente clienteT;
     public void setClienteTransient() {
         this.clienteT = cliente;
+    }
+
+    //Utilizado para simplificar saber si el ticket esta utilizado en el front
+    public boolean getUtilizado() {
+        return isUtilizado();
     }
 }

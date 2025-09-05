@@ -6,7 +6,7 @@ import java.util.List;
 
 public interface CodigoTraspasoRepository extends JpaRepository<CodigoTraspaso, Long> {
 
-    public CodigoTraspaso findByIdBusqueda(String pIdBusqueda);
+    public CodigoTraspaso findByCodigo(String pIdBusqueda);
 
     public List<CodigoTraspaso> findByTicketId(Long pTicketId);
 }

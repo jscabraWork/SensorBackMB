@@ -6,6 +6,7 @@ import com.arquitectura.evento.entity.Evento;
 import com.arquitectura.evento.service.EventoService;
 import com.arquitectura.ingreso.entity.Ingreso;
 import com.arquitectura.localidad.entity.Localidad;
+import com.arquitectura.mail.service.SendEmailAmazonServiceImpl;
 import com.arquitectura.pdf.PdfService;
 import com.arquitectura.ticket.entity.Ticket;
 import com.arquitectura.ticket.service.TicketServiceImpl;
@@ -33,7 +34,7 @@ public class QRServiceImpl implements QRService{
     private static final String QR_CODE_IMAGE_PATH = "./uploads/";
 
     @Autowired
-    private SendEmailAmazonService emailService;
+    private SendEmailAmazonServiceImpl emailService;
 
     @Autowired
     private EncriptarTexto encriptador;
