@@ -1,6 +1,4 @@
 package com.arquitectura.tarifa.entity;
-
-
 import com.arquitectura.cupon.entity.Cupon;
 import com.arquitectura.entity.Auditable;
 import com.arquitectura.localidad.entity.Localidad;
