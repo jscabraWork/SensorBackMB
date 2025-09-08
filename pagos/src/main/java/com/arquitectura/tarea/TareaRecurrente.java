@@ -64,7 +64,6 @@ public class TareaRecurrente {
             }
             else if(fechaVencida && orden.getIdTRXPasarela()!=null)
             {
-
                 try {
                     //Obtener la transaccion Consultando contra PTP
                     Transaccion transaccion = placeToPlayService.generarTransaccionPTP(orden.getIdTRXPasarela(),orden.getId());

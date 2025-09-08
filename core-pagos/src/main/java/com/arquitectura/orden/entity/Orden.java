@@ -132,7 +132,7 @@ public class Orden extends Auditable {
         estado = 2; // Rechazada
 
         //SOLO LIBEARAR TICKETS DE LA ORDEN SI ES DE TIPO 1 (COMPRA ESTANDAR) O 3 (CREAR ALCANCIA)
-        //No se pueden liberar tickets de ordenes de tipo 4 (aportaciones a alcancía), 5 (traspaso) o 6 (asignación)
+        //No se pueden liberar tickets de ordenes de tipo 4 (aportes a alcancía), 5 (traspaso) o 6 (asignación)
         if(tipo == 1 || tipo == 3) {
             liberarTickets();
         }
