@@ -68,7 +68,6 @@ public class TareaRecurrente {
                     //Obtener la transaccion Consultando contra PTP
                     Transaccion transaccion = placeToPlayService.generarTransaccionPTP(orden.getIdTRXPasarela(),orden.getId());
 
-                    //La transaccion devuelve null si esta repetida
                     //En este caso no se debe hacer nada
                     if (!transaccion.getIsRepetida()) {
 

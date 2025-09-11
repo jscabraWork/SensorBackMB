@@ -70,7 +70,7 @@ public class QRController {
             ticketsAEnviar.add(ticketPrincipal);
 
             // Si es un palco, agregar todos los tickets hijos
-            if (ticketPrincipal.getTipo() == 1) {
+            if (ticketPrincipal.getTipo() == 0) {
 
                 //ESTO NO ES NECESARIO, YA QUE EL TICKET YA TIENE LOS HIJOS
                 //List<Ticket> hijos = ticketService.obtenerHijosDelPalco(pTicketId);
