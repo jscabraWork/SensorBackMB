@@ -145,22 +145,6 @@ public class Ticket extends Auditable {
     }
 
 
-    public void ve(Cliente cliente, Tarifa tarifa) {
-        Cliente lider = asientos.get(0).getPalco().getCliente();
-        asientos.forEach(a->{
-            if(lider!=null) {
-                if(a.getCliente().getNumeroDocumento().equals(lider.getNumeroDocumento())) {
-                    a.setEstado(1);
-                    a.setCliente(cliente);
-                }
-            }
-            else {
-                a.setEstado(1);
-                a.setCliente(cliente);
-            }
-        });
-    }
-
     public boolean isDisponible() {
         return estado == 0;
     }

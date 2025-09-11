@@ -242,8 +242,10 @@ public class PlaceToPlayService {
 
         Transaccion transaccion = generarTransaccionPTP(data.getRequestId(), orden.getId());
 
-        if (transaccion ==null) {
-            return new ResponseEntity<>(HttpStatus.CONFLICT);
+        //Si la transacción es Repetida no hacer nada
+        //Entra aqui si la transacción ya fue procesada
+        if (transaccion.getIsRepetida()) {
+            return new ResponseEntity<>(HttpStatus.OK);
         }
 
         //Asignar la transacción a la orden
@@ -289,20 +291,25 @@ public class PlaceToPlayService {
         try {
             Transaccion transaccion = generarTransaccionPTP(orden.getIdTRXPasarela(),orden.getId());
 
-            //La transacción devuelve null si ya fue procesada
-            if (transaccion != null) {
+            //Si la transacción ya fue procesada no hacer nada
+            if(transaccion.getIsRepetida())
+            {
+                return;
+            }
 
-                //Asignar la orden a la transacción y guardar la transacción
-                transaccion.setOrden(orden);
-                Transaccion transaccionBD = transaccionService.saveKafka(transaccion);
+            //Recibir la transaccion si no es repetida
 
-                //Solo procesar la transacción si es aprobada
-                if (transaccionBD.isAprobada()) {
-                    procesarTransaccionExitosa(orden, transaccionBD);
-                }
+           //Asignar la orden a la transacción y guardar la transacción
+            transaccion.setOrden(orden);
+            Transaccion transaccionBD = transaccionService.saveKafka(transaccion);
+
+            //Solo procesar la transacción si es aprobada
+            if (transaccionBD.isAprobada()) {
+                procesarTransaccionExitosa(orden, transaccionBD);
+            }
 
                 //En caso de no ser aprobada no hacer nada
-            }
+
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -322,9 +329,12 @@ public class PlaceToPlayService {
 
         Transaccion transaccionRepetida = transaccionService.getTransaccionRepetida(transaccion.getStatus(), pOrdenId);
 
-        //Si la transacción ya fue procesada, no devolverla
+        //Si la transacción ya fue procesada marcar como repetida
         if(transaccionRepetida != null) {
-            return null;
+            transaccion.setIsRepetida(true);
+        }
+        else {
+            transaccion.setIsRepetida(false);
         }
 
         return transaccion;

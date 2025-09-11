@@ -61,25 +61,16 @@ public class TicketServiceImpl extends CommonServiceImpl<Ticket, TicketRepositor
     private ClienteService clienteService;
 
     @Autowired
-    private SeguroService seguroService;
-
-    @Autowired
     private ConfigSeguroService configService;
 
     @Autowired
     private LocalidadRepository localidadRepository;
 
     @Autowired
-    private LocalidadService localidadService;
-
-    @Autowired
     private IngresoRepository ingresoRepository;
 
     @Autowired
     private KafkaTemplate<String, Object> kafkaTemplate;
-
-    @Autowired
-    private EventoService eventoService;
 
     @Autowired
     private ReporteFeignClient reporteFeignClient;

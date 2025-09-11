@@ -80,11 +80,14 @@ public class Transaccion extends Auditable{
 
     //Si el estado es difente que 34 o 35 entonces es rechazada
     public boolean isRechazada() {
-        return !this.isAprobada() && !this.isPendiente();
+        return this.status == 36;
     }
 
     public void rechazar() {
         this.status = 36; // Rechazada
     }
+
+    @Transient
+    private Boolean isRepetida;
 
 }

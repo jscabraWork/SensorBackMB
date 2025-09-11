@@ -70,7 +70,7 @@ public class TareaRecurrente {
 
                     //La transaccion devuelve null si esta repetida
                     //En este caso no se debe hacer nada
-                    if (transaccion != null) {
+                    if (!transaccion.getIsRepetida()) {
 
                         //Asignar la orden a la transaccion y guardar la transaccion
                         transaccion.setOrden(orden);
@@ -81,7 +81,7 @@ public class TareaRecurrente {
                             placeToPlayService.procesarTransaccionExitosa(orden, transaccionBD);
                         }
                         //Si la transaccion es pendiente actualizar la orden
-                        else if( transaccionBD.isPendiente()){
+                        else if(transaccionBD.isPendiente()){
                             //Actualizar lastModifiedDate de la orden a la fecha actual
                             orden.setLastModifiedDate(fechaActual);
                             ordenService.save(orden);
@@ -92,6 +92,14 @@ public class TareaRecurrente {
                             ticketService.saveAllKafka(orden.getTickets());
                         }
                     }
+                    //Este if adicional es necesario para algunos casos
+                    //ATTE: Isaac
+                    if(transaccion.isRechazada()){ //isRechazada es true para
+                        orden.rechazar();
+                        ordenService.saveKafka(orden);
+                        ticketService.saveAllKafka(orden.getTickets());
+                    }
+
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
