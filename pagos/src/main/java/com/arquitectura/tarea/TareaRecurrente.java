@@ -60,7 +60,6 @@ public class TareaRecurrente {
                 orden.rechazar();
                 ordenService.saveKafka(orden); //GUARDAR LA ORDEN RECHAZADA
                 ticketService.saveAllKafka(orden.getTickets()); //GUARDAR LOS TICKETS ASOCIADOS A LA ORDEN RECHAZADA
-                transaccionService.saveAllKafka(orden.getTransacciones()); //GUARDAR LAS TRANSACCIONES ASOCIADAS A LA ORDEN RECHAZADA
             }
             else if(fechaVencida && orden.getIdTRXPasarela()!=null)
             {

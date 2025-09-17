@@ -136,10 +136,6 @@ public class Orden extends Auditable {
         if(tipo == 1 || tipo == 3) {
             liberarTickets();
         }
-
-        if(transacciones!= null && !transacciones.isEmpty()) {
-            transacciones.forEach(transaccion -> transaccion.rechazar());
-        }
     }
 
     public void confirmar(){
