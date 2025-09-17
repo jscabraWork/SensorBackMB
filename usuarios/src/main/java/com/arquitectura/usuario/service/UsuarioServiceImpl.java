@@ -1,6 +1,4 @@
 package com.arquitectura.usuario.service;
-
-import com.arquitectura.clients.AuditoresFeignClient;
 import com.arquitectura.events.UsuarioEvent;
 import com.arquitectura.rol.entity.Role;
 import com.arquitectura.rol.entity.RoleRepository;
@@ -15,7 +13,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.support.SendResult;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -52,9 +49,6 @@ public class UsuarioServiceImpl extends CommonServiceImplString< Usuario, Usuari
 	
 	@Value("${contador.topic}")
 	private String contadorTopic;
-
-	@Autowired
-	AuditoresFeignClient auditoresFeignClient;
 	
 	@Autowired
 	private KafkaTemplate<String, Object>kafkaTemplate;
@@ -296,22 +290,6 @@ public class UsuarioServiceImpl extends CommonServiceImplString< Usuario, Usuari
 		return repository.findByRolesNombre(pRoleNombre);
 	}
 
-	//Métodos para FEIGNCLIENT, conexion http a Auditores
-
-	//Notifica la creacion de un Auditor en el microservicio Auditores
-	@Transactional("transactionManager")
-	@Override
-	public ResponseEntity<?> notificarCreacionAuditores(String pNumeroDocumento, String pNombre) {
-		return auditoresFeignClient.crearAuditor(pNumeroDocumento, pNombre);
-	}
-
-	//Actualiza un auditor que haya sido modificado en microservicio Auditores
-	@Transactional("transactionManager")
-	@Override
-	public ResponseEntity<?> notificarActualizacionAuditores(String pNumeroDocumento, String pNombre) {
-		return auditoresFeignClient.actualizarAuditor(pNumeroDocumento, pNombre);
-	}
-	
 	@Override
     public Page<Usuario> findClientesPaginados(Long roleId, int pPagina) {
         Page<Usuario> usuarios = repository.findByRolesId(roleId, PageRequest.of(pPagina,25));

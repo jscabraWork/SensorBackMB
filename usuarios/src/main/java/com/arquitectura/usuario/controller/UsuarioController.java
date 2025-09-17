@@ -126,7 +126,6 @@ public class UsuarioController extends CommonControllerString<Usuario, UsuarioSe
 				return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
 			}
 			// Intentar notificar la creación del auditor
-			service.notificarCreacionAuditores(pAuditor.getNumeroDocumento(), pAuditor.getNombre());
 
 			// Si llegamos aquí, tanto la creación como la notificación fueron exitosas
 			response.put("mensaje", "Auditor con correo " + pAuditor.getCorreo() + " creado correctamente y notificado");
@@ -321,7 +320,6 @@ public class UsuarioController extends CommonControllerString<Usuario, UsuarioSe
 		}
 		else {
 			//Notificar a microservicio-auditores el Auditor actualizado
-			service.notificarActualizacionAuditores(resultado.getNumeroDocumento(), resultado.getNombre());
 			response.put("mensaje","Revisa tu correo, debió llegar un correo "+pAuditor.getCorreo()+"de confirmación para terminar el proceso de registro");
 		}
 		return new ResponseEntity<>(response, HttpStatus.OK);

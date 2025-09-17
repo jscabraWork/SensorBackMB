@@ -43,10 +43,6 @@ public interface UsuarioService extends CommonServiceString<Usuario>{
 
 	public List<Usuario> findByRolesNombre(String pRoleNombre);
 
-	public ResponseEntity<?> notificarCreacionAuditores(String numeroDocumento, String nombre);
-
-	public ResponseEntity<?> notificarActualizacionAuditores(String numeroDocumento, String nombre);
-	
 	Page<Usuario> findClientesPaginados(Long roleId, int cantidad);
 	
 	public Usuario getDetailsOfUsuario( String pCorreo);
