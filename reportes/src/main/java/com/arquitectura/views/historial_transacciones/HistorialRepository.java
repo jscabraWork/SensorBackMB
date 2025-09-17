@@ -31,13 +31,16 @@ public interface HistorialRepository extends JpaRepository<HistorialView, Long> 
     /**
      * Buscar transacciones por múltiples filtros opcionales con rango de fechas
      */
-    @Query("SELECT h FROM HistorialView h WHERE " +
-           "(:eventoId IS NULL OR h.eventoId = :eventoId) AND " +
-           "(:status IS NULL OR h.status = :status) AND " +
-           "(:tipo IS NULL OR h.tipo = :tipo) AND " +
-           "(:fechaInicio IS NULL OR h.fecha >= :fechaInicio) AND " +
-           "(:fechaFin IS NULL OR h.fecha <= :fechaFin) " +
-           "ORDER BY h.fecha DESC")
+    @Query("""
+       SELECT h FROM HistorialView h WHERE 
+       (:eventoId IS NULL OR h.eventoId = :eventoId) AND 
+       (:status IS NULL OR :status = 35 OR h.status = :status) AND 
+       (:status != 35 OR h.estado = 3) AND 
+       (:tipo IS NULL OR h.tipo = :tipo) AND 
+       (:fechaInicio IS NULL OR h.fecha >= :fechaInicio) AND 
+       (:fechaFin IS NULL OR h.fecha <= :fechaFin) 
+       ORDER BY h.fecha DESC
+       """)
     Page<HistorialView> findByFiltrosOrderByFechaDesc(
             @Param("eventoId") Long eventoId,
             @Param("status") Integer status,
