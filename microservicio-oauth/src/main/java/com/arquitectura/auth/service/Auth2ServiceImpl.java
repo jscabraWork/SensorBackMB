@@ -38,6 +38,19 @@ import java.time.temporal.ChronoUnit;
 import java.util.*;
 import java.util.stream.Collectors;
 
+/**
+ * Implementación del servicio de autenticación OAuth2 con Google
+ *
+ * Proporciona funcionalidades para:
+ * - Intercambio de códigos de autorización por tokens
+ * - Validación de tokens de Google
+ * - Procesamiento del flujo OAuth2 completo
+ * - Generación de JWT para sesiones de usuario
+ * - Manejo de tokens temporales para registro/login
+ *
+ * @author AllTickets
+ * @version 1.0
+ */
 @Service
 public class Auth2ServiceImpl implements Auth2Service {
 
@@ -62,6 +75,12 @@ public class Auth2ServiceImpl implements Auth2Service {
     @Value("${oauth.jwt.registration.expiration-minutes:15}")
     private int jwtExpirationMinutes;
 
+    /**
+     * Intercambia el código de autorización de Google por tokens de acceso
+     *
+     * @param code Código de autorización obtenido del callback de Google
+     * @return GoogleTokenResponse conteniendo access_token, refresh_token e id_token
+     */
     @Override
     public GoogleTokenResponse exchangeCodeForTokenResponse(String code) {
         RestTemplate restTemplate = new RestTemplate();
@@ -82,9 +101,22 @@ public class Auth2ServiceImpl implements Auth2Service {
         );
     }
 
+    /**
+     * Procesa el callback completo de Google OAuth2
+     *
+     * Determina qué acción debe tomar el frontend basado en el estado del usuario:
+     * - REGISTER: Usuario nuevo, debe completar registro
+     * - AUTO_LOGIN: Usuario existente con Google ya asociado
+     * - ASSOCIATE_GOOGLE: Usuario existente sin Google asociado
+     *
+     * @param code Código de autorización de Google
+     * @param state Estado codificado (opcional)
+     * @return OAuth2CallbackResponse con la acción y datos necesarios
+     */
     @Override
     public OAuth2CallbackResponse processGoogleCallback(String code, String state) {
         try {
+
             // 1. Intercambiar código por tokens
             GoogleTokenResponse tokenResponse = exchangeCodeForTokenResponse(code);
             String accessToken = tokenResponse.getAccessToken();
@@ -157,11 +189,16 @@ public class Auth2ServiceImpl implements Auth2Service {
             return response;
 
         } catch (Exception e) {
-            System.out.println("Error en OAuth callback: " + e.getMessage());
             throw new RuntimeException("Error procesando OAuth callback", e);
         }
     }
 
+    /**
+     * Valida un ID Token de Google y extrae la información del usuario
+     *
+     * @param idToken Token de ID de Google a validar
+     * @return GoogleUserInfo con datos del usuario o null si el token es inválido
+     */
     @Override
     public GoogleUserInfo validateGoogleIdToken(String idToken) {
         try {
@@ -187,6 +224,15 @@ public class Auth2ServiceImpl implements Auth2Service {
         return null;
     }
 
+    /**
+     * Crea un JWT temporal con datos de OAuth para registro/login
+     *
+     * Este token se usa para transferir datos del OAuth callback al frontend
+     * de forma segura y con expiración limitada.
+     *
+     * @param oauthData Datos del proceso OAuth2
+     * @return JWT temporal codificado
+     */
     @Override
     public String createTemporaryRegistrationToken(OAuth2CallbackResponse oauthData) {
         try {
@@ -224,6 +270,13 @@ public class Auth2ServiceImpl implements Auth2Service {
         }
     }
 
+    /**
+     * Genera un JWT de sesión para el usuario (8 horas de duración)
+     *
+     * @param usuario Usuario para el que generar el token
+     * @param correo Correo del usuario
+     * @return JwtTokenResponse con el token de sesión
+     */
     @Override
     public JwtTokenResponse generateJwtToken(Usuario usuario, String correo) {
         // Metodo original mantiene 8 horas (28800 segundos) - NO CAMBIAR para compatibilidad con WEB
@@ -299,6 +352,13 @@ public class Auth2ServiceImpl implements Auth2Service {
         }
     }
 
+    /**
+     * Valida y decodifica un JWT temporal de registro/login
+     *
+     * @param tempJwt JWT temporal a validar
+     * @return RegistrationTokenData con los datos decodificados
+     * @throws RuntimeException si el token es inválido o ha expirado
+     */
     @Override
     public RegistrationTokenData validateAndDecodeRegistrationToken(String tempJwt) {
         try {

@@ -15,6 +15,18 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
+/**
+ * Controlador para autenticación OAuth2 con Google
+ *
+ * Maneja el flujo completo de autenticación OAuth2:
+ * - Redirección a Google OAuth
+ * - Callback de Google con código de autorización
+ * - Login web directo con idToken de Google
+ * - Validación de tokens de registro/login
+ *
+ * @author AllTickets
+ * @version 1.0
+ */
 @RestController
 public class Auth2Controller {
 
@@ -36,6 +48,20 @@ public class Auth2Controller {
     @Value("${frontend-base-url}")
     private String frontendBaseUrlSensor;
 
+    /**
+     * Callback de Google OAuth2 - Recibe el código de autorización y procesa el login/registro
+     *
+     * Este endpoint es llamado por Google después de que el usuario autoriza la aplicación.
+     * Procesa el código de autorización y determina si el usuario debe:
+     * - Registrarse (nuevo usuario)
+     * - Hacer login automático (usuario existente con Google asociado)
+     * - Asociar Google a cuenta existente (usuario existe pero sin Google)
+     *
+     * @param code Código de autorización de Google
+     * @param state Estado codificado que contiene la URL original
+     * @param response HttpServletResponse para redirección
+     * @throws IOException Si hay error en la redirección
+     */
     @GetMapping("/login/auth2/google")
     public void googleCallback(@RequestParam("code") String code, @RequestParam("state") String state, HttpServletResponse response) throws IOException {
         try {
@@ -91,6 +117,16 @@ public class Auth2Controller {
         }
     }
 
+    /**
+     * Inicia el flujo OAuth2 redirigiendo al usuario a Google
+     *
+     * Construye la URL de autorización de Google y redirige al usuario.
+     * Preserva la URL original en el parámetro state para redirección posterior.
+     *
+     * @param originalUrl URL a la que redirigir después del login (opcional)
+     * @param response HttpServletResponse para redirección
+     * @throws IOException Si hay error en la redirección
+     */
     @GetMapping("/auth2/authorization/google")
     public void redirectToGoogle(@RequestParam(required = false) String originalUrl, HttpServletResponse response) throws IOException {
         // Si no se proporciona originalUrl, usar una URL por defecto
@@ -110,8 +146,19 @@ public class Auth2Controller {
         response.sendRedirect(googleAuthUrl);
     }
 
+    /**
+     * Login directo con idToken de Google
+     *
+     * Permite hacer login directamente con un idToken de Google válido.
+     * Valida el token, busca al usuario en la base de datos y genera un JWT.
+     * Usado principalmente para login automático después de asociar cuentas.
+     *
+     * @param idToken Token de ID de Google
+     * @return JWT de sesión si el login es exitoso, error si no
+     */
     @PostMapping("/auth2/web/google-login")
     public ResponseEntity<?> webLoginWithGoogleIdToken(@RequestParam String idToken) {
+
         try {
             if (idToken == null) {
                 return ResponseEntity.badRequest().body(new ErrorResponse("idToken es requerido"));
@@ -135,7 +182,6 @@ public class Auth2Controller {
                 JwtTokenResponse jwtResponse = auth2Service.generateJwtToken(usuario, correo);
                 return ResponseEntity.ok(jwtResponse);
             } else {
-                // Usuario no existe
                 return ResponseEntity.status(404).body(new ErrorResponse("Usuario no encontrado con ese googleId"));
             }
 
@@ -145,8 +191,19 @@ public class Auth2Controller {
     }
 
 
+    /**
+     * Valida y decodifica tokens temporales de registro/login
+     *
+     * Valida tokens JWT temporales creados durante el flujo OAuth2.
+     * Estos tokens contienen información del usuario de Google para
+     * completar el registro o hacer login.
+     *
+     * @param regToken Token temporal de registro/login
+     * @return Datos decodificados del token si es válido, error si no
+     */
     @PostMapping({"/auth2/validate-registration-token", "/auth2/validate-login-token"})
     public ResponseEntity<?> validateRegistrationToken(@RequestParam String regToken) {
+
         try {
             RegistrationTokenData registrationData = auth2Service.validateAndDecodeRegistrationToken(regToken);
             return ResponseEntity.ok(registrationData);

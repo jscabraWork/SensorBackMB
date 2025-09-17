@@ -430,7 +430,7 @@ public class UsuarioServiceImpl extends CommonServiceImplString< Usuario, Usuari
     @Override
     public boolean existeUsuarioConMismosDatosPeroDiferenteCorreo(Usuario usuario) {
         // Usar el nuevo metodo que verifica documento o celular en una sola consulta
-        return repository.findByIdOCelular(usuario.getNumeroDocumento(), usuario.getCelular());
+        return repository.findByIdOCelular(usuario.getNumeroDocumento(), usuario.getCelular(), usuario.getCorreo());
     }
 
     @Override
@@ -471,9 +471,37 @@ public class UsuarioServiceImpl extends CommonServiceImplString< Usuario, Usuari
         return usuarioAuthProviderRepository.findByProviderUserId(providerId)
                 .map(authProvider -> {
                     Usuario usuario = authProvider.getUsuario();
-                    // Forzar inicialización del proxy para evitar problemas de serialización
-                    usuario.getNombre(); // Trigger lazy loading
-                    return usuario;
+
+                    // Forzar inicialización completa del proxy para evitar problemas de serialización
+                    if (usuario != null) {
+                        // Acceder a todas las propiedades principales para inicializar el proxy
+                        usuario.getNumeroDocumento();
+                        usuario.getNombre();
+                        usuario.getCorreo();
+                        usuario.getCelular();
+                        usuario.getTipoDocumento();
+                        usuario.isEnabled();
+                        usuario.getContrasena();
+
+                        // Inicializar la colección de roles si existe
+                        if (usuario.getRoles() != null) {
+                            usuario.getRoles().size(); // Trigger lazy loading of roles
+                        }
+
+                        // Crear un nuevo objeto Usuario para evitar problemas de proxy
+                        Usuario usuarioSimple = new Usuario();
+                        usuarioSimple.setNumeroDocumento(usuario.getNumeroDocumento());
+                        usuarioSimple.setNombre(usuario.getNombre());
+                        usuarioSimple.setCorreo(usuario.getCorreo());
+                        usuarioSimple.setCelular(usuario.getCelular());
+                        usuarioSimple.setTipoDocumento(usuario.getTipoDocumento());
+                        usuarioSimple.setEnabled(usuario.isEnabled());
+                        usuarioSimple.setContrasena(usuario.getContrasena());
+                        usuarioSimple.setRoles(usuario.getRoles());
+
+                        return usuarioSimple;
+                    }
+                    return null;
                 })
                 .orElse(null);
     }
