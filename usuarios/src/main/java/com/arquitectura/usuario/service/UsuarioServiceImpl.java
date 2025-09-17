@@ -7,6 +7,8 @@ import com.arquitectura.rol.entity.RoleRepository;
 import com.arquitectura.services.CommonServiceImplString;
 import com.arquitectura.usuario.entity.Usuario;
 import com.arquitectura.usuario.entity.UsuarioRepository;
+import com.arquitectura.usuario_auth_provider.entity.UsuarioAuthProvider;
+import com.arquitectura.usuario_auth_provider.entity.UsuarioAuthProviderRepository;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.apache.kafka.common.Uuid;
 import org.json.JSONObject;
@@ -31,7 +33,10 @@ public class UsuarioServiceImpl extends CommonServiceImplString< Usuario, Usuari
 
 	@Autowired
 	private RoleRepository roleRepository;
-	
+
+    @Autowired
+    private UsuarioAuthProviderRepository usuarioAuthProviderRepository;
+
 	@Value("${admins.topic}")
 	private String adminsTopic;
 	
@@ -391,4 +396,85 @@ public class UsuarioServiceImpl extends CommonServiceImplString< Usuario, Usuari
 		});
 	}
 
+    // METODOS PARA LOGIN Y REGISTRO CON PROVIDER
+
+    @Override
+    @Transactional("transactionManager")
+    public Usuario crearClienteConProvider(Usuario usuario, int tipoProvider, String providerId, String accessToken, String refreshToken) {
+
+        // Verificar si el usuario ya existe
+        if(usuarioExiste(usuario)) {
+            throw new IllegalStateException("Los datos provisionados ya se encuentran registrados");
+        }
+
+        if(existeUsuarioConMismosDatosPeroDiferenteCorreo(usuario)) {
+            throw new IllegalStateException("Los datos ya están registrados con un correo diferente. " +
+                    "Comunicate con servicio al cliente para actualizar tu correo.");
+        }
+
+        usuario.setContrasena("Google");
+        // Crear Usuario normal
+        Usuario usuarioCreado = crearUsuario(clientesTopic, usuario, "ROLE_CLIENTE", "Cliente", true);
+
+        // Crear registro de proveedor de autenticación
+        UsuarioAuthProvider authProvider = new UsuarioAuthProvider(
+                usuarioCreado,
+                tipoProvider,
+                providerId
+        );
+        authProvider.setAccessToken(accessToken);
+        usuarioAuthProviderRepository.save(authProvider);
+        return usuarioCreado;
+    }
+
+    @Override
+    public boolean existeUsuarioConMismosDatosPeroDiferenteCorreo(Usuario usuario) {
+        // Usar el nuevo metodo que verifica documento o celular en una sola consulta
+        return repository.findByIdOCelular(usuario.getNumeroDocumento(), usuario.getCelular());
+    }
+
+    @Override
+    @Transactional("transactionManager")
+    public UsuarioAuthProvider asociarProviderAUsuarioExistente(Usuario usuarioExistente, int tipoProvider, String providerId, String accessToken) {
+
+        if(existeUsuarioConMismosDatosPeroDiferenteCorreo(usuarioExistente)) {
+            throw new IllegalStateException("Los datos (documento/celular) ya están registrados con un correo diferente. " +
+                    "No se puede asociar el proveedor.");
+        }
+
+        // Verificar si ya existe esta asociación
+        Optional<UsuarioAuthProvider> existente = usuarioAuthProviderRepository
+                .findByUsuario_NumeroDocumentoAndTipo(usuarioExistente.getNumeroDocumento(), tipoProvider);
+
+        UsuarioAuthProvider authProvider;
+        if (existente.isPresent()) {
+            // Actualizar el existente
+            authProvider = existente.get();
+        } else {
+            // Crear nuevo
+            authProvider = new UsuarioAuthProvider(
+                    usuarioExistente,
+                    tipoProvider,
+                    providerId
+            );
+        }
+
+        // Actualizar datos
+        authProvider.setProviderUserId(providerId);
+        authProvider.setAccessToken(accessToken);
+
+        return usuarioAuthProviderRepository.save(authProvider);
+    }
+
+    @Override
+    public Usuario getUsuarioByProviderId(String providerId, int tipoProvider) {
+        return usuarioAuthProviderRepository.findByProviderUserId(providerId)
+                .map(authProvider -> {
+                    Usuario usuario = authProvider.getUsuario();
+                    // Forzar inicialización del proxy para evitar problemas de serialización
+                    usuario.getNombre(); // Trigger lazy loading
+                    return usuario;
+                })
+                .orElse(null);
+    }
 }

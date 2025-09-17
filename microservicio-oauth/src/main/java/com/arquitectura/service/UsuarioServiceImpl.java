@@ -43,4 +43,10 @@ public class UsuarioServiceImpl implements UserDetailsService,UsuarioService{
 		return usuario;
 	}
 
+    @Override
+    public Usuario getUsuarioByProviderId(String providerId, int tipoProvider) {
+        Usuario usuario = client.getUsuarioByProviderId(providerId, tipoProvider);
+        return usuario;
+    }
+
 }

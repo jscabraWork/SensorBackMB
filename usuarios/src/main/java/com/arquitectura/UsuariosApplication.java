@@ -17,7 +17,8 @@ import java.util.TimeZone;
 		"com.arquitectura.usuario.entity",
 		"com.arquitectura.recuperacion.entity",
 		"com.arquitectura.tipo_documento.entity",
-		"com.arquitectura.intento_registro.entity"
+		"com.arquitectura.intento_registro.entity",
+        "com.arquitectura.usuario_auth_provider.entity"
 	})
 public class UsuariosApplication {
 
