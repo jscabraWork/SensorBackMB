@@ -12,7 +12,7 @@ public interface UsuarioFeignClient {
 	@GetMapping("/correo/{pCorreo}")
 	public Usuario getUsuarioPorCorreo(@PathVariable("pCorreo") String pCorreo);
 
-    @GetMapping("/provider/{providerId}/{tipoProvider}")
+    @GetMapping("/usuario-provider/provider/{providerId}/{tipoProvider}")
     public Usuario getUsuarioByProviderId(@PathVariable("providerId") String providerId, @PathVariable("tipoProvider") int tipoProvider);
 
 }

@@ -2,7 +2,6 @@ package com.arquitectura.usuario.service;
 
 import com.arquitectura.services.CommonServiceString;
 import com.arquitectura.usuario.entity.Usuario;
-import com.arquitectura.usuario_auth_provider.entity.UsuarioAuthProvider;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 
@@ -58,11 +57,4 @@ public interface UsuarioService extends CommonServiceString<Usuario>{
 
 	public String obtenerRolDeToken(String pBearerToken);
 
-    public Usuario crearClienteConProvider(Usuario usuario, int tipoProvider, String providerId, String accessToken, String refreshToken);
-
-    public UsuarioAuthProvider asociarProviderAUsuarioExistente(Usuario usuarioExistente, int tipoProvider, String providerId, String accessToken);
-
-    boolean existeUsuarioConMismosDatosPeroDiferenteCorreo(Usuario usuario);
-
-    public Usuario getUsuarioByProviderId(String providerId, int tipoProvider);
 }
