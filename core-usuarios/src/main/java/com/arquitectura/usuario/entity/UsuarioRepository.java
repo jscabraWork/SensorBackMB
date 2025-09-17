@@ -30,4 +30,12 @@ public interface UsuarioRepository extends JpaRepository<Usuario, String>{
     @Query(value="SELECT * FROM usuarios where celular =?3 or numero_documento=?1  or correo =?2",
     		nativeQuery=true)
     List<Usuario> validarCorreos(String pNumeroDoc, String pCorreo, String pCelular);
+
+    @Query("""
+       SELECT CASE WHEN COUNT(u) > 0 THEN true ELSE false END
+       FROM Usuario u
+       WHERE (u.numeroDocumento = ?1 OR u.celular = ?2)
+         AND u.correo <> ?3
+       """)
+    boolean findByIdOCelular(String numeroDocumento, String celular, String correo);
 }

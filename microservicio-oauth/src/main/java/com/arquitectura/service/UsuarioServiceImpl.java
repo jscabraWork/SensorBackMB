@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 
 import com.arquitectura.clients.UsuarioFeignClient;
 import com.arquitectura.usuario.entity.Usuario;
+import feign.FeignException;
 
 @Service
 public class UsuarioServiceImpl implements UserDetailsService,UsuarioService{
@@ -38,9 +39,22 @@ public class UsuarioServiceImpl implements UserDetailsService,UsuarioService{
 
 	@Override
 	public Usuario findByCorreo(String pCorreo) {
-		
-		Usuario usuario = client.getUsuarioPorCorreo(pCorreo);
-		return usuario;
+		try {
+			Usuario usuario = client.getUsuarioPorCorreo(pCorreo);
+			return usuario;
+		} catch (FeignException.NotFound e) {
+			return null;
+		}
 	}
+
+    @Override
+    public Usuario getUsuarioByProviderId(String providerId, int tipoProvider) {
+        try {
+            Usuario usuario = client.getUsuarioByProviderId(providerId, tipoProvider);
+            return usuario;
+        } catch (FeignException.NotFound e) {
+            return null;
+        }
+    }
 
 }
