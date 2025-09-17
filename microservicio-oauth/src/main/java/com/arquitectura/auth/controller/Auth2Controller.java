@@ -113,7 +113,7 @@ public class Auth2Controller {
                 System.out.println("Error decodificando state en catch: " + stateError.getMessage());
             }
             // Redirigir al frontend con error y URL original
-            response.sendRedirect(redirectUrlSensor + "?error=oauth_error&originalUrl=" + java.net.URLEncoder.encode(originalUrl, "UTF-8"));
+            response.sendRedirect(redirectUrlSensor);
         }
     }
 
