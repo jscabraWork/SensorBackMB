@@ -42,7 +42,7 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
 	public void configure(ClientDetailsServiceConfigurer clients) throws Exception {
 
 		clients.inMemory().withClient("alltickets.front")
-		.secret(passwordEncoder.encode("l!Uq!Ujhfzyjd%Mk*a6H"))
+		.secret(passwordEncoder.encode("z!Uq!Ujhfzyjd%Mk*a7M"))
 		.scopes("read","write")
 		.authorizedGrantTypes("password","refresh_token")
 		.accessTokenValiditySeconds(28800)
