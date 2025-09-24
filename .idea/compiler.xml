@@ -26,19 +26,9 @@
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <processorPath useClasspath="false">
-          <entry name="$MAVEN_REPOSITORY$/org/projectlombok/lombok/unknown/lombok-unknown.jar" />
-        </processorPath>
-        <module name="Pagos" />
-      </profile>
-      <profile name="Annotation profile for core-reportes" enabled="true">
-        <sourceOutputDir name="target/generated-sources/annotations" />
-        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
-        <outputRelativeToContentRoot value="true" />
-        <processorPath useClasspath="false">
           <entry name="$MAVEN_REPOSITORY$/org/projectlombok/lombok/1.18.30/lombok-1.18.30.jar" />
         </processorPath>
-        <module name="core" />
-        <module name="core-reportes" />
+        <module name="Pagos" />
       </profile>
       <profile name="Annotation profile for puntos fisicos" enabled="true">
         <sourceOutputDir name="target/generated-sources/annotations" />
@@ -47,8 +37,10 @@
         <processorPath useClasspath="false">
           <entry name="$MAVEN_REPOSITORY$/org/projectlombok/lombok/1.18.36/lombok-1.18.36.jar" />
         </processorPath>
-        <module name="core-pagos" />
         <module name="puntos-fisicos" />
+        <module name="core" />
+        <module name="core-pagos" />
+        <module name="core-reportes" />
         <module name="core-puntos-fisicos" />
       </profile>
     </annotationProcessing>

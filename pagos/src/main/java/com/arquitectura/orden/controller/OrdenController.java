@@ -159,7 +159,7 @@ public class OrdenController extends CommonController<Orden, OrdenService> {
         return new ResponseEntity<>(response,HttpStatus.OK);
     }
 
-    @PreAuthorize("hasRole('CLIENTE')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'PUNTO')")
     @GetMapping("/carrito/{pId}")
     public ResponseEntity<?> getOrdenParaCarrito(@PathVariable Long pId) {
 
