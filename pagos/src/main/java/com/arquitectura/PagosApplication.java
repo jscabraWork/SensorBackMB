@@ -48,7 +48,7 @@ public class PagosApplication implements CommandLineRunner {
 		fileService.init();
 
 		// Ejecutar revisión de órdenes en proceso al iniciar la aplicación
-		tareaRecurrente.revisarOrdenesEnProceso();
+		//tareaRecurrente.revisarOrdenesEnProceso();
 	}
 
 	@Bean
