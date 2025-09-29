@@ -60,6 +60,11 @@ public class UsuarioServiceImpl extends CommonServiceImplString< Usuario, Usuari
 	@Override
 	public Usuario crearUsuarioConMultiplesRoles(Usuario pUsuario, List<String> roles, boolean creando) {
 
+		// Convertir celular vacío a null
+		if(pUsuario.getCelular() != null && pUsuario.getCelular().isEmpty()) {
+			pUsuario.setCelular(null);
+		}
+
 		if(usuarioExiste(pUsuario) && creando) {
 			return null;
 		}
@@ -220,6 +225,35 @@ public class UsuarioServiceImpl extends CommonServiceImplString< Usuario, Usuari
 	public boolean usuarioExiste(Usuario pUsuario) {
 		boolean existe=repository.buscarPreRegistro(pUsuario.getNumeroDocumento(), pUsuario.getCorreo(), pUsuario.getCelular())!=null;
 		return existe;
+	}
+
+	public String validarDatosEspecificos(Usuario pUsuario) {
+		Usuario usuarioExistente = repository.buscarPreRegistro(
+				pUsuario.getNumeroDocumento(),
+				pUsuario.getCorreo(),
+				pUsuario.getCelular()
+		);
+
+		if (usuarioExistente == null) {
+			return null; // No hay duplicados
+		}
+
+		// Verificar qué campo específico está duplicado
+		if (usuarioExistente.getNumeroDocumento().equals(pUsuario.getNumeroDocumento())) {
+			return "El número de documento ya está registrado";
+		}
+
+		if (usuarioExistente.getCorreo().equals(pUsuario.getCorreo())) {
+			return "El correo ya está registrado";
+		}
+
+		if (pUsuario.getCelular() != null && !pUsuario.getCelular().isEmpty() &&
+				usuarioExistente.getCelular() != null &&
+				usuarioExistente.getCelular().equals(pUsuario.getCelular())) {
+			return "El celular ya está registrado";
+		}
+
+		return "Los datos ya se encuentran registrados";
 	}
 
 	@Override

@@ -152,7 +152,9 @@ public class UsuarioController extends CommonControllerString<Usuario, UsuarioSe
 			Usuario resultado = service.crearUsuarioConMultiplesRoles(usuario, roles, true);
 
 			if(resultado == null) {
-				response.put("mensaje", "Los datos ingresados ya se encuentran registrados");
+				// Obtener el mensaje específico del campo duplicado
+				String mensajeError = service.validarDatosEspecificos(usuario);
+				response.put("mensaje", mensajeError != null ? mensajeError : "Los datos ingresados ya se encuentran registrados");
 				return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
 			}
 
