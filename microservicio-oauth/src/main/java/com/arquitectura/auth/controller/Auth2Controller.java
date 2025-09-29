@@ -168,7 +168,7 @@ public class Auth2Controller {
             GoogleUserInfo googleUserInfo = auth2Service.validateGoogleIdToken(idToken);
 
             if (googleUserInfo == null) {
-                return ResponseEntity.status(401).body(new ErrorResponse("Token de Google inválido"));
+                return ResponseEntity.status(401).body(new ErrorResponse("Error al iniciar sesion con google"));
             }
 
             String googleId = googleUserInfo.getSub();
@@ -177,16 +177,16 @@ public class Auth2Controller {
             // Buscar usuario en BD usando googleId y tipoProvider = 0 (Google)
             Usuario usuario = usuarioService.getUsuarioByProviderId(googleId, 0);
 
-            if (usuario != null) {
+            if (usuario != null && usuario.getRoles().stream().anyMatch(role -> "ROLE_CLIENTE".equals(role.getNombre()))) {
                 // Generar JWT usando el servicio
                 JwtTokenResponse jwtResponse = auth2Service.generateJwtToken(usuario, correo);
                 return ResponseEntity.ok(jwtResponse);
             } else {
-                return ResponseEntity.status(404).body(new ErrorResponse("Usuario no encontrado con ese googleId"));
+                return ResponseEntity.status(404).body(new ErrorResponse("Usuario no encontrado"));
             }
 
         } catch (Exception e) {
-            return ResponseEntity.status(500).body(new ErrorResponse("Error en login con Google: " + e.getMessage()));
+            return ResponseEntity.status(500).body(new ErrorResponse("Error en login con Google"));
         }
     }
 
