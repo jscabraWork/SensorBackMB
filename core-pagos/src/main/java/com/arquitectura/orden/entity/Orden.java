@@ -100,6 +100,25 @@ public class Orden extends Auditable {
         procesarTickets();
     }
 
+    // Constructor para crear una orden con una tarifa específica
+    public Orden(Evento evento, Cliente cliente, List<Ticket> tickets, Tarifa tarifa, Integer tipo) {
+        Localidad localidad = tickets.get(0).getLocalidad();
+        this.evento = evento;
+        this.cliente = cliente;
+        estado = 3; // En proceso por defecto
+        this.tarifa = tarifa; // Usar la tarifa específica proporcionada
+
+        //Si el tipo es nulo, se obtiene el tipo de orden según la localidad
+        this.tipo = (tipo != null) ? tipo : getTipoOrden(localidad);
+
+        //El método setTickets tiene en cuenta asientos de tickets que se agregan individualmente a la orden
+        setTickets(tickets);
+
+        //Si la orden es de tipo alcancía, no se calcula el valor de la orden
+        this.valorOrden = (this.tipo == 2) ? 0.0 : calcularValorOrden();
+        procesarTickets();
+    }
+
     //Obtiene el tipo de orden según el tipo de localidad
     @JsonIgnore
     public Integer getTipoOrden(Localidad localidad) {

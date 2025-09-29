@@ -7,6 +7,8 @@ import com.arquitectura.evento.service.EventoService;
 import com.arquitectura.localidad.entity.Localidad;
 import com.arquitectura.localidad.service.LocalidadService;
 import com.arquitectura.orden.entity.Orden;
+import com.arquitectura.tarifa.entity.Tarifa;
+import com.arquitectura.tarifa.service.TarifaService;
 import com.arquitectura.ticket.entity.Ticket;
 import com.arquitectura.ticket.service.TicketService;
 import org.slf4j.Logger;
@@ -38,12 +40,23 @@ public class OrdenCreationHelper {
     @Autowired
     private TicketService ticketService;
 
+    @Autowired
+    private TarifaService tarifaService;
+
     /**
      * Interfaz funcional para crear instancias de orden
      */
     @FunctionalInterface
     public interface OrdenFactory<T extends Orden> {
         T create(Evento evento, Cliente cliente, List<Ticket> tickets);
+    }
+
+    /**
+     * Interfaz funcional para crear instancias de orden con tarifa específica
+     */
+    @FunctionalInterface
+    public interface OrdenFactoryConTarifa<T extends Orden> {
+        T create(Evento evento, Cliente cliente, List<Ticket> tickets, Tarifa tarifa);
     }
 
     /**
@@ -216,5 +229,54 @@ public class OrdenCreationHelper {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR,
                     "Error al crear la orden para palco individual: " + e.getMessage());
         }
+    }
+
+    /**
+     * Crea una orden no numerada con una tarifa específica
+     */
+    @Transactional("transactionManager")
+    public <T extends Orden> T crearOrdenNoNumeradaConTarifa(Integer pCantidad, Long pEventoId, String pNumeroDocumento,
+                                                              Long pLocalidadId, Long pTarifaId, OrdenFactoryConTarifa<T> factory) throws Exception {
+
+        //-----VALIDACIONES DE ENTRADA------
+        //1. Encontrar la localidad
+        Localidad localidad = localidadService.findById(pLocalidadId);
+        if (localidad == null) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Localidad no encontrada");
+        }
+
+        //2. Encontrar el cliente
+        Cliente cliente = clienteService.findByNumeroDocumento(pNumeroDocumento);
+        if (cliente == null) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Cliente no encontrado");
+        }
+
+        //3. Encontrar el evento
+        Evento evento = eventoService.findById(pEventoId);
+        if (evento == null) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Evento no encontrado");
+        }
+
+        //4. Encontrar la tarifa específica
+        Tarifa tarifa = tarifaService.findById(pTarifaId);
+        if (tarifa == null) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Tarifa no encontrada");
+        }
+
+        //5. Encontrar la cantidad de tickets necesarios para la orden y validar que existan suficientes tickets disponibles
+        List<Ticket> tickets = ticketService.findTicketsByLocalidadIdAndEstado(pLocalidadId, 0, pCantidad);
+        if (tickets.size() < pCantidad) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
+                "No hay suficientes tickets disponibles en la localidad seleccionada, reduce la cantidad o contacta a servicio al cliente");
+        }
+        //----FIN VALIDACIONES------
+
+        //Este constructor crea la orden con la tarifa específica, calcula los datos necesarios y asigna los tickets
+        T orden = factory.create(evento, cliente, tickets, tarifa);
+
+        //Guardar estado de todos los tickets, no se publica en kafka porque no se ha confirmado la orden
+        //ticketService.saveAll(orden.getTickets());
+
+        return orden;
     }
 }

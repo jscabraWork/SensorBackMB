@@ -100,6 +100,23 @@ public class OrdenPuntoFisicoServiceImpl extends CommonServiceImpl<OrdenPuntoFis
         return this.save(orden);
     }
 
+    @Transactional("transactionManager")
+    @Override
+    public OrdenPuntoFisico crearOrdenNoNumeradaConTarifa(Integer pCantidad, Long pEventoId, String pNumeroDocumento,
+                                                          Long pLocalidadId, Long pTarifaId, String pPuntoFisicoId) throws Exception {
+
+        // Factory para crear OrdenPuntoFisico con tarifa específica
+        OrdenCreationHelper.OrdenFactoryConTarifa<OrdenPuntoFisico> factory = (
+                evento,
+                cliente,
+                tickets,
+                tarifa) -> new OrdenPuntoFisico(evento, cliente, tickets, tarifa, pPuntoFisicoId);
+
+        OrdenPuntoFisico orden = creationHelper.crearOrdenNoNumeradaConTarifa(pCantidad, pEventoId, pNumeroDocumento, pLocalidadId, pTarifaId, factory);
+
+        return saveKafka(orden);
+    }
+
     @Override
     public List<OrdenPuntoFisico> getAllOrdenesByClienteNumeroDocumento(String numeroDocumento) {
         return repository.findByClienteNumeroDocumento(numeroDocumento);

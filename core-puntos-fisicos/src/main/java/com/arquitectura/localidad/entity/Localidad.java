@@ -48,16 +48,12 @@ public class Localidad {
     @JsonIgnore
     private List<Ticket> tickets;
 
-    // Retorna la tarifa activa de la localidad, si existe
-    // Si no hay tarifa activa, retorna null
-    //Si hay más de una tarifa activa, retorna la primera encontrada
-    // Este método serializa el objeto tarifaActiva en el json de Localidad
-    // Atte: Isaac
-    @JsonProperty("tarifa")
-    public Tarifa getTarifaActiva() {
+    // Retorna las tarifas en estado 1 (activa) y estado 4 de la localidad
+    // Este método serializa el objeto tarifas en el json de Localidad
+    @JsonProperty("tarifas")
+    public List<Tarifa> tarifas() {
         return tarifas.stream()
-                .filter(tarifa -> tarifa.getEstado() == 1)
-                .findFirst()
-                .orElse(null);
+                .filter(tarifa -> tarifa.getEstado() == 1 || tarifa.getEstado() == 4)
+                .toList();
     }
 }

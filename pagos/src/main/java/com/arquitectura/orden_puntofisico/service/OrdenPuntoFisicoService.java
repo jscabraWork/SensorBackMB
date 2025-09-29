@@ -28,6 +28,12 @@ public interface OrdenPuntoFisicoService extends CommonService<OrdenPuntoFisico>
                                                String pNumeroDocumento, String pPuntoFisicoId) throws Exception;
 
     /**
+     * Crea una orden de punto físico no numerada con una tarifa específica
+     */
+    OrdenPuntoFisico crearOrdenNoNumeradaConTarifa(Integer pCantidad, Long pEventoId, String pNumeroDocumento,
+                                                   Long pLocalidadId, Long pTarifaId, String pPuntoFisicoId) throws Exception;
+
+    /**
      * Obtiene todas las órdenes de punto físico por número de documento del cliente
      */
     List<OrdenPuntoFisico> getAllOrdenesByClienteNumeroDocumento(String numeroDocumento);

@@ -25,13 +25,15 @@ public class OrdenPuntoFisicoController extends CommonController<OrdenPuntoFisic
                                                    @RequestParam Long pEventoId,
                                                    @RequestParam String pClienteNumeroDocumento,
                                                    @RequestParam Integer pCantidad,
-                                                   @RequestParam String pPuntoFisicoId) throws Exception {
+                                                   @RequestParam String pPuntoFisicoId,
+                                                   @RequestParam Long pTarifaId) throws Exception {
 
         Map<String, Object> response = new HashMap<>();
-        OrdenPuntoFisico orden = service.crearOrdenNoNumerada(pCantidad, pEventoId, pClienteNumeroDocumento, pLocalidadId, pPuntoFisicoId);
+        OrdenPuntoFisico orden = service.crearOrdenNoNumeradaConTarifa(pCantidad, pEventoId, pClienteNumeroDocumento, pLocalidadId, pTarifaId, pPuntoFisicoId);
         response.put("ordenId", orden.getId());
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
+
 
     @PreAuthorize("hasRole('PUNTO')")
     @PostMapping("/crear-numerada")

@@ -37,7 +37,7 @@ public class Tarifa extends Auditable {
     @NotNull(message = "El iva no puede ser nulo")
     private Double iva;
 
-    //0: Inactiva | 1 Activa | 2 Soldout | 3. CUPON
+    //0: Inactiva | 1 Activa | 2 Soldout | 3. CUPON | 4. Visible puntos fisicos
     private Integer estado;
 
     @OneToMany(mappedBy = "tarifa", fetch = FetchType.LAZY)
