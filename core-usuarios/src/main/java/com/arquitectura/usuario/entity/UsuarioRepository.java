@@ -19,7 +19,9 @@ public interface UsuarioRepository extends JpaRepository<Usuario, String>{
 	public Usuario buscarPreRegistro(String pNumeroDocumento, String pCorreo, String pCelular);
 	
 	public Usuario findByCorreo(String pCorreo);
-	
+
+	public Usuario findByCelular(String pCelular);
+
 	public List<Usuario> findByRolesNombre(String pRoleNombre);
 
     Page<Usuario> findByRolesId(Long roleId, Pageable pageable);

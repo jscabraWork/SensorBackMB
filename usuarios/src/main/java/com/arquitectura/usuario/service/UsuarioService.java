@@ -49,6 +49,8 @@ public interface UsuarioService extends CommonServiceString<Usuario>{
 	
 	public List<Usuario> validarDatos(String pNumeroDoc, String pCorreo, String pCelular);
 
+	public String validarDatosEspecificos(Usuario pUsuario);
+
 	public String obtenerUsuarioDeToken(String pBearerToken);
 
 	public String obtenerRolDeToken(String pBearerToken);
