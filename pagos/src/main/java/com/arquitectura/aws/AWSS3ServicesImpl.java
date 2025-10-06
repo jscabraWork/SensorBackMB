@@ -35,29 +35,38 @@ public class AWSS3ServicesImpl implements AWSS3Service {
 	
 	@Override
 	public String uploadFile(MultipartFile file) {
-
-		File mainFile = new File (file.getOriginalFilename());
-
-		try (FileOutputStream stream = new FileOutputStream(mainFile)) {
-			stream.write(file.getBytes());
-			
-			String nombreFinal = mainFile.getName().replaceAll(" ","");
-
+		File mainFile = null;
+		try {
+			// Generar nombre único sin espacios
+			String nombreFinal = file.getOriginalFilename().replaceAll(" ", "");
 			String newFileName = System.currentTimeMillis() + "_" + nombreFinal;
+
+			// Crear archivo temporal en el directorio temporal del sistema
+			mainFile = File.createTempFile("upload-", "-" + nombreFinal);
 
 			LOGGER.info("Subiendo archivo con el nombre... " + newFileName);
 
-			PutObjectRequest request = new PutObjectRequest(bucketName, newFileName, mainFile);
+			// Transferir directamente sin cargar todo en memoria
+			file.transferTo(mainFile);
 
+			// Subir a S3 con el nombre final deseado
+			PutObjectRequest request = new PutObjectRequest(bucketName, newFileName, mainFile);
 			amazonS3.putObject(request);
 
 			return newFileName;
 
 		} catch (IOException e) {
-			LOGGER.error(e.getMessage(), e);
+			LOGGER.error("Error al subir archivo: " + e.getMessage(), e);
+			return "";
+		} finally {
+			// CRÍTICO: Borrar archivo temporal
+			if (mainFile != null && mainFile.exists()) {
+				boolean deleted = mainFile.delete();
+				if (!deleted) {
+					LOGGER.warn("No se pudo eliminar el archivo temporal: " + mainFile.getName());
+				}
+			}
 		}
-		return "";
-		
 	}
 	@Override
 	public List<String> getObjectsFromS3() {
